@@ -1,15 +1,17 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
-import React from 'react'
+import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import React from 'react';
 
-const Button = ({children, color, onPress=() => {}}) => {
+const Button = ({children, color, onPress = () => {}}) => {
   return (
-    <TouchableOpacity style={color === 'primary' ? styles.primary : styles.secondary} onPress={onPress}>
+    <TouchableOpacity
+      style={color === 'primary' ? styles.primary : styles.secondary}
+      onPress={onPress}>
       <View>
         <Text style={styles.text}>{children}</Text>
       </View>
     </TouchableOpacity>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   primary: {
@@ -19,7 +21,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     fontWeight: 'bold',
-    color: 'black'
+    color: 'black',
   },
   secondary: {
     backgroundColor: '#EBEFD0',
@@ -27,12 +29,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    color: 'black'
+    color: 'black',
   },
   text: {
     color: 'black',
     fontWeight: 'bold',
-  }
-})
+  },
+});
 
-export default Button
+export default Button;

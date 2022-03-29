@@ -8,33 +8,43 @@ import {
 import React from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
+import {useState} from 'react/cjs/react.development';
 
-const Login = () => {
+const Signup = () => {
+  const [text, setText] = useState({text: ''});
+  const handleChange = key => {
+    if (/^\d+$/.test(key)) {
+      setText({text: key});
+    }
+  };
   return (
     <View>
       <ImageBackground
-        source={require('../img/bgAuth.jpg')}
+        source={require('../img/bgSignup.jpg')}
         resizeMode="cover"
         style={styles.image}>
         <View style={styles.opacity}>
           <View style={styles.header}>
-            <Text style={styles.head}>LET'S EXPLORE</Text>
-            <Text style={styles.head}>THE WORLD</Text>
+            <Text style={styles.head}>LET'S HAVE</Text>
+            <Text style={styles.head}>SOME RIDE</Text>
           </View>
           <View style={styles.form}>
             <Input placeholder="Email" />
             <View style={styles.gap} />
+            <Input
+              placeholder="Phone Number"
+              keyboardType="numeric"
+              onChangeText={handleChange}
+              value={text}
+            />
+            <View style={styles.gap} />
             <Input placeholder="Password" secureTextEntry={true} />
-            <Text style={styles.forgot}>Forgot Password?</Text>
             <View style={styles.btn}>
-              <Button color="primary">Login</Button>
+              <Button color="primary">Signup</Button>
             </View>
-            <View style={styles.signupContain}>
-              <Text style={styles.signup}>Don't have account?</Text>
-              <Text style={[styles.signup, styles.linkSignup]}>
-                {' '}
-                Sign up now
-              </Text>
+            <View style={styles.loginContain}>
+              <Text style={styles.login}>Already have account?</Text>
+              <Text style={[styles.login, styles.linklogin]}> Login now</Text>
             </View>
           </View>
         </View>
@@ -50,7 +60,7 @@ const styles = StyleSheet.create({
   },
   opacity: {
     height: ScreenHeight,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     padding: 20,
     flexDirection: 'column',
     justifyContent: 'space-between',
@@ -70,7 +80,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   btn: {
-    marginBottom: 30,
+    marginVertical: 30,
   },
   forgot: {
     color: '#fff',
@@ -79,19 +89,20 @@ const styles = StyleSheet.create({
     width: 118,
     marginVertical: 30,
   },
-  signupContain: {
+  loginContain: {
     flexDirection: 'row',
     marginTop: 20,
     marginBottom: 50,
   },
-  ['signup']: {
+  ['login']: {
     color: '#fff',
   },
-  linkSignup: {
+  linklogin: {
     borderBottomColor: '#fff',
     borderBottomWidth: 1,
-    width: 83,
+    width: 74,
+    fontWeight: 'bold',
   },
 });
 
-export default Login;
+export default Signup;
