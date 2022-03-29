@@ -1,1 +1,1 @@
-export const BGAUTH = require('./bgAuth.jpg'); 
+export const BGAUTH = require('./bgAuth.jpg');
