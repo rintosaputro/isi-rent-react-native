@@ -13,7 +13,7 @@ const Login = () => {
   return (
     <View>
       <ImageBackground
-        source={require('../img/bgAuth.jpg')}
+        source={require('../assets/img/bgAuth.jpg')}
         resizeMode="cover"
         style={styles.image}>
         <View style={styles.opacity}>

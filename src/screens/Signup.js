@@ -20,7 +20,7 @@ const Signup = () => {
   return (
     <View>
       <ImageBackground
-        source={require('../img/bgSignup.jpg')}
+        source={require('../assets/img/bgSignup.jpg')}
         resizeMode="cover"
         style={styles.image}>
         <View style={styles.opacity}>
@@ -35,7 +35,6 @@ const Signup = () => {
               placeholder="Phone Number"
               keyboardType="numeric"
               onChangeText={handleChange}
-              value={text}
             />
             <View style={styles.gap} />
             <Input placeholder="Password" secureTextEntry={true} />
