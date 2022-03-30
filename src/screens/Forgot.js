@@ -16,7 +16,7 @@ const Forgot = () => {
   return (
     <View>
       <ImageBackground
-        source={require('../img/bgForgot.jpg')}
+        source={require('../assets/img/bgForgot.jpg')}
         resizeMode="cover"
         style={styles.image}>
         <View style={styles.opacity}>
