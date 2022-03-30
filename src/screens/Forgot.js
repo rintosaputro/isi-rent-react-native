@@ -4,6 +4,8 @@ import {
   StyleSheet,
   Dimensions,
   ImageBackground,
+  ScrollView,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import React from 'react';
 import Input from '../components/Input';
@@ -30,7 +32,11 @@ const Forgot = () => {
             <Text style={[styles.text, styles.textForm]}>
               Enter your email to get reset password code
             </Text>
-            <Input placeholder="Enter your email address" />
+            <ScrollView>
+              <TouchableWithoutFeedback>
+                <Input placeholder="Enter your email address" />
+              </TouchableWithoutFeedback>
+            </ScrollView>
             <View style={[styles.btn, styles.sendCode]}>
               <Button color="primary">Send Code</Button>
             </View>
@@ -47,10 +53,10 @@ const Forgot = () => {
 let ScreenHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   image: {
-    height: ScreenHeight,
+    height: '100%',
   },
   opacity: {
-    height: ScreenHeight,
+    height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     padding: 20,
     flexDirection: 'column',

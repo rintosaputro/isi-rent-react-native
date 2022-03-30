@@ -46,10 +46,10 @@ const Login = () => {
 let ScreenHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   image: {
-    height: ScreenHeight,
+    height: '100%',
   },
   opacity: {
-    height: ScreenHeight,
+    height: '100%',
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
     padding: 20,
     flexDirection: 'column',

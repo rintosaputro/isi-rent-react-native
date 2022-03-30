@@ -1,20 +1,27 @@
-import {TextInput, SafeAreaView, StyleSheet} from 'react-native';
+import {TextInput, StyleSheet, View} from 'react-native';
 import React from 'react';
 
 const Input = ({placeholder, ...set}) => {
   return (
-    <SafeAreaView>
+    <View style={styles.parrent}>
+      <View style={styles.flexInput} />
       <TextInput
         placeholder={placeholder}
         placeholderTextColor="#fff"
         style={styles.input}
         {...set}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  parrent: {
+    // flex: 1,
+  },
+  flexInput: {
+    flex: 1,
+  },
   input: {
     height: 60,
     color: '#fff',

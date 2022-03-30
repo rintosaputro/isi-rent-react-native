@@ -7,7 +7,7 @@ import Forgot from './src/screens/Forgot';
 const App = () => {
   return (
     <View>
-      <Forgot />
+      <Signup />
     </View>
   );
 };
