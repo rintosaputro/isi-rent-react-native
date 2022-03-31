@@ -1,13 +1,12 @@
-import {View, Text} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 
-import Home from './Home';
-import History from './History';
-import Chat from './Chat';
-import ProfileScreen from './Profile';
-import UpdateProfile from './UpdateProfile';
+import Home from '../screens/Home';
+import History from '../screens/History';
+import Chat from '../screens/Chat';
+import ProfileScreen from '../screens/Profile';
+import UpdateProfile from '../screens/UpdateProfile';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 const ProfileStack = createNativeStackNavigator();
@@ -27,7 +26,7 @@ const ProfileStackScreen = () => {
   );
 };
 
-const MainContainer = () => {
+const BottomTabNav = () => {
   const homeRoute = 'Home';
   const historyRoute = 'History';
   const chatRoute = 'Chat';
@@ -41,6 +40,7 @@ const MainContainer = () => {
       initialRouteName={homeRoute}
       screenOptions={({route}) => ({
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarIcon: ({focused, color, size}) => {
           let icon;
           let routeName = route.name;
@@ -69,4 +69,4 @@ const MainContainer = () => {
   );
 };
 
-export default MainContainer;
+export default BottomTabNav;

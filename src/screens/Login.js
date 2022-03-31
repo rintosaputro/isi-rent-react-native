@@ -2,14 +2,15 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
+  // Dimensions,
   ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
 import React from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
-const Login = () => {
+const Login = ({navigation}) => {
   return (
     <View>
       <ImageBackground
@@ -25,16 +26,24 @@ const Login = () => {
             <Input placeholder="Email" />
             <View style={styles.gap} />
             <Input placeholder="Password" secureTextEntry={true} />
-            <Text style={styles.forgot}>Forgot Password?</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Forgot')}>
+              <Text style={styles.forgot}>Forgot Password?</Text>
+            </TouchableOpacity>
             <View style={styles.btn}>
-              <Button color="primary">Login</Button>
+              <Button
+                color="primary"
+                onPress={() => navigation.navigate('Home')}>
+                Login
+              </Button>
             </View>
             <View style={styles.signupContain}>
               <Text style={styles.signup}>Don't have account?</Text>
-              <Text style={[styles.signup, styles.linkSignup]}>
-                {' '}
-                Sign up now
-              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                <Text style={[styles.signup, styles.linkSignup]}>
+                  {' '}
+                  Sign up now
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -43,7 +52,7 @@ const Login = () => {
   );
 };
 
-let ScreenHeight = Dimensions.get('window').height;
+// let ScreenHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   image: {
     height: '100%',

@@ -1,10 +1,15 @@
-import {View, Text} from 'react-native';
+import {View, TouchableOpacity} from 'react-native';
 import React from 'react';
+import {Text} from 'native-base';
 
 const UpdateProfile = () => {
   return (
     <View>
-      <Text>UpdateProfile</Text>
+      <View>
+        <TouchableOpacity>
+          <Text>Update Profile</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
