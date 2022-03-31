@@ -5,11 +5,9 @@ import {
   ImageBackground,
   StyleSheet,
   FlatList,
-  Image,
   ScrollView,
 } from 'react-native';
 import React from 'react';
-import {Container, Center} from 'native-base';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 

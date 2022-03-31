@@ -5,7 +5,7 @@ import FaIcon from 'react-native-vector-icons/FontAwesome';
 import Home from '../screens/Home';
 import History from '../screens/History';
 import Chat from '../screens/Chat';
-import ProfileScreen from '../screens/Profile';
+import Profile from '../screens/Profile';
 import UpdateProfile from '../screens/UpdateProfile';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
@@ -16,7 +16,7 @@ const ProfileStackScreen = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <ProfileStack.Screen name="Prof" component={ProfileScreen} />
+      <ProfileStack.Screen name="Prof" component={Profile} />
       <ProfileStack.Screen
         options={{headerShown: true}}
         name="UpdateProfile"
@@ -63,7 +63,7 @@ const BottomTabNav = () => {
       <Tab.Screen name={homeRoute} component={Home} />
       <Tab.Screen name={historyRoute} component={History} />
       <Tab.Screen name={chatRoute} component={Chat} />
-      <Tab.Screen name={profileRoute} component={ProfileStackScreen} />
+      <Tab.Screen name={profileRoute} component={Profile} />
     </Tab.Navigator>
     // </NavigationContainer>
   );
