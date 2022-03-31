@@ -1,13 +1,12 @@
-import {View, Text} from 'react-native';
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 
-import Home from './Home';
-import History from './History';
-import Chat from './Chat';
-import ProfileScreen from './Profile';
-import UpdateProfile from './UpdateProfile';
+import Home from '../screens/Home';
+import History from '../screens/History';
+import Chat from '../screens/Chat';
+import Profile from '../screens/Profile';
+import UpdateProfile from '../screens/UpdateProfile';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 const ProfileStack = createNativeStackNavigator();
@@ -17,13 +16,17 @@ const ProfileStackScreen = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <ProfileStack.Screen name="Prof" component={ProfileScreen} />
-      <ProfileStack.Screen name="UpdateProfile" component={UpdateProfile} />
+      <ProfileStack.Screen name="Prof" component={Profile} />
+      <ProfileStack.Screen
+        options={{headerShown: true}}
+        name="UpdateProfile"
+        component={UpdateProfile}
+      />
     </ProfileStack.Navigator>
   );
 };
 
-const MainContainer = () => {
+const BottomTabNav = () => {
   const homeRoute = 'Home';
   const historyRoute = 'History';
   const chatRoute = 'Chat';
@@ -37,6 +40,7 @@ const MainContainer = () => {
       initialRouteName={homeRoute}
       screenOptions={({route}) => ({
         headerShown: false,
+        tabBarShowLabel: false,
         tabBarIcon: ({focused, color, size}) => {
           let icon;
           let routeName = route.name;
@@ -59,10 +63,10 @@ const MainContainer = () => {
       <Tab.Screen name={homeRoute} component={Home} />
       <Tab.Screen name={historyRoute} component={History} />
       <Tab.Screen name={chatRoute} component={Chat} />
-      <Tab.Screen name={profileRoute} component={ProfileStackScreen} />
+      <Tab.Screen name={profileRoute} component={Profile} />
     </Tab.Navigator>
     // </NavigationContainer>
   );
 };
 
-export default MainContainer;
+export default BottomTabNav;

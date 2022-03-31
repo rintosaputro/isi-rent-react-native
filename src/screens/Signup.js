@@ -2,15 +2,15 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
 import React from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import {useState} from 'react/cjs/react.development';
 
-const Signup = () => {
+const Signup = ({navigation}) => {
   const [text, setText] = useState({text: ''});
   const handleChange = key => {
     if (/^\d+$/.test(key)) {
@@ -43,7 +43,9 @@ const Signup = () => {
             </View>
             <View style={styles.loginContain}>
               <Text style={styles.login}>Already have account?</Text>
-              <Text style={[styles.login, styles.linklogin]}> Login now</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={[styles.login, styles.linklogin]}> Login now</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </View>
@@ -52,7 +54,6 @@ const Signup = () => {
   );
 };
 
-let ScreenHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   image: {
     height: '100%',

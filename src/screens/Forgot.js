@@ -2,17 +2,18 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
+  // Dimensions,
   ImageBackground,
   ScrollView,
   TouchableWithoutFeedback,
+  TouchableOpacity,
 } from 'react-native';
 import React from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import Icon from 'react-native-vector-icons/AntDesign';
 
-const Forgot = () => {
+const Forgot = ({navigation: {goBack}}) => {
   return (
     <View>
       <ImageBackground
@@ -21,10 +22,10 @@ const Forgot = () => {
         style={styles.image}>
         <View style={styles.opacity}>
           <View style={styles.header}>
-            <View style={styles.back}>
+            <TouchableOpacity style={styles.back} onPress={() => goBack()}>
               <Icon style={[styles.text, styles.icon]} name="left" size={25} />
               <Text style={[styles.text, styles.textBack]}> Back</Text>
-            </View>
+            </TouchableOpacity>
             <Text style={styles.head}>THAT'S OKAY,</Text>
             <Text style={styles.head}>WE GOT YOUR BACK</Text>
           </View>
@@ -50,7 +51,7 @@ const Forgot = () => {
   );
 };
 
-let ScreenHeight = Dimensions.get('window').height;
+// let ScreenHeight = Dimensions.get('window').height;
 const styles = StyleSheet.create({
   image: {
     height: '100%',
