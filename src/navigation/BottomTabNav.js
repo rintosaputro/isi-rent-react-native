@@ -2,32 +2,14 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 
-import Home from '../screens/Home';
 import History from '../screens/History';
 import Chat from '../screens/Chat';
 import Profile from '../screens/Profile';
-import UpdateProfile from '../screens/UpdateProfile';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-const ProfileStack = createNativeStackNavigator();
-const ProfileStackScreen = () => {
-  return (
-    <ProfileStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <ProfileStack.Screen name="Prof" component={Profile} />
-      <ProfileStack.Screen
-        options={{headerShown: true}}
-        name="UpdateProfile"
-        component={UpdateProfile}
-      />
-    </ProfileStack.Navigator>
-  );
-};
+import StackNav from './StackNav';
 
 const BottomTabNav = () => {
-  const homeRoute = 'Home';
+  const stackRoute = 'StackNavigator';
   const historyRoute = 'History';
   const chatRoute = 'Chat';
   const profileRoute = 'Profile';
@@ -37,14 +19,14 @@ const BottomTabNav = () => {
   return (
     // <NavigationContainer>
     <Tab.Navigator
-      initialRouteName={homeRoute}
+      initialRouteName={stackRoute}
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarShowLabel: false,
         tabBarIcon: ({focused, color, size}) => {
           let icon;
           let routeName = route.name;
-          if (routeName === homeRoute) {
+          if (routeName === stackRoute) {
             icon = 'home';
             color = focused ? '#32DBC6' : '#8395a7';
           } else if (routeName === historyRoute) {
@@ -60,7 +42,7 @@ const BottomTabNav = () => {
           return <FaIcon name={icon} size={size} color={color} />;
         },
       })}>
-      <Tab.Screen name={homeRoute} component={Home} />
+      <Tab.Screen name={stackRoute} component={StackNav} />
       <Tab.Screen name={historyRoute} component={History} />
       <Tab.Screen name={chatRoute} component={Chat} />
       <Tab.Screen name={profileRoute} component={Profile} />
