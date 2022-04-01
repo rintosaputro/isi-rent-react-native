@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   button: {
-    marginBottom: 30,
+    marginBottom: 80,
     marginTop: 40,
   },
 });
