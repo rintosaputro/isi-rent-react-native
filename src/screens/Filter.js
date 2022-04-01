@@ -1,4 +1,10 @@
-import {View, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  TextInput,
+} from 'react-native';
 import React, {useState} from 'react';
 import {Text} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
@@ -7,8 +13,9 @@ import {Picker} from '@react-native-picker/picker';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import SwitchSection from '../components/SwitchSection';
+import Button from '../components/Button';
 
-const Filter = ({navigation: {goBack}}) => {
+const Filter = ({navigation}) => {
   const location = ['Ngawi', 'Sleman', 'Jakarta'];
   const type = ['Motorbike', 'Car', 'Bike'];
 
@@ -34,7 +41,9 @@ const Filter = ({navigation: {goBack}}) => {
     <View>
       <View style={styles.backWrapper}>
         <View style={styles.top}>
-          <TouchableOpacity style={styles.back} onPress={() => goBack()}>
+          <TouchableOpacity
+            style={styles.back}
+            onPress={() => navigation.goBack()}>
             <EntypoIcon
               name="chevron-left"
               size={39}
@@ -50,112 +59,135 @@ const Filter = ({navigation: {goBack}}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.main}>
-        <View style={styles.select}>
-          <Text color={'black'} fontSize={'xl'}>
-            Your Location
-          </Text>
-          <Picker
-            style={styles.picker}
-            selectedValue={selectedLocation}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedLocation(itemValue)
-            }>
-            {location.map((data, index) => (
-              <Picker.Item label={data} value={data} color="gray" key={index} />
-            ))}
-          </Picker>
-        </View>
-        <View style={styles.select}>
-          <Text color={'black'} fontSize={'xl'}>
-            Star Rating
-          </Text>
-          <Picker
-            style={styles.picker}
-            selectedValue={selectRate}
-            onValueChange={(itemValue, itemIndex) => setSelectRate(itemValue)}>
-            <Picker.Item label="Select" color="gray" />
-            {[...Array(5)].map((data, index) => (
-              <Picker.Item
-                key={index}
-                label={String(index + 1)}
-                value={index + 1}
-                color="gray"
+      <ScrollView style={styles.main}>
+        <View>
+          <View style={styles.select}>
+            <Text color={'black'} fontSize={'xl'}>
+              Your Location
+            </Text>
+            <Picker
+              style={styles.picker}
+              selectedValue={selectedLocation}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectedLocation(itemValue)
+              }>
+              {location.map((data, index) => (
+                <Picker.Item
+                  label={data}
+                  value={data}
+                  color="gray"
+                  key={index}
+                />
+              ))}
+            </Picker>
+          </View>
+          <View style={styles.select}>
+            <Text color={'black'} fontSize={'xl'}>
+              Star Rating
+            </Text>
+            <Picker
+              style={styles.picker}
+              selectedValue={selectRate}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectRate(itemValue)
+              }>
+              <Picker.Item label="Select" color="gray" />
+              {[...Array(5)].map((data, index) => (
+                <Picker.Item
+                  key={index}
+                  label={String(index + 1)}
+                  value={index + 1}
+                  color="gray"
+                />
+              ))}
+            </Picker>
+          </View>
+          <View style={styles.select}>
+            <Text color={'black'} fontSize={'xl'}>
+              Price
+            </Text>
+            <View style={[styles.picker, styles.inputWrapper]}>
+              <TextInput
+                style={styles.input}
+                placeholderTextColor="gray"
+                placeholder="Select"
+                keyboardType="number-pad"
               />
-            ))}
-          </Picker>
-        </View>
-        <View style={styles.select}>
-          <Text color={'black'} fontSize={'xl'}>
-            Price
-          </Text>
-          <View style={[styles.picker, styles.inputWrapper]}>
-            <TextInput
-              style={styles.input}
-              placeholderTextColor="gray"
-              placeholder="Select"
-              keyboardType="number-pad"
-            />
-            <AntIcon name="caretdown" size={10} style={styles.iconInput} />
+              <AntIcon name="caretdown" size={10} style={styles.iconInput} />
+            </View>
           </View>
-        </View>
-        <View style={styles.select}>
-          <Text color={'black'} fontSize={'xl'}>
-            Date
-          </Text>
-          <View style={[styles.picker, styles.inputWrapper]}>
-            <TouchableOpacity
-              title={String(date)}
-              onPress={() => setOpen(true)}>
-              <Text style={styles.textBtn}>
-                {moment(date).format('MMM DD YYYY')}
-              </Text>
-            </TouchableOpacity>
-            <DatePicker
-              style={styles.datePicker}
-              fadeToColor="white"
-              theme="dark"
-              textColor="black"
-              modal
-              mode="date"
-              open={open}
-              date={date}
-              onConfirm={dateItem => {
-                setOpen(false);
-                setDate(dateItem);
-              }}
-              onCancel={() => {
-                setOpen(false);
-              }}
-            />
-            <AntIcon name="caretdown" size={10} style={styles.iconInput} />
+          <View style={styles.select}>
+            <Text color={'black'} fontSize={'xl'}>
+              Date
+            </Text>
+            <View style={[styles.picker, styles.inputWrapper]}>
+              <TouchableOpacity
+                title={String(date)}
+                onPress={() => setOpen(true)}>
+                <Text style={styles.textBtn}>
+                  {moment(date).format('MMM DD YYYY')}
+                </Text>
+              </TouchableOpacity>
+              <DatePicker
+                style={styles.datePicker}
+                fadeToColor="white"
+                theme="dark"
+                textColor="black"
+                modal
+                mode="date"
+                open={open}
+                date={date}
+                onConfirm={dateItem => {
+                  setOpen(false);
+                  setDate(dateItem);
+                }}
+                onCancel={() => {
+                  setOpen(false);
+                }}
+              />
+              <AntIcon name="caretdown" size={10} style={styles.iconInput} />
+            </View>
           </View>
+          <View style={styles.select}>
+            <Text color={'black'} fontSize={'xl'}>
+              Type
+            </Text>
+            <Picker
+              style={styles.picker}
+              selectedValue={selectRate}
+              onValueChange={(itemValue, itemIndex) =>
+                setSelectRate(itemValue)
+              }>
+              {type.map((data, index) => (
+                <Picker.Item
+                  key={index}
+                  label={data}
+                  value={data}
+                  color="gray"
+                />
+              ))}
+            </Picker>
+          </View>
+          <SwitchSection
+            title="No Prepayment"
+            state={isPrepayment}
+            setState={setIsPrepayment}
+          />
+          <SwitchSection title="Deal" state={isDeal} setState={setIsDeal} />
+          <SwitchSection
+            title="Only show available"
+            state={isAvailable}
+            setState={setIsAvailable}
+          />
         </View>
-        <View style={styles.select}>
-          <Text color={'black'} fontSize={'xl'}>
-            Type
-          </Text>
-          <Picker
-            style={styles.picker}
-            selectedValue={selectRate}
-            onValueChange={(itemValue, itemIndex) => setSelectRate(itemValue)}>
-            {type.map((data, index) => (
-              <Picker.Item key={index} label={data} value={data} color="gray" />
-            ))}
-          </Picker>
+        <View style={styles.btnWrapper}>
+          <Button
+            color="primary"
+            onPress={() => navigation.navigate('SearchList')}>
+            Apply
+          </Button>
         </View>
-        <SwitchSection
-          title="No Prepayment"
-          state={isPrepayment}
-          setState={setIsPrepayment}
-        />
-        <SwitchSection title="Deal" state={isDeal} setState={setIsDeal} />
-        <SwitchSection
-          title="Only show available"
-          state={isAvailable}
-          setState={setIsAvailable}
-        />
-      </View>
+      </ScrollView>
     </View>
   );
 };
@@ -190,6 +222,8 @@ const styles = StyleSheet.create({
   },
   main: {
     padding: 20,
+    // flexDirection: 'column',
+    // justifyContent: 'space-between',
   },
   select: {
     flexDirection: 'row',
@@ -218,6 +252,9 @@ const styles = StyleSheet.create({
   },
   textBtn: {
     color: 'gray',
+  },
+  btnWrapper: {
+    marginTop: 50,
   },
 });
 
