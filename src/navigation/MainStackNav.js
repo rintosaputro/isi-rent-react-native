@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import BottomTabNav from './BottomTabNav';
 
 import UpdateProfile from '../screens/UpdateProfile';
+import Filter from '../screens/Filter';
 
 const MainStack = createNativeStackNavigator();
 const MainStackNav = () => {
@@ -13,6 +14,7 @@ const MainStackNav = () => {
       }}>
       <MainStack.Screen name="Bottom" component={BottomTabNav} />
       <MainStack.Screen name="UpdateProfile" component={UpdateProfile} />
+      <MainStack.Screen name="Filter" component={Filter} />
     </MainStack.Navigator>
   );
 };

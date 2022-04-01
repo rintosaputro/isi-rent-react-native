@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import Home from '../screens/Home';
 import DetailCategory from '../screens/DetailCategory';
+import SearchList from '../screens/SearchList';
 
 const StackNavigator = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ const StackNav = () => {
         name="DetailCategory"
         component={DetailCategory}
       />
+      <StackNavigator.Screen name="SearchList" component={SearchList} />
     </StackNavigator.Navigator>
   );
 };

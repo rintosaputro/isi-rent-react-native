@@ -8,7 +8,7 @@ import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import SwitchSection from '../components/SwitchSection';
 
-const Filter = () => {
+const Filter = ({navigation: {goBack}}) => {
   const location = ['Ngawi', 'Sleman', 'Jakarta'];
   const type = ['Motorbike', 'Car', 'Bike'];
 
@@ -34,7 +34,7 @@ const Filter = () => {
     <View>
       <View style={styles.backWrapper}>
         <View style={styles.top}>
-          <TouchableOpacity style={styles.back}>
+          <TouchableOpacity style={styles.back} onPress={() => goBack()}>
             <EntypoIcon
               name="chevron-left"
               size={39}

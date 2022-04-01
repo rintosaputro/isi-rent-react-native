@@ -10,7 +10,7 @@ import {Text} from 'native-base';
 import Icon from 'react-native-vector-icons/AntDesign';
 import VehicleList from '../components/VehicleList';
 
-const SearchList = () => {
+const SearchList = ({navigation}) => {
   const listVehicles = [
     {
       name: 'Vespa Matic',
@@ -103,7 +103,9 @@ const SearchList = () => {
         <Icon name="caretdown" size={15} />
       </View>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.filter} onPress={showFilter}>
+        <TouchableOpacity
+          style={styles.filter}
+          onPress={() => navigation.navigate('Filter')}>
           <Icon name="filter" size={20} />
           <Text>Filter Search</Text>
         </TouchableOpacity>
