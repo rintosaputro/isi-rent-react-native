@@ -1,10 +1,4 @@
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-  Button,
-} from 'react-native';
+import {View, TouchableOpacity, StyleSheet, TextInput} from 'react-native';
 import React, {useState} from 'react';
 import {Text} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
@@ -12,14 +6,29 @@ import AntIcon from 'react-native-vector-icons/AntDesign';
 import {Picker} from '@react-native-picker/picker';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
+import SwitchSection from '../components/SwitchSection';
 
 const Filter = () => {
   const location = ['Ngawi', 'Sleman', 'Jakarta'];
+  const type = ['Motorbike', 'Car', 'Bike'];
 
   const [selectedLocation, setSelectedLocation] = useState();
   const [selectRate, setSelectRate] = useState();
-  const [date, setDate] = useState(new Date('April 01 2022'));
+  const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [isPrepayment, setIsPrepayment] = useState(false);
+  const [isDeal, setIsDeal] = useState(false);
+  const [isAvailable, setIsAvailable] = useState(false);
+
+  const handleReset = () => {
+    setSelectedLocation();
+    setSelectRate();
+    setDate(new Date());
+    setOpen(false);
+    setIsPrepayment(false);
+    setIsDeal(false);
+    setIsAvailable(false);
+  };
 
   return (
     <View>
@@ -36,7 +45,7 @@ const Filter = () => {
               Filter
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.resetBtn}>
+          <TouchableOpacity style={styles.resetBtn} onPress={handleReset}>
             <Text>RESET</Text>
           </TouchableOpacity>
         </View>
@@ -122,6 +131,30 @@ const Filter = () => {
             <AntIcon name="caretdown" size={10} style={styles.iconInput} />
           </View>
         </View>
+        <View style={styles.select}>
+          <Text color={'black'} fontSize={'xl'}>
+            Type
+          </Text>
+          <Picker
+            style={styles.picker}
+            selectedValue={selectRate}
+            onValueChange={(itemValue, itemIndex) => setSelectRate(itemValue)}>
+            {type.map((data, index) => (
+              <Picker.Item key={index} label={data} value={data} color="gray" />
+            ))}
+          </Picker>
+        </View>
+        <SwitchSection
+          title="No Prepayment"
+          state={isPrepayment}
+          setState={setIsPrepayment}
+        />
+        <SwitchSection title="Deal" state={isDeal} setState={setIsDeal} />
+        <SwitchSection
+          title="Only show available"
+          state={isAvailable}
+          setState={setIsAvailable}
+        />
       </View>
     </View>
   );
