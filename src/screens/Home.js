@@ -25,7 +25,7 @@ const Home = ({navigation}) => {
 
   return (
     <View>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <ImageBackground
           source={require('../assets/img/home.png')}
           alt="home header"
@@ -36,12 +36,11 @@ const Home = ({navigation}) => {
               placeholderTextColor="#fff"
               placeholder="Search Vehicle"
             />
-            <Icon
-              name="search"
-              size={20}
-              style={styles.searchIcon}
-              onPress={() => navigation.navigate('SearchList')}
-            />
+            <TouchableOpacity
+              style={styles.iconSearchWrap}
+              onPress={() => navigation.navigate('SearchList')}>
+              <Icon name="search" size={20} style={styles.searchIcon} />
+            </TouchableOpacity>
           </View>
         </ImageBackground>
         {typeProduct.map((data, index) => {
@@ -97,12 +96,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(34, 47, 62,0.6)',
     borderRadius: 10,
     fontSize: 20,
-    paddingHorizontal: 15,
+    paddingLeft: 15,
+    paddingRight: 0,
+  },
+  iconSearchWrap: {
+    position: 'absolute',
+    right: 40,
+    height: '100%',
+    width: 90,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
   },
   searchIcon: {
     color: '#fff',
-    position: 'absolute',
-    right: 40,
   },
   wrapperProduct: {
     padding: 20,

@@ -1,8 +1,5 @@
 import {View, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {Image, Text} from 'native-base';
-import FaIcon from 'react-native-vector-icons/FontAwesome';
-import LinearGradient from 'react-native-linear-gradient';
 import VehicleList from '../components/VehicleList';
 
 const DetailCategory = ({navigation: {goBack}}) => {
@@ -81,7 +78,7 @@ const DetailCategory = ({navigation: {goBack}}) => {
     },
   ];
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {listVehicles.map((data, index) => {
         return (
           <VehicleList
@@ -143,6 +140,7 @@ const DetailCategory = ({navigation: {goBack}}) => {
           // </View>
         );
       })}
+      <View style={styles.bottom} />
     </ScrollView>
   );
 };
@@ -178,6 +176,9 @@ const styles = StyleSheet.create({
   right: {
     marginLeft: 35,
     justifyContent: 'space-between',
+  },
+  bottom: {
+    paddingBottom: 40,
   },
 });
 
