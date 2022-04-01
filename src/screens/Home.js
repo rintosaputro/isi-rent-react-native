@@ -36,7 +36,12 @@ const Home = ({navigation}) => {
               placeholderTextColor="#fff"
               placeholder="Search Vehicle"
             />
-            <Icon name="search" size={20} style={styles.searchIcon} />
+            <Icon
+              name="search"
+              size={20}
+              style={styles.searchIcon}
+              onPress={() => navigation.navigate('SearchList')}
+            />
           </View>
         </ImageBackground>
         {typeProduct.map((data, index) => {

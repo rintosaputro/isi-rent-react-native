@@ -3,14 +3,14 @@ import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import MainStackNav from './src/navigation/MainStackNav';
 import AuthStackNav from './src/navigation/AuthStackNav';
-import SearchList from './src/screens/SearchList';
+import Filter from './src/screens/Filter';
 
 const App = () => {
   return (
     <NavigationContainer>
       <NativeBaseProvider>
         {/* <AuthStackNav /> */}
-        <SearchList />
+        <MainStackNav />
       </NativeBaseProvider>
     </NavigationContainer>
   );

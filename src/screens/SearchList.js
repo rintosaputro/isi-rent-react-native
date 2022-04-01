@@ -8,11 +8,9 @@ import {
 import React, {useState} from 'react';
 import {Text} from 'native-base';
 import Icon from 'react-native-vector-icons/AntDesign';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
 import VehicleList from '../components/VehicleList';
-import Button from '../components/Button';
 
-const SearchList = () => {
+const SearchList = ({navigation}) => {
   const listVehicles = [
     {
       name: 'Vespa Matic',
@@ -95,7 +93,7 @@ const SearchList = () => {
   };
 
   return (
-    <View>
+    <View style={styles.mainWrapper}>
       <View style={styles.search}>
         <TextInput
           placeholder="Motorbike-Sleman-January"
@@ -105,7 +103,9 @@ const SearchList = () => {
         <Icon name="caretdown" size={15} />
       </View>
       <View style={styles.container}>
-        <TouchableOpacity style={styles.filter} onPress={showFilter}>
+        <TouchableOpacity
+          style={styles.filter}
+          onPress={() => navigation.navigate('Filter')}>
           <Icon name="filter" size={20} />
           <Text>Filter Search</Text>
         </TouchableOpacity>
@@ -129,9 +129,12 @@ const SearchList = () => {
 };
 
 const styles = StyleSheet.create({
+  mainWrapper: {
+    marginBottom: 120,
+  },
   container: {
     padding: 20,
-    marginBottom: 50,
+    marginBottom: 70,
   },
   search: {
     flexDirection: 'row',
