@@ -13,7 +13,7 @@ import Rate from '../components/Rate';
 import priceFormat from '../helper/priceFormat';
 import Button from '../components/Button';
 
-const SecondPayment = () => {
+const SecondPayment = ({navigation}) => {
   const vehicle = {
     name: 'Vespa Matic',
     seet: 2,
@@ -29,7 +29,7 @@ const SecondPayment = () => {
 
   return (
     <Box p="5">
-      <TouchableOpacity style={styles.back}>
+      <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
         <EntypoIcon name="chevron-left" color="black" size={35} />
         <Text fontSize={'2xl'} pl="2" bold>
           Payment

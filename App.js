@@ -10,8 +10,7 @@ const App = () => {
     <NavigationContainer>
       <NativeBaseProvider>
         {/* <AuthStackNav /> */}
-        {/* <MainStackNav /> */}
-        <SecondPayment />
+        <MainStackNav />
       </NativeBaseProvider>
     </NavigationContainer>
   );
