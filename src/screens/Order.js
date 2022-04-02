@@ -34,7 +34,7 @@ const LocationSection = ({address, icon}) => {
   );
 };
 
-const Order = () => {
+const Order = ({navigation}) => {
   const data = {
     image: require('../assets/imgDummy/motor.jpg'),
     rate: 4,
@@ -73,7 +73,7 @@ const Order = () => {
           style={styles.imageProduct}>
           <View style={styles.opacity}>
             <View style={styles.header}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Icon name="angle-left" size={45} color="white" />
               </TouchableOpacity>
               <View style={styles.rateWrapper}>
