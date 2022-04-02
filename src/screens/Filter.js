@@ -59,7 +59,7 @@ const Filter = ({navigation}) => {
           </TouchableOpacity>
         </View>
       </View>
-      <ScrollView style={styles.main}>
+      <ScrollView style={styles.main} showsVerticalScrollIndicator={false}>
         <View>
           <View style={styles.select}>
             <Text color={'black'} fontSize={'xl'}>

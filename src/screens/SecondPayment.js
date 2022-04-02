@@ -35,7 +35,7 @@ const SecondPayment = ({navigation}) => {
           Payment
         </Text>
       </TouchableOpacity>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Box py={'10'}>
           <Stepper currentlyActive={2} />
         </Box>

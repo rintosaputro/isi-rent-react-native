@@ -20,7 +20,7 @@ const PaymentForm = ({navigation}) => {
           Payment
         </Text>
       </TouchableOpacity>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <Box py={'10'}>
           <Stepper currentlyActive={1} />
         </Box>

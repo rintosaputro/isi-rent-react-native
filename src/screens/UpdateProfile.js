@@ -33,7 +33,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
           Update Profile
         </Text>
       </TouchableOpacity>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.wrapper}>
           <View style={styles.profilePict}>
             <Center>
