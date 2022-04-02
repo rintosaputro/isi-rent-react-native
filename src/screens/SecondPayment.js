@@ -71,7 +71,11 @@ const SecondPayment = ({navigation}) => {
           </TouchableOpacity>
         </Box>
         <Box py={'5'}>
-          <Button color="primary">Get Payment Code</Button>
+          <Button
+            color="primary"
+            onPress={() => navigation.navigate('ThirdPayment')}>
+            Get Payment Code
+          </Button>
         </Box>
       </ScrollView>
     </Box>
