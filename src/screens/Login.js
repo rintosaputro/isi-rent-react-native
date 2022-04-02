@@ -1,16 +1,33 @@
 import {
   View,
-  Text,
   StyleSheet,
   // Dimensions,
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import {Text} from 'native-base';
+import React, {useState} from 'react';
+import {useDispatch} from 'react-redux';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
+import {authLogin} from '../redux/actions/auth';
+
 const Login = ({navigation}) => {
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
+  const [isError, setIsError] = useState();
+
+  const dispatch = useDispatch();
+
+  const handleLogin = () => {
+    if (email && password) {
+      dispatch(authLogin(email, password));
+    } else {
+      setIsError(true);
+    }
+  };
+
   return (
     <View>
       <ImageBackground
@@ -19,20 +36,44 @@ const Login = ({navigation}) => {
         style={styles.image}>
         <View style={styles.opacity}>
           <View style={styles.header}>
-            <Text style={styles.head}>LET'S EXPLORE</Text>
-            <Text style={styles.head}>THE WORLD</Text>
+            <Text color={'white'} fontSize="4xl" bold style={styles.head}>
+              LET'S EXPLORE
+            </Text>
+            <Text color={'white'} fontSize="4xl" bold style={styles.head}>
+              THE WORLD
+            </Text>
           </View>
           <View style={styles.form}>
-            <Input placeholder="Email" />
+            {isError && (
+              <Text
+                color={'danger.700'}
+                style={styles.message}
+                py="2"
+                my="7"
+                textAlign={'center'}
+                fontSize="xl"
+                bold>
+                Wrong email or password!
+              </Text>
+            )}
+            <Input
+              placeholder="Email"
+              keyboardType="email-address"
+              onChangeText={setEmail}
+              value={email}
+            />
             <View style={styles.gap} />
-            <Input placeholder="Password" secureTextEntry={true} />
+            <Input
+              placeholder="Password"
+              secureTextEntry={true}
+              onChangeText={setPassword}
+              value={password}
+            />
             <TouchableOpacity onPress={() => navigation.navigate('Forgot')}>
               <Text style={styles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
             <View style={styles.btn}>
-              <Button
-                color="primary"
-                onPress={() => navigation.navigate('Home')}>
+              <Button color="primary" onPress={handleLogin}>
                 Login
               </Button>
             </View>
@@ -65,15 +106,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   header: {
-    marginVertical: 60,
+    marginTop: 60,
   },
   head: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 35,
+    // color: '#fff',
+    // fontWeight: 'bold',
+    // fontSize: 35,
   },
   form: {
     bottom: 0,
+  },
+  message: {
+    backgroundColor: 'rgba(15, 185, 177,0.7)',
+    borderRadius: 10,
   },
   gap: {
     marginTop: 20,
