@@ -72,7 +72,11 @@ const PaymentForm = ({navigation}) => {
           </Picker>
         </Box>
         <Box py={'10'}>
-          <Button color="primary">See Order Details</Button>
+          <Button
+            color="primary"
+            onPress={() => navigation.navigate('SecondPayment')}>
+            See Order Details
+          </Button>
         </Box>
       </ScrollView>
     </Box>
