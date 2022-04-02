@@ -89,7 +89,11 @@ const ThirdPayment = ({navigation}) => {
             <EntypoIcon name="info-with-circle" size={40} color="#d2dae2" />
           </TouchableOpacity>
         </Box>
-        <Button color="primary">Finish Payment</Button>
+        <Button
+          color="primary"
+          onPress={() => navigation.navigate('FinishedPayment')}>
+          Finish Payment
+        </Button>
         <Box mb={'20'} />
       </ScrollView>
     </Box>
