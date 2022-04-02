@@ -2,7 +2,7 @@ import {View, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import VehicleList from '../components/VehicleList';
 
-const DetailCategory = ({navigation: {goBack}}) => {
+const DetailCategory = ({navigation}) => {
   const listVehicles = [
     {
       name: 'Vespa Matic',
@@ -81,63 +81,17 @@ const DetailCategory = ({navigation: {goBack}}) => {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {listVehicles.map((data, index) => {
         return (
-          <VehicleList
-            image={data.image}
-            name={data.name}
-            seet={data.seet}
-            stock={data.stock}
-            price={data.price}
+          <TouchableOpacity
             key={index}
-          />
-          // <View style={styles.listVehicles} key={index}>
-          //   <View style={styles.left}>
-          //     <Image
-          //       source={data.image}
-          //       alt={data.name}
-          //       resizeMode={'cover'}
-          //       width={150}
-          //       height={120}
-          //       borderRadius={30}
-          //       style={styles.image}
-          //     />
-          //     <LinearGradient
-          //       start={{x: 0, y: 0}}
-          //       end={{x: 1, y: 0}}
-          //       colors={['#01a3a4', '#49BEB7', '#32DBC6']}
-          //       style={styles.rate}>
-          //       <Text bold color="white" fontSize={'md'}>
-          //         4.5
-          //       </Text>
-          //       <FaIcon
-          //         name="star"
-          //         color="white"
-          //         size={20}
-          //         style={styles.iconRate}
-          //       />
-          //     </LinearGradient>
-          //   </View>
-          //   <View style={styles.right}>
-          //     <View>
-          //       <Text fontSize={'lg'} bold>
-          //         {data.name}
-          //       </Text>
-          //       <Text>Max for {data.seet} person</Text>
-          //       <Text>2.1 km from your location</Text>
-          //       {data.stock <= 2 ? (
-          //         <Text bold color="#d63031">
-          //           {data.stock} bikes left
-          //         </Text>
-          //       ) : (
-          //         <Text bold color="#49BEB7">
-          //           Available
-          //         </Text>
-          //       )}
-          //     </View>
-          //     <Text fontSize={'lg'} bold style={styles.price}>
-          //       Rp.12000/day
-          //     </Text>
-          //   </View>
-          // </View>
+            onPress={() => navigation.navigate('Order')}>
+            <VehicleList
+              image={data.image}
+              name={data.name}
+              seet={data.seet}
+              stock={data.stock}
+              price={data.price}
+            />
+          </TouchableOpacity>
         );
       })}
       <View style={styles.bottom} />

@@ -62,11 +62,14 @@ const Home = ({navigation}) => {
                   style={styles.flat}
                   renderItem={({item}) => {
                     return (
-                      <ImageBackground
-                        source={item.image}
-                        style={styles.imgProduct}
-                        resizeMode="cover"
-                      />
+                      <TouchableOpacity
+                        onPress={() => navigation.navigate('Order')}>
+                        <ImageBackground
+                          source={item.image}
+                          style={styles.imgProduct}
+                          resizeMode="cover"
+                        />
+                      </TouchableOpacity>
                     );
                   }}
                 />
