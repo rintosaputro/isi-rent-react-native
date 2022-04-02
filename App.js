@@ -3,14 +3,14 @@ import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import MainStackNav from './src/navigation/MainStackNav';
 import AuthStackNav from './src/navigation/AuthStackNav';
-import Order from './src/screens/Order';
+import PaymentForm from './src/screens/PaymentForm';
 
 const App = () => {
   return (
     <NavigationContainer>
       <NativeBaseProvider>
         {/* <AuthStackNav /> */}
-        <MainStackNav />
+        <PaymentForm />
       </NativeBaseProvider>
     </NavigationContainer>
   );
