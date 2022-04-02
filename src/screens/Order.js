@@ -73,7 +73,9 @@ const Order = ({navigation}) => {
           style={styles.imageProduct}>
           <View style={styles.opacity}>
             <View style={styles.header}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={styles.backWrapper}>
                 <Icon name="angle-left" size={45} color="white" />
               </TouchableOpacity>
               <View style={styles.rateWrapper}>
@@ -210,6 +212,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  backWrapper: {
+    paddingRight: 40,
+    paddingVertical: 20,
   },
   opacity: {
     backgroundColor: 'rgba(0, 0, 0,0.2)',

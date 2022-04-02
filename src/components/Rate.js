@@ -4,7 +4,25 @@ import {Text} from 'native-base';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
 
-const Rate = ({rate}) => {
+const Rate = ({rate, right = -18, top = -10, bottom}) => {
+  const styles = StyleSheet.create({
+    rate: {
+      flexDirection: 'row',
+      width: 65,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: 7,
+      borderRadius: 20,
+      position: 'absolute',
+      right,
+      top,
+      bottom,
+    },
+    iconRate: {
+      marginLeft: 8,
+    },
+  });
+
   return (
     <LinearGradient
       start={{x: 0, y: 0}}
@@ -18,22 +36,5 @@ const Rate = ({rate}) => {
     </LinearGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  rate: {
-    flexDirection: 'row',
-    width: 65,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 7,
-    borderRadius: 20,
-    position: 'absolute',
-    right: -18,
-    top: -10,
-  },
-  iconRate: {
-    marginLeft: 8,
-  },
-});
 
 export default Rate;
