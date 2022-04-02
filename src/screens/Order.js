@@ -189,7 +189,11 @@ const Order = ({navigation}) => {
             </TouchableOpacity>
           </Box>
           <Box mt={'25'}>
-            <Button color="primary">Reservation</Button>
+            <Button
+              color="primary"
+              onPress={() => navigation.navigate('PaymentForm')}>
+              Reservation
+            </Button>
           </Box>
         </View>
       </View>

@@ -7,14 +7,14 @@ import InputPayment from '../components/InputPayment';
 import {Picker} from '@react-native-picker/picker';
 import Button from '../components/Button';
 
-const PaymentForm = () => {
+const PaymentForm = ({navigation}) => {
   const [selectPayment, setSelectPayment] = useState();
   const [isSelect, setIsSelect] = useState(false);
 
   const payment = ['COD', 'GOPAY', 'Transfer Bank'];
   return (
     <Box p={'3'}>
-      <TouchableOpacity style={styles.head}>
+      <TouchableOpacity style={styles.head} onPress={() => navigation.goBack()}>
         <EntypoIcon name="chevron-left" color="black" size={35} />
         <Text fontSize={'2xl'} pl="2" bold>
           Payment

@@ -5,6 +5,7 @@ import BottomTabNav from './BottomTabNav';
 import UpdateProfile from '../screens/UpdateProfile';
 import Filter from '../screens/Filter';
 import Order from '../screens/Order';
+import PaymentForm from '../screens/PaymentForm';
 
 const MainStack = createNativeStackNavigator();
 const MainStackNav = () => {
@@ -17,6 +18,7 @@ const MainStackNav = () => {
       <MainStack.Screen name="UpdateProfile" component={UpdateProfile} />
       <MainStack.Screen name="Filter" component={Filter} />
       <MainStack.Screen name="Order" component={Order} />
+      <MainStack.Screen name="PaymentForm" component={PaymentForm} />
     </MainStack.Navigator>
   );
 };
