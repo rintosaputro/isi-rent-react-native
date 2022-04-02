@@ -7,6 +7,7 @@ import Filter from '../screens/Filter';
 import Order from '../screens/Order';
 import PaymentForm from '../screens/PaymentForm';
 import SecondPayment from '../screens/SecondPayment';
+import ThirdPayment from '../screens/ThirdPayment';
 
 const MainStack = createNativeStackNavigator();
 const MainStackNav = () => {
@@ -21,6 +22,7 @@ const MainStackNav = () => {
       <MainStack.Screen name="Order" component={Order} />
       <MainStack.Screen name="PaymentForm" component={PaymentForm} />
       <MainStack.Screen name="SecondPayment" component={SecondPayment} />
+      <MainStack.Screen name="ThirdPayment" component={ThirdPayment} />
     </MainStack.Navigator>
   );
 };
