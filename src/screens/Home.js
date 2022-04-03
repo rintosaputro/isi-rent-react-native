@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   View,
   Text,
@@ -8,20 +9,84 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import {getCategory} from '../redux/actions/vehicles';
+
+const DetailTop = ({category, onPress}) => {
+  return (
+    <View style={styles.topProduct}>
+      <Text style={styles.type}>{category}</Text>
+      <TouchableOpacity style={styles.more} onPress={onPress}>
+        <Text>View More</Text>
+        <Icon2 name="navigate-next" size={20} />
+      </TouchableOpacity>
+    </View>
+  );
+};
+const FlatListSection = ({dataList, onPress, dataImages}) => {
+  return (
+    <FlatList
+      data={dataList}
+      horizontal={true}
+      style={styles.flat}
+      renderItem={({item, index}) => {
+        return (
+          <TouchableOpacity onPress={onPress}>
+            <ImageBackground
+              source={
+                dataImages[index]
+                  ? {uri: dataImages[index]}
+                  : require('../assets/img/no-image.jpg')
+              }
+              style={styles.imgProduct}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
+        );
+      }}
+    />
+  );
+};
 
 const Home = ({navigation}) => {
-  const dataProduct = [
-    {image: require('../assets/imgDummy/car.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/motor.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/scoter.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/motor.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/car.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/motor.jpg'), text: 'test'},
-  ];
-  const typeProduct = ['Cars', 'Motorbike', 'Bike'];
+  const dispatch = useDispatch();
+  let dataCars = [];
+  let dataMotorbike = [];
+  let dataBike = [];
+  let dataPickup = [];
+  const {cars, motorbike, bike, pickup} = useSelector(state => state);
+
+  useEffect(() => {
+    dispatch(getCategory('CAR'));
+    dispatch(getCategory('MOTORBIKE'));
+    dispatch(getCategory('BIKE'));
+    dispatch(getCategory('PICKUP'));
+  }, [dispatch]);
+
+  useEffect(() => {
+    const dataMap = [
+      {state: cars.results, imagesArr: dataCars},
+      {state: motorbike.results, imagesArr: dataMotorbike},
+      {state: bike.results, imagesArr: dataBike},
+      {state: pickup.results, imagesArr: dataPickup},
+    ];
+    if (cars.results && motorbike.results && bike.results) {
+      dataMap.forEach((data, index) => {
+        data.state.forEach((item, idx) => {
+          if (item.image) {
+            data.imagesArr.push(
+              item.image.replace(/localhost/g, '192.168.43.195'),
+            );
+          } else {
+            data.imagesArr.push(null);
+          }
+        });
+      });
+    }
+  }, [cars, motorbike, bike, pickup]);
 
   return (
     <View>
@@ -43,40 +108,58 @@ const Home = ({navigation}) => {
             </TouchableOpacity>
           </View>
         </ImageBackground>
-        {typeProduct.map((data, index) => {
-          return (
-            <View style={styles.wrapperProduct} key={index}>
-              <View style={styles.topProduct}>
-                <Text style={styles.type}>{data}</Text>
-                <TouchableOpacity
-                  style={styles.more}
-                  onPress={() => navigation.navigate('DetailCategory')}>
-                  <Text>View More</Text>
-                  <Icon2 name="navigate-next" size={20} />
-                </TouchableOpacity>
-              </View>
-              <View>
-                <FlatList
-                  data={dataProduct}
-                  horizontal={true}
-                  style={styles.flat}
-                  renderItem={({item}) => {
-                    return (
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate('Order')}>
-                        <ImageBackground
-                          source={item.image}
-                          style={styles.imgProduct}
-                          resizeMode="cover"
-                        />
-                      </TouchableOpacity>
-                    );
-                  }}
-                />
-              </View>
-            </View>
-          );
-        })}
+        <View style={styles.wrapperProduct}>
+          <DetailTop
+            onPress={() => navigation.navigate('DetailCategory')}
+            category="Car"
+          />
+          <View>
+            <FlatListSection
+              dataList={cars.results}
+              onPress={() => navigation.navigate('Order')}
+              dataImages={dataCars}
+            />
+          </View>
+        </View>
+        <View style={styles.wrapperProduct}>
+          <DetailTop
+            onPress={() => navigation.navigate('DetailCategory')}
+            category="Motorbike"
+          />
+          <View>
+            <FlatListSection
+              dataList={motorbike.results}
+              onPress={() => navigation.navigate('Order')}
+              dataImages={dataMotorbike}
+            />
+          </View>
+        </View>
+        <View style={styles.wrapperProduct}>
+          <DetailTop
+            onPress={() => navigation.navigate('DetailCategory')}
+            category="Bike"
+          />
+          <View>
+            <FlatListSection
+              dataList={bike.results}
+              onPress={() => navigation.navigate('Order')}
+              dataImages={dataBike}
+            />
+          </View>
+        </View>
+        <View style={styles.wrapperProduct}>
+          <DetailTop
+            onPress={() => navigation.navigate('DetailCategory')}
+            category="Pickup"
+          />
+          <View>
+            <FlatListSection
+              dataList={pickup.results}
+              onPress={() => navigation.navigate('Order')}
+              dataImages={dataPickup}
+            />
+          </View>
+        </View>
       </ScrollView>
     </View>
   );

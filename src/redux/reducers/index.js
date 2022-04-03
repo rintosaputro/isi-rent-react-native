@@ -6,6 +6,10 @@ import auth from './auth';
 import signup from './signup';
 import verify from './verify';
 import forgot from './forgot';
+import cars from './cars';
+import bike from './bike';
+import motorbike from './motorbike';
+import pickup from './pickup';
 
 const persistConfig = {
   key: 'auth',
@@ -17,6 +21,10 @@ const rootReducers = combineReducers({
   signup,
   verify,
   forgot,
+  cars,
+  bike,
+  motorbike,
+  pickup,
 });
 
 export default rootReducers;
