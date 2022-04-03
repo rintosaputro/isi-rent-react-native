@@ -90,7 +90,7 @@ const Home = ({navigation}) => {
         </ImageBackground>
         <View style={styles.wrapperProduct}>
           <DetailTop
-            onPress={() => gotoDetail('car', cars.results[0].idCategory)}
+            onPress={() => gotoDetail('cars', cars.results[0].idCategory)}
             category="Car"
           />
           <View>

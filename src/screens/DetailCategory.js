@@ -1,94 +1,31 @@
 import {View, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import VehicleList from '../components/VehicleList';
+import {useSelector} from 'react-redux';
+import Button from '../components/Button';
 
 const DetailCategory = ({navigation}) => {
-  const listVehicles = [
-    {
-      name: 'Vespa Matic',
-      seet: 2,
-      stock: 3,
-      price: 20000,
-      image: require('../assets/imgDummy/motor.jpg'),
-      rating: 4,
-    },
-    {
-      name: 'Jupiter',
-      seet: 2,
-      stock: 3,
-      price: 20000,
-      image: require('../assets/imgDummy/scoter.jpg'),
-      rating: 4,
-    },
-    {
-      name: 'Honda Supra',
-      seet: 2,
-      stock: 2,
-      price: 20000,
-      image: require('../assets/imgDummy/motor.jpg'),
-      rating: 4,
-    },
-    {
-      name: 'Ymah KLX',
-      seet: 2,
-      stock: 1,
-      price: 20000,
-      image: require('../assets/imgDummy/car.jpg'),
-      rating: 4,
-    },
-    {
-      name: 'Monkey',
-      seet: 2,
-      stock: 3,
-      price: 20000,
-      image: require('../assets/imgDummy/scoter.jpg'),
-      rating: 4,
-    },
-    {
-      name: 'Vespa',
-      seet: 2,
-      stock: 3,
-      price: 20000,
-      image: require('../assets/imgDummy/motor.jpg'),
-      rating: 4,
-    },
-    {
-      name: 'Matic',
-      seet: 2,
-      stock: 3,
-      price: 20000,
-      image: require('../assets/imgDummy/motor.jpg'),
-      rating: 4,
-    },
-    {
-      name: 'Matic',
-      seet: 2,
-      stock: 3,
-      price: 20000,
-      image: require('../assets/imgDummy/car.jpg'),
-      rating: 4,
-    },
-    {
-      name: 'Vespa Matic',
-      seet: 2,
-      stock: 3,
-      price: 20000,
-      image: require('../assets/imgDummy/scoter.jpg'),
-      rating: 4,
-    },
-  ];
+  const {detailCategory} = useSelector(state => state);
+  const dataState = useSelector(state => state);
+
+  const type = detailCategory.nameCategory;
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {listVehicles.map((data, index) => {
+      {dataState[`${type}`].results.map((data, index) => {
         return (
           <TouchableOpacity
             key={index}
             onPress={() => navigation.navigate('Order')}>
             <VehicleList
-              image={data.image}
-              name={data.name}
-              seet={data.seet}
-              stock={data.stock}
+              image={
+                data.image
+                  ? {uri: data.image.replace(/localhost/g, '192.168.43.195')}
+                  : require('../assets/img/no-image.jpg')
+              }
+              name={data.brand}
+              seet={data.capacity}
+              stock={data.qty}
               price={data.price}
             />
           </TouchableOpacity>
