@@ -9,11 +9,12 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import {getCategory} from '../redux/actions/vehicles';
+import {getDetailCategory} from '../redux/actions/detailCategory';
 
 const DetailTop = ({category, onPress}) => {
   return (
@@ -26,7 +27,7 @@ const DetailTop = ({category, onPress}) => {
     </View>
   );
 };
-const FlatListSection = ({dataList, onPress, dataImages}) => {
+const FlatListSection = ({dataList, onPress}) => {
   return (
     <FlatList
       data={dataList}
@@ -37,8 +38,8 @@ const FlatListSection = ({dataList, onPress, dataImages}) => {
           <TouchableOpacity onPress={onPress}>
             <ImageBackground
               source={
-                dataImages[index]
-                  ? {uri: dataImages[index]}
+                item.image
+                  ? {uri: item.image.replace(/localhost/g, '192.168.43.195')}
                   : require('../assets/img/no-image.jpg')
               }
               style={styles.imgProduct}
@@ -53,10 +54,6 @@ const FlatListSection = ({dataList, onPress, dataImages}) => {
 
 const Home = ({navigation}) => {
   const dispatch = useDispatch();
-  let dataCars = [];
-  let dataMotorbike = [];
-  let dataBike = [];
-  let dataPickup = [];
   const {cars, motorbike, bike, pickup} = useSelector(state => state);
 
   useEffect(() => {
@@ -64,29 +61,12 @@ const Home = ({navigation}) => {
     dispatch(getCategory('MOTORBIKE'));
     dispatch(getCategory('BIKE'));
     dispatch(getCategory('PICKUP'));
-  }, [dispatch]);
+  }, []);
 
-  useEffect(() => {
-    const dataMap = [
-      {state: cars.results, imagesArr: dataCars},
-      {state: motorbike.results, imagesArr: dataMotorbike},
-      {state: bike.results, imagesArr: dataBike},
-      {state: pickup.results, imagesArr: dataPickup},
-    ];
-    if (cars.results && motorbike.results && bike.results) {
-      dataMap.forEach((data, index) => {
-        data.state.forEach((item, idx) => {
-          if (item.image) {
-            data.imagesArr.push(
-              item.image.replace(/localhost/g, '192.168.43.195'),
-            );
-          } else {
-            data.imagesArr.push(null);
-          }
-        });
-      });
-    }
-  }, [cars, motorbike, bike, pickup]);
+  const gotoDetail = (nameCategory, idCategory) => {
+    dispatch(getDetailCategory(nameCategory, idCategory));
+    navigation.navigate('DetailCategory');
+  };
 
   return (
     <View>
@@ -110,53 +90,51 @@ const Home = ({navigation}) => {
         </ImageBackground>
         <View style={styles.wrapperProduct}>
           <DetailTop
-            onPress={() => navigation.navigate('DetailCategory')}
+            onPress={() => gotoDetail('car', cars.results[0].idCategory)}
             category="Car"
           />
           <View>
             <FlatListSection
               dataList={cars.results}
               onPress={() => navigation.navigate('Order')}
-              dataImages={dataCars}
             />
           </View>
         </View>
         <View style={styles.wrapperProduct}>
           <DetailTop
-            onPress={() => navigation.navigate('DetailCategory')}
+            onPress={() =>
+              gotoDetail('motorbike', motorbike.results[0].idCategory)
+            }
             category="Motorbike"
           />
           <View>
             <FlatListSection
               dataList={motorbike.results}
               onPress={() => navigation.navigate('Order')}
-              dataImages={dataMotorbike}
             />
           </View>
         </View>
         <View style={styles.wrapperProduct}>
           <DetailTop
-            onPress={() => navigation.navigate('DetailCategory')}
+            onPress={() => gotoDetail('bike', bike.results[0].idCategory)}
             category="Bike"
           />
           <View>
             <FlatListSection
               dataList={bike.results}
               onPress={() => navigation.navigate('Order')}
-              dataImages={dataBike}
             />
           </View>
         </View>
         <View style={styles.wrapperProduct}>
           <DetailTop
-            onPress={() => navigation.navigate('DetailCategory')}
+            onPress={() => gotoDetail('pickup', pickup.results[0].idCategory)}
             category="Pickup"
           />
           <View>
             <FlatListSection
               dataList={pickup.results}
               onPress={() => navigation.navigate('Order')}
-              dataImages={dataPickup}
             />
           </View>
         </View>
