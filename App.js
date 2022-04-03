@@ -8,13 +8,14 @@ import reduxStore from './src/redux/store';
 
 import MainStackNav from './src/navigation/MainStackNav';
 import AuthStackNav from './src/navigation/AuthStackNav';
+import Verify from './src/screens/Verify';
 
 const Main = () => {
   const {auth} = useSelector(state => state);
   return (
     <NavigationContainer>
       <NativeBaseProvider>
-        {auth.token ? <MainStackNav /> : <AuthStackNav />}
+        {auth.token ? <MainStackNav /> : <Verify />}
       </NativeBaseProvider>
     </NavigationContainer>
   );
