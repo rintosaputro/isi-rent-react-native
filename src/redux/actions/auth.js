@@ -1,17 +1,29 @@
-export const authLogin = (email, password) => {
-  return dispatch => {
+import http from '../../helper/http';
+import qs from 'qs';
+
+export const authLogin = (username, password) => {
+  return async dispatch => {
     dispatch({
       type: 'AUTH_CLEAR_ERR',
     });
-    if (email === 'test@mail.com' && password === '1234') {
+    try {
+      const input = {username: username, password: password};
+      const {data} = await http().post('/auth/login', qs.stringify(input));
+
       dispatch({
         type: 'AUTH_LOGIN',
-        payload: 'iniTokenTest',
+        payload: data.results.token,
       });
-    } else {
+    } catch (err) {
+      let payload = '';
+      if (err.response) {
+        payload = err.response.data.message;
+      } else {
+        payload = err.message;
+      }
       dispatch({
         type: 'AUTH_ERROR',
-        payload: 'Wrong username or password',
+        payload: payload,
       });
     }
   };

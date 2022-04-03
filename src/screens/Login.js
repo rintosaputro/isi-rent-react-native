@@ -7,22 +7,24 @@ import {
 } from 'react-native';
 import {Text} from 'native-base';
 import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Input from '../components/Input';
 import Button from '../components/Button';
 
 import {authLogin} from '../redux/actions/auth';
 
 const Login = ({navigation}) => {
-  const [email, setEmail] = useState();
+  const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [isError, setIsError] = useState();
 
   const dispatch = useDispatch();
+  const {auth} = useSelector(state => state);
 
   const handleLogin = () => {
-    if (email && password) {
-      dispatch(authLogin(email, password));
+    if (username && password) {
+      setIsError(false);
+      dispatch(authLogin(username, password));
     } else {
       setIsError(true);
     }
@@ -44,7 +46,7 @@ const Login = ({navigation}) => {
             </Text>
           </View>
           <View style={styles.form}>
-            {isError && (
+            {(isError || auth.isError) && (
               <Text
                 color={'danger.700'}
                 style={styles.message}
@@ -53,14 +55,13 @@ const Login = ({navigation}) => {
                 textAlign={'center'}
                 fontSize="xl"
                 bold>
-                Wrong email or password!
+                {auth.isError ? auth.errMessage : 'Empty username or password'}
               </Text>
             )}
             <Input
-              placeholder="Email"
-              keyboardType="email-address"
-              onChangeText={setEmail}
-              value={email}
+              placeholder="Username"
+              onChangeText={setUsername}
+              value={username}
             />
             <View style={styles.gap} />
             <Input
