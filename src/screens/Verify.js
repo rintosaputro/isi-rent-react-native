@@ -1,19 +1,38 @@
 import {
   View,
-  Text,
   StyleSheet,
   // Dimensions,
   ImageBackground,
   ScrollView,
-  TouchableWithoutFeedback,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import {Box, Text} from 'native-base';
+import React, {useState} from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import Icon from 'react-native-vector-icons/AntDesign';
+import {useDispatch, useSelector} from 'react-redux';
+import {verify} from '../redux/actions/verify';
 
 const Verify = ({navigation}) => {
+  const [code, setCode] = useState();
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
+  const [isEmpty, setIsEmpty] = useState();
+
+  const dispatch = useDispatch();
+
+  const {verify: verifyState} = useSelector(state => state);
+
+  const handleSubmit = () => {
+    if (code && username && password) {
+      setIsEmpty(false);
+      dispatch(verify(username, code, password));
+    } else {
+      setIsEmpty(true);
+    }
+  };
+
   return (
     <View>
       <ImageBackground
@@ -26,18 +45,62 @@ const Verify = ({navigation}) => {
               <Icon style={[styles.text, styles.icon]} name="left" size={25} />
               <Text style={[styles.text, styles.textBack]}> Back</Text>
             </TouchableOpacity>
-            <Text style={styles.head}>Verification</Text>
-            <Text style={styles.head}>Code</Text>
+            <Text fontSize="4xl" style={styles.head}>
+              Verification
+            </Text>
+            <Text fontSize="4xl" style={styles.head}>
+              Code
+            </Text>
           </View>
           <View style={styles.form}>
             <Text style={[styles.text, styles.textForm]}>Enter your code</Text>
-            <Input placeholder="Enter your code" keyboardType="number-pad" />
+            {(isEmpty || verifyState.isError) && (
+              <Text
+                color={'danger.700'}
+                style={styles.message}
+                py="2"
+                my="7"
+                textAlign={'center'}
+                fontSize="xl"
+                bold>
+                {verifyState.isError
+                  ? verifyState.errMessage
+                  : 'All data must be filled'}
+              </Text>
+            )}
+            <Box my="5">
+              <Input
+                placeholder="Enter your code"
+                onChangeText={setCode}
+                value={code}
+                keyboardType="number-pad"
+              />
+            </Box>
+            <Box my="5">
+              <Input
+                placeholder="Enter your username"
+                onChangeText={setUsername}
+                value={username}
+              />
+            </Box>
+            <Box my="5">
+              <Input
+                onChangeText={setPassword}
+                value={password}
+                placeholder="Enter your password"
+                secureTextEntry={true}
+                keyboardType="number-pad"
+              />
+            </Box>
             <View style={[styles.btn, styles.sendCode]}>
-              <Button color="primary">Verify</Button>
+              <Button color="primary" onPress={handleSubmit}>
+                Verify
+              </Button>
             </View>
           </View>
         </ScrollView>
       </ImageBackground>
+      {verifyState.isSuccess && navigation.navigate('Login')}
     </View>
   );
 };
@@ -76,7 +139,11 @@ const styles = StyleSheet.create({
     fontSize: 35,
   },
   form: {
-    marginTop: '70%',
+    marginTop: '20%',
+  },
+  message: {
+    backgroundColor: 'rgba(15, 185, 177,0.7)',
+    borderRadius: 10,
   },
   textForm: {
     textAlign: 'center',

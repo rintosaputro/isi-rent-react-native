@@ -4,7 +4,7 @@ import qs from 'qs';
 export const authSignup = (username, email, phone, password) => {
   return async dispatch => {
     dispatch({
-      type: 'AUTH_CLEAR',
+      type: 'SIGNUP_CLEAR',
     });
     try {
       const input = {

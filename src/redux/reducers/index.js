@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import auth from './auth';
 import signup from './signup';
+import verify from './verify';
 
 const persistConfig = {
   key: 'auth',
@@ -13,6 +14,7 @@ const persistConfig = {
 const rootReducers = combineReducers({
   auth: persistReducer(persistConfig, auth),
   signup,
+  verify,
 });
 
 export default rootReducers;

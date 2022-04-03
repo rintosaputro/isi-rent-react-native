@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Text} from 'native-base';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Input from '../components/Input';
 import Button from '../components/Button';
@@ -20,6 +20,11 @@ const Login = ({navigation}) => {
 
   const dispatch = useDispatch();
   const {auth} = useSelector(state => state);
+  useEffect(() => {
+    dispatch({
+      type: 'AUTH_CLEAR_ERR',
+    });
+  }, [dispatch]);
 
   const handleLogin = () => {
     if (username && password) {
