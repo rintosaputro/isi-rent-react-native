@@ -1,45 +1,112 @@
 import {
   View,
-  Text,
   StyleSheet,
   ImageBackground,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
-import React from 'react';
+import {Text} from 'native-base';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+
 import Input from '../components/Input';
 import Button from '../components/Button';
-import {useState} from 'react/cjs/react.development';
+
+import {authSignup} from '../redux/actions/signup';
 
 const Signup = ({navigation}) => {
-  const [text, setText] = useState({text: ''});
-  const handleChange = key => {
-    if (/^\d+$/.test(key)) {
-      setText({text: key});
+  const [isEmpty, setIsEmpty] = useState();
+  const [username, setUsername] = useState();
+  const [email, setEmail] = useState();
+  const [phone, setPhone] = useState();
+  const [password, setPassword] = useState();
+
+  const dispatch = useDispatch();
+
+  const {signup} = useSelector(state => state);
+
+  useEffect(() => {
+    dispatch({
+      type: 'SIGNUP_CLEAR',
+    });
+  }, [dispatch]);
+  useEffect(() => {
+    if (signup.isSuccess) {
+      navigation.navigate('Verify');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signup]);
+
+  const handleSignup = () => {
+    if (username && email && phone && password) {
+      setIsEmpty(false);
+      dispatch(authSignup(username, email, phone, password));
+      if (signup.isSuccess) {
+        navigation.navigate('Verify');
+      }
+    } else {
+      setIsEmpty(true);
     }
   };
   return (
-    <View>
+    <ScrollView>
       <ImageBackground
         source={require('../assets/img/bgSignup.jpg')}
         resizeMode="cover"
         style={styles.image}>
         <View style={styles.opacity}>
           <View style={styles.header}>
-            <Text style={styles.head}>LET'S HAVE</Text>
-            <Text style={styles.head}>SOME RIDE</Text>
+            <Text color={'white'} fontSize="4xl" bold style={styles.head}>
+              LET'S HAVE
+            </Text>
+            <Text color={'white'} fontSize="4xl" bold style={styles.head}>
+              SOME RIDE
+            </Text>
           </View>
           <View style={styles.form}>
-            <Input placeholder="Email" />
+            {(isEmpty || signup.isError) && (
+              <Text
+                color={'danger.700'}
+                style={styles.message}
+                py="2"
+                my="7"
+                textAlign={'center'}
+                fontSize="xl"
+                bold>
+                {signup.isError ? signup.errMessage : 'All data must be filled'}
+              </Text>
+            )}
+            <Input
+              placeholder="Username"
+              onChangeText={setUsername}
+              value={username}
+            />
+            <View style={styles.gap} />
+            <Input
+              placeholder="Email"
+              keyboardType="email-address"
+              onChangeText={setEmail}
+              value={email}
+            />
             <View style={styles.gap} />
             <Input
               placeholder="Phone Number"
-              keyboardType="numeric"
-              onChangeText={handleChange}
+              keyboardType="phone-pad"
+              onChangeText={setPhone}
+              value={phone}
             />
             <View style={styles.gap} />
-            <Input placeholder="Password" secureTextEntry={true} />
+            <Input
+              placeholder="Password"
+              // keyboardType="visible-password"
+              onChangeText={setPassword}
+              value={password}
+              secureTextEntry={true}
+            />
             <View style={styles.btn}>
-              <Button color="primary">Signup</Button>
+              <Button color="primary" onPress={handleSignup}>
+                Signup
+              </Button>
             </View>
             <View style={styles.loginContain}>
               <Text style={styles.login}>Already have account?</Text>
@@ -50,7 +117,8 @@ const Signup = ({navigation}) => {
           </View>
         </View>
       </ImageBackground>
-    </View>
+      {/* {signup.isSuccess && navigation.navigate('Verify')} */}
+    </ScrollView>
   );
 };
 
@@ -75,6 +143,10 @@ const styles = StyleSheet.create({
   },
   form: {
     bottom: 0,
+  },
+  message: {
+    backgroundColor: 'rgba(15, 185, 177,0.7)',
+    borderRadius: 10,
   },
   gap: {
     marginTop: 20,
