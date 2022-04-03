@@ -3,6 +3,7 @@ import React from 'react';
 import {Image, Text} from 'native-base';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 import LinearGradient from 'react-native-linear-gradient';
+import priceFormat from '../helper/priceFormat';
 
 const VehicleList = ({image, name, seet, stock, price, ...set}) => {
   return (
@@ -46,7 +47,7 @@ const VehicleList = ({image, name, seet, stock, price, ...set}) => {
           )}
         </View>
         <Text fontSize={'lg'} bold style={styles.price}>
-          Rp.{price}/day
+          Rp.{priceFormat(price)}/day
         </Text>
       </View>
     </View>

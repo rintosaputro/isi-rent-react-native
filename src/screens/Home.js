@@ -9,12 +9,13 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
-import {getCategory} from '../redux/actions/vehicles';
+import {getCategory, getFilter} from '../redux/actions/vehicles';
 import {getDetailCategory} from '../redux/actions/detailCategory';
+import {myOrder} from '../redux/actions/transaction';
 
 const DetailTop = ({category, onPress}) => {
   return (
@@ -27,7 +28,12 @@ const DetailTop = ({category, onPress}) => {
     </View>
   );
 };
-const FlatListSection = ({dataList, onPress}) => {
+const FlatListSection = ({dataList, onPress, navigation}) => {
+  const dispatch = useDispatch();
+  const handleOrder = id => {
+    dispatch(myOrder(id));
+    navigation.navigate('Order');
+  };
   return (
     <FlatList
       data={dataList}
@@ -36,7 +42,7 @@ const FlatListSection = ({dataList, onPress}) => {
       renderItem={({item, index}) => {
         if (index < 5) {
           return (
-            <TouchableOpacity onPress={onPress}>
+            <TouchableOpacity onPress={() => handleOrder(item.idVehicle)}>
               <ImageBackground
                 source={
                   item.image
@@ -55,6 +61,8 @@ const FlatListSection = ({dataList, onPress}) => {
 };
 
 const Home = ({navigation}) => {
+  const [key, setKey] = useState();
+
   const dispatch = useDispatch();
   const {cars, motorbike, bike, pickup} = useSelector(state => state);
 
@@ -70,6 +78,16 @@ const Home = ({navigation}) => {
     navigation.navigate('DetailCategory');
   };
 
+  const handleSearch = () => {
+    dispatch(getFilter(key));
+    navigation.navigate('SearchList');
+  };
+
+  const handleOrder = id => {
+    dispatch(myOrder(id));
+    navigation.navigate('Order');
+  };
+
   return (
     <View>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -82,10 +100,12 @@ const Home = ({navigation}) => {
               style={styles.input}
               placeholderTextColor="#fff"
               placeholder="Search Vehicle"
+              onChangeText={setKey}
+              value={key}
             />
             <TouchableOpacity
               style={styles.iconSearchWrap}
-              onPress={() => navigation.navigate('SearchList')}>
+              onPress={handleSearch}>
               <Icon name="search" size={20} style={styles.searchIcon} />
             </TouchableOpacity>
           </View>
@@ -98,7 +118,8 @@ const Home = ({navigation}) => {
           <View>
             <FlatListSection
               dataList={cars.results}
-              onPress={() => navigation.navigate('Order')}
+              // onPress={() => navigation.navigate('Order')}
+              navigation={navigation}
             />
           </View>
         </View>
@@ -112,7 +133,8 @@ const Home = ({navigation}) => {
           <View>
             <FlatListSection
               dataList={motorbike.results}
-              onPress={() => navigation.navigate('Order')}
+              // onPress={() => navigation.navigate('Order')}
+              navigation={navigation}
             />
           </View>
         </View>
@@ -124,7 +146,8 @@ const Home = ({navigation}) => {
           <View>
             <FlatListSection
               dataList={bike.results}
-              onPress={() => navigation.navigate('Order')}
+              // onPress={() => navigation.navigate('Order')}
+              navigation={navigation}
             />
           </View>
         </View>
@@ -136,7 +159,8 @@ const Home = ({navigation}) => {
           <View>
             <FlatListSection
               dataList={pickup.results}
-              onPress={() => navigation.navigate('Order')}
+              // onPress={() => navigation.navigate('Order')}
+              navigation={navigation}
             />
           </View>
         </View>

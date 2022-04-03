@@ -11,6 +11,9 @@ import bike from './bike';
 import motorbike from './motorbike';
 import pickup from './pickup';
 import detailCategory from './detailCategory';
+import filterVehicle from './filterVehicle';
+import myOrder from './myOrder';
+import detailVehicle from './detailVehicle';
 
 const persistConfig = {
   key: 'auth',
@@ -27,6 +30,9 @@ const rootReducers = combineReducers({
   motorbike,
   pickup,
   detailCategory,
+  filterVehicle,
+  myOrder,
+  detailVehicle,
 });
 
 export default rootReducers;

@@ -6,6 +6,7 @@ import {
   TextInput,
 } from 'react-native';
 import React, {useState} from 'react';
+import {useDispatch} from 'react-redux';
 import {Text} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import AntIcon from 'react-native-vector-icons/AntDesign';
@@ -14,18 +15,32 @@ import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import SwitchSection from '../components/SwitchSection';
 import Button from '../components/Button';
+import {getFilter} from '../redux/actions/vehicles';
 
 const Filter = ({navigation}) => {
-  const location = ['Ngawi', 'Sleman', 'Jakarta'];
-  const type = ['Motorbike', 'Car', 'Bike'];
+  const location = [
+    'Ngawi',
+    'Bandung',
+    'Jakarta',
+    'Yogyakarta',
+    'Depok',
+    'Bali',
+    'Malang',
+  ];
+  const type = ['Motorbike', 'Car', 'Bike', 'Pickup'];
 
   const [selectedLocation, setSelectedLocation] = useState();
   const [selectRate, setSelectRate] = useState();
+  const [min, setMin] = useState();
+  const [max, setMax] = useState();
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false);
+  const [selectedType, setSelectedType] = useState();
   const [isPrepayment, setIsPrepayment] = useState(false);
   const [isDeal, setIsDeal] = useState(false);
   const [isAvailable, setIsAvailable] = useState(false);
+
+  const dispatch = useDispatch();
 
   const handleReset = () => {
     setSelectedLocation();
@@ -35,6 +50,12 @@ const Filter = ({navigation}) => {
     setIsPrepayment(false);
     setIsDeal(false);
     setIsAvailable(false);
+  };
+
+  const handleFilter = () => {
+    dispatch(getFilter(selectedType, max, min, selectedLocation));
+    navigation.navigate('SearchList');
+    // console.log('testinggg', selectedType, max, min, selectedLocation);
   };
 
   return (
@@ -79,6 +100,7 @@ const Filter = ({navigation}) => {
                   key={index}
                 />
               ))}
+              {/* <Picker.Item label={'data'} value={'data'} color="gray" /> */}
             </Picker>
           </View>
           <View style={styles.select}>
@@ -104,14 +126,32 @@ const Filter = ({navigation}) => {
           </View>
           <View style={styles.select}>
             <Text color={'black'} fontSize={'xl'}>
-              Price
+              Min Price
             </Text>
             <View style={[styles.picker, styles.inputWrapper]}>
               <TextInput
                 style={styles.input}
                 placeholderTextColor="gray"
-                placeholder="Select"
+                placeholder="Rp"
                 keyboardType="number-pad"
+                onChangeText={setMin}
+                value={min}
+              />
+              <AntIcon name="caretdown" size={10} style={styles.iconInput} />
+            </View>
+          </View>
+          <View style={styles.select}>
+            <Text color={'black'} fontSize={'xl'}>
+              Max Price
+            </Text>
+            <View style={[styles.picker, styles.inputWrapper]}>
+              <TextInput
+                style={styles.input}
+                placeholderTextColor="gray"
+                placeholder="Rp"
+                keyboardType="number-pad"
+                onChangeText={setMax}
+                value={max}
               />
               <AntIcon name="caretdown" size={10} style={styles.iconInput} />
             </View>
@@ -154,9 +194,9 @@ const Filter = ({navigation}) => {
             </Text>
             <Picker
               style={styles.picker}
-              selectedValue={selectRate}
+              selectedValue={selectedType}
               onValueChange={(itemValue, itemIndex) =>
-                setSelectRate(itemValue)
+                setSelectedType(itemValue)
               }>
               {type.map((data, index) => (
                 <Picker.Item
@@ -181,9 +221,7 @@ const Filter = ({navigation}) => {
           />
         </View>
         <View style={styles.btnWrapper}>
-          <Button
-            color="primary"
-            onPress={() => navigation.navigate('SearchList')}>
+          <Button color="primary" onPress={handleFilter}>
             Apply
           </Button>
         </View>
