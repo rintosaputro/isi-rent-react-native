@@ -7,11 +7,11 @@ export const getCategory = (category, page = 1) => {
     });
     try {
       const {data} = await http().get(
-        `/vehicles/category/?search=${category}&page=${page}`,
+        `/vehicles/category/?search=${category}&limit=100&page=${page}`,
       );
       dispatch({
         type: `GET_${category}`,
-        payload: data.results,
+        payload: data,
       });
     } catch (err) {
       dispatch({

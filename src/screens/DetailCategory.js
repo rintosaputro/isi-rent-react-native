@@ -1,14 +1,31 @@
 import {View, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import VehicleList from '../components/VehicleList';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import Button from '../components/Button';
+import {getDetailCategory} from '../redux/actions/detailCategory';
 
 const DetailCategory = ({navigation}) => {
   const {detailCategory} = useSelector(state => state);
   const dataState = useSelector(state => state);
 
   const type = detailCategory.nameCategory;
+
+  const dispatch = useDispatch();
+
+  const nextPage = () => {
+    // dispatch(
+    //   getDetailCategory(
+    //     type.toUpperCase(),
+    //     dataState[`${type}`].pageInfo.currentPage + 1,
+    //   ),
+    // );
+    console.log(
+      'testinngggg',
+      dataState[`${type}`].results.length,
+      dataState[`${type}`].pageInfo.currentPage + 1,
+    );
+  };
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -31,6 +48,13 @@ const DetailCategory = ({navigation}) => {
           </TouchableOpacity>
         );
       })}
+      {dataState[`${type}`].pageInfo && dataState[`${type}`].pageInfo.next ? (
+        <Button color="primary" onPress={nextPage}>
+          Next
+        </Button>
+      ) : (
+        <></>
+      )}
       <View style={styles.bottom} />
     </ScrollView>
   );

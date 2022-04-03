@@ -19,9 +19,10 @@ const bike = (state = initialState, action) => {
       };
     }
     case 'GET_BIKE': {
+      state.results.push(...action.payload.results);
+      state.pageInfo = action.payload.pageInfo;
       return {
         ...state,
-        results: action.payload,
         isSuccess: true,
         isLoading: false,
         isError: false,

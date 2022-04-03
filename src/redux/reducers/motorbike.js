@@ -1,5 +1,6 @@
 const initialState = {
   results: [],
+  pageInfo: {},
   isSuccess: false,
   isError: false,
   isLoading: false,
@@ -19,9 +20,10 @@ const motorbike = (state = initialState, action) => {
       };
     }
     case 'GET_MOTORBIKE': {
+      state.results.push(...action.payload.results);
+      state.pageInfo = action.payload.pageInfo;
       return {
         ...state,
-        results: action.payload,
         isSuccess: true,
         isLoading: false,
         isError: false,

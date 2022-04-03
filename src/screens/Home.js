@@ -34,19 +34,21 @@ const FlatListSection = ({dataList, onPress}) => {
       horizontal={true}
       style={styles.flat}
       renderItem={({item, index}) => {
-        return (
-          <TouchableOpacity onPress={onPress}>
-            <ImageBackground
-              source={
-                item.image
-                  ? {uri: item.image.replace(/localhost/g, '192.168.43.195')}
-                  : require('../assets/img/no-image.jpg')
-              }
-              style={styles.imgProduct}
-              resizeMode="cover"
-            />
-          </TouchableOpacity>
-        );
+        if (index < 5) {
+          return (
+            <TouchableOpacity onPress={onPress}>
+              <ImageBackground
+                source={
+                  item.image
+                    ? {uri: item.image.replace(/localhost/g, '192.168.43.195')}
+                    : require('../assets/img/no-image.jpg')
+                }
+                style={styles.imgProduct}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          );
+        }
       }}
     />
   );
