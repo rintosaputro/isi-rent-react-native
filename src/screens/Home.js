@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   View,
   Text,
@@ -8,20 +9,84 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
+import {getCategory, getFilter} from '../redux/actions/vehicles';
+import {getDetailCategory} from '../redux/actions/detailCategory';
+import {myOrder} from '../redux/actions/transaction';
+
+const DetailTop = ({category, onPress}) => {
+  return (
+    <View style={styles.topProduct}>
+      <Text style={styles.type}>{category}</Text>
+      <TouchableOpacity style={styles.more} onPress={onPress}>
+        <Text>View More</Text>
+        <Icon2 name="navigate-next" size={20} />
+      </TouchableOpacity>
+    </View>
+  );
+};
+const FlatListSection = ({dataList, onPress, navigation}) => {
+  const dispatch = useDispatch();
+  const handleOrder = id => {
+    dispatch(myOrder(id));
+    navigation.navigate('Order');
+  };
+  return (
+    <FlatList
+      data={dataList}
+      horizontal={true}
+      style={styles.flat}
+      renderItem={({item, index}) => {
+        if (index < 5) {
+          return (
+            <TouchableOpacity onPress={() => handleOrder(item.idVehicle)}>
+              <ImageBackground
+                source={
+                  item.image
+                    ? {uri: item.image.replace(/localhost/g, '192.168.43.195')}
+                    : require('../assets/img/no-image.jpg')
+                }
+                style={styles.imgProduct}
+                resizeMode="cover"
+              />
+            </TouchableOpacity>
+          );
+        }
+      }}
+    />
+  );
+};
 
 const Home = ({navigation}) => {
-  const dataProduct = [
-    {image: require('../assets/imgDummy/car.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/motor.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/scoter.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/motor.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/car.jpg'), text: 'test'},
-    {image: require('../assets/imgDummy/motor.jpg'), text: 'test'},
-  ];
-  const typeProduct = ['Cars', 'Motorbike', 'Bike'];
+  const [key, setKey] = useState();
+
+  const dispatch = useDispatch();
+  const {cars, motorbike, bike, pickup} = useSelector(state => state);
+
+  useEffect(() => {
+    dispatch(getCategory('CAR'));
+    dispatch(getCategory('MOTORBIKE'));
+    dispatch(getCategory('BIKE'));
+    dispatch(getCategory('PICKUP'));
+  }, []);
+
+  const gotoDetail = (nameCategory, idCategory) => {
+    dispatch(getDetailCategory(nameCategory, idCategory));
+    navigation.navigate('DetailCategory');
+  };
+
+  const handleSearch = () => {
+    dispatch(getFilter(key));
+    navigation.navigate('SearchList');
+  };
+
+  const handleOrder = id => {
+    dispatch(myOrder(id));
+    navigation.navigate('Order');
+  };
 
   return (
     <View>
@@ -35,48 +100,70 @@ const Home = ({navigation}) => {
               style={styles.input}
               placeholderTextColor="#fff"
               placeholder="Search Vehicle"
+              onChangeText={setKey}
+              value={key}
             />
             <TouchableOpacity
               style={styles.iconSearchWrap}
-              onPress={() => navigation.navigate('SearchList')}>
+              onPress={handleSearch}>
               <Icon name="search" size={20} style={styles.searchIcon} />
             </TouchableOpacity>
           </View>
         </ImageBackground>
-        {typeProduct.map((data, index) => {
-          return (
-            <View style={styles.wrapperProduct} key={index}>
-              <View style={styles.topProduct}>
-                <Text style={styles.type}>{data}</Text>
-                <TouchableOpacity
-                  style={styles.more}
-                  onPress={() => navigation.navigate('DetailCategory')}>
-                  <Text>View More</Text>
-                  <Icon2 name="navigate-next" size={20} />
-                </TouchableOpacity>
-              </View>
-              <View>
-                <FlatList
-                  data={dataProduct}
-                  horizontal={true}
-                  style={styles.flat}
-                  renderItem={({item}) => {
-                    return (
-                      <TouchableOpacity
-                        onPress={() => navigation.navigate('Order')}>
-                        <ImageBackground
-                          source={item.image}
-                          style={styles.imgProduct}
-                          resizeMode="cover"
-                        />
-                      </TouchableOpacity>
-                    );
-                  }}
-                />
-              </View>
-            </View>
-          );
-        })}
+        <View style={styles.wrapperProduct}>
+          <DetailTop
+            onPress={() => gotoDetail('cars', cars.results[0].idCategory)}
+            category="Car"
+          />
+          <View>
+            <FlatListSection
+              dataList={cars.results}
+              // onPress={() => navigation.navigate('Order')}
+              navigation={navigation}
+            />
+          </View>
+        </View>
+        <View style={styles.wrapperProduct}>
+          <DetailTop
+            onPress={() =>
+              gotoDetail('motorbike', motorbike.results[0].idCategory)
+            }
+            category="Motorbike"
+          />
+          <View>
+            <FlatListSection
+              dataList={motorbike.results}
+              // onPress={() => navigation.navigate('Order')}
+              navigation={navigation}
+            />
+          </View>
+        </View>
+        <View style={styles.wrapperProduct}>
+          <DetailTop
+            onPress={() => gotoDetail('bike', bike.results[0].idCategory)}
+            category="Bike"
+          />
+          <View>
+            <FlatListSection
+              dataList={bike.results}
+              // onPress={() => navigation.navigate('Order')}
+              navigation={navigation}
+            />
+          </View>
+        </View>
+        <View style={styles.wrapperProduct}>
+          <DetailTop
+            onPress={() => gotoDetail('pickup', pickup.results[0].idCategory)}
+            category="Pickup"
+          />
+          <View>
+            <FlatListSection
+              dataList={pickup.results}
+              // onPress={() => navigation.navigate('Order')}
+              navigation={navigation}
+            />
+          </View>
+        </View>
       </ScrollView>
     </View>
   );
