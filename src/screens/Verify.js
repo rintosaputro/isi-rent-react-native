@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import {Box, Text} from 'native-base';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import Icon from 'react-native-vector-icons/AntDesign';
@@ -23,6 +23,13 @@ const Verify = ({navigation}) => {
   const dispatch = useDispatch();
 
   const {verify: verifyState} = useSelector(state => state);
+
+  useEffect(() => {
+    if (verifyState.isSuccess) {
+      navigation.navigate('Login');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [verifyState]);
 
   const handleSubmit = () => {
     if (code && username && password) {
@@ -100,7 +107,7 @@ const Verify = ({navigation}) => {
           </View>
         </ScrollView>
       </ImageBackground>
-      {verifyState.isSuccess && navigation.navigate('Login')}
+      {/* {verifyState.isSuccess && navigation.navigate('Login')} */}
     </View>
   );
 };

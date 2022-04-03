@@ -30,6 +30,12 @@ const Signup = ({navigation}) => {
       type: 'SIGNUP_CLEAR',
     });
   }, [dispatch]);
+  useEffect(() => {
+    if (signup.isSuccess) {
+      navigation.navigate('Verify');
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signup]);
 
   const handleSignup = () => {
     if (username && email && phone && password) {
@@ -111,7 +117,7 @@ const Signup = ({navigation}) => {
           </View>
         </View>
       </ImageBackground>
-      {signup.isSuccess && navigation.navigate('Verify')}
+      {/* {signup.isSuccess && navigation.navigate('Verify')} */}
     </ScrollView>
   );
 };
