@@ -10,14 +10,20 @@ import {Text, Image, Center, Radio, Stack} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '../components/Button';
+import {useSelector} from 'react-redux';
 
 const UpdateProfile = ({navigation: {goBack}}) => {
+  const {profile} = useSelector(state => state);
+
+  const {name, username, image, email, phone, birthdate, address} =
+    profile.results;
+
   const dataInput = [
-    {label: 'Name', value: 'Rinto Saputro'},
-    {label: 'Email Address', value: 'email@mail.com', type: 'email-address'},
-    {label: 'Phone Number', value: '081111111113', type: 'name-phone-pad'},
-    {label: 'Date of Birth', value: '1996-08-30'},
-    {label: 'Delivery Address', value: 'Sine, Ngawi, East Java'},
+    {label: 'Name', value: name || username},
+    {label: 'Email Address', value: email, type: 'email-address'},
+    {label: 'Phone Number', value: phone, type: 'name-phone-pad'},
+    {label: 'Date of Birth', value: birthdate},
+    {label: 'Delivery Address', value: address},
   ];
 
   return (
@@ -41,7 +47,13 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 size={99}
                 resizeMode={'contain'}
                 borderRadius={200}
-                source={require('../assets/imgDummy/user.jpg')}
+                source={
+                  profile.results.image
+                    ? {
+                        uri: image.replace(/localhost/g, '192.168.43.195'),
+                      }
+                    : require('../assets/img/no-pp.jpg')
+                }
                 alt="Photo profile"
               />
             </Center>
