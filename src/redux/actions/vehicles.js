@@ -22,22 +22,28 @@ export const getCategory = (category, page = 1) => {
   };
 };
 
-export const getFilter = (
-  key = '',
-  maximum = '',
-  minimum = '',
-  location = '',
-  page = 1,
-) => {
+export const getFilter = (search, maximum, minimum, location, page = 1) => {
   return async dispatch => {
     dispatch({
       type: 'GET_SEARCH_LOADING',
     });
     try {
-      const {data} = await http().get(
-        `/vehicles/category/?search=${key}&location=${location}&maximum=${maximum}&minimum=${minimum}&limit=100&page=${page}`,
-      );
-      const keywoard = `${key}-${location}-${maximum}-${minimum}`;
+      const filterKey = [search, maximum, minimum, location];
+      const query = ['search', 'maximum', 'minimum', 'location'];
+      let apiUrl = `/vehicles/category/?limit=100&page=${page}`;
+      let keywoard = '';
+      for (let i = 0; i < filterKey.length; i++) {
+        if (filterKey[i]) {
+          apiUrl += `&${query[i]}=${filterKey[i]}`;
+          keywoard += `${filterKey[i]}-`;
+        }
+      }
+      console.log('testt', apiUrl);
+      const {data} = await http().get(apiUrl);
+      // const {data} = await http().get(
+      //   `/vehicles/category/?search=${search}&location=${location}&maximum=${maximum}&minimum=${minimum}&limit=100&page=${page}`,
+      // );
+      // const keywoard = `${search}-${location}-${maximum}-${minimum}`;
       dispatch({
         type: 'GET_SEARCH',
         payload: data,
