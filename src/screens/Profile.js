@@ -1,12 +1,13 @@
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {Image, Text} from 'native-base';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 import Button from '../components/Button';
 
 const Profile = ({navigation}) => {
   const dispatch = useDispatch();
+  const {profile} = useSelector(state => state);
   const handleLogout = () => {
     dispatch({
       type: 'AUTH_LOGOUT',
@@ -19,11 +20,20 @@ const Profile = ({navigation}) => {
           size={69}
           resizeMode={'contain'}
           borderRadius={200}
-          source={require('../assets/imgDummy/user.jpg')}
+          source={
+            profile.results.image
+              ? {
+                  uri: profile.results.image.replace(
+                    /localhost/g,
+                    '192.168.43.195',
+                  ),
+                }
+              : require('../assets/img/no-pp.jpg')
+          }
           alt="Photo profile"
         />
         <Text bold fontSize="2xl" style={styles.name}>
-          Rinto Saputro
+          {profile.results.name || profile.results.username}
         </Text>
       </View>
       <View style={styles.container}>

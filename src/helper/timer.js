@@ -1,6 +1,6 @@
 const timer = () => {
-  let countDownDate = new Date('Jan 5, 2024 15:37:25').getTime();
-  let x = setInterval(function () {
+  let countDownDate = new Date().getTime();
+  return setInterval(function () {
     let now = new Date().getTime();
     let distance = countDownDate - now;
 
@@ -13,3 +13,5 @@ const timer = () => {
     return hours + ':' + minutes + ':' + seconds;
   }, 1000);
 };
+
+export default timer;

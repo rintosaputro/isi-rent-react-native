@@ -11,8 +11,10 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import priceFormat from '../helper/priceFormat';
 import Rate from '../components/Rate';
 import Button from '../components/Button';
+import {useSelector} from 'react-redux';
+import moment from 'moment';
 
-const FinishedPayment = () => {
+const FinishedPayment = ({navigation}) => {
   const vehicle = {
     name: 'Vespa Matic',
     seet: 2,
@@ -33,9 +35,14 @@ const FinishedPayment = () => {
     email: 'alexander@mail.com',
     total: 245000,
   };
+
+  const {addHistory, paymentForm, detailOrder} = useSelector(state => state);
+
   return (
     <Box p="5">
-      <TouchableOpacity style={styles.back}>
+      <TouchableOpacity
+        style={styles.back}
+        onPress={() => navigation.navigate('History')}>
         <EntypoIcon name="chevron-left" color="black" size={35} />
         <Text fontSize={'2xl'} pl="2" bold>
           See history
@@ -52,7 +59,16 @@ const FinishedPayment = () => {
         </Text>
         <Box style={styles.imgWrapper}>
           <Image
-            source={vehicle.image}
+            source={
+              addHistory.results.image
+                ? {
+                    uri: addHistory.results.image.replace(
+                      /localhost/g,
+                      '192.168.43.195',
+                    ),
+                  }
+                : require('../assets/img/no-image.jpg')
+            }
             style={styles.imageBg}
             alt="photo vehicle"
           />
@@ -62,32 +78,35 @@ const FinishedPayment = () => {
         </Box>
         <Box py={'10'}>
           <Text py={'1'}>
-            {vehicle.qty} {vehicle.name}
+            {detailOrder.qty} {addHistory.results.brand}
           </Text>
-          <Text py={'1'}>Prepayment (no tax)</Text>
+          <Text py={'1'}>{paymentForm.payment}</Text>
           <Text py={'1'}>
-            {vehicle.days} {vehicle.days === 1 ? 'day' : 'days'}
+            {detailOrder.totalDay} {detailOrder.totalDay === 1 ? 'day' : 'days'}
           </Text>
           <Text py={'1'}>
-            {vehicle.startDate} to {vehicle.endDate}
+            {moment(addHistory.results.rentStartDate).format('MMM DD YYYY')} to{' '}
+            {moment(addHistory.results.rentEndDate).format('MMM DD YYYY')}
           </Text>
         </Box>
         <View style={styles.borderBtm} />
         <Box>
-          <Text py={'1'}>ID: {customer.id}</Text>
+          <Text py={'1'}>ID: {addHistory.results.idHistory}</Text>
           <Text py={'1'}>
-            {customer.name} ({customer.email})
+            {paymentForm.firsName} ({paymentForm.email})
           </Text>
           <Text py={'1'}>
-            {customer.phone}{' '}
+            {paymentForm.phone}{' '}
             <Text color="success.700" bold>
               Active
             </Text>
           </Text>
-          <Text py={'1'}>{customer.address}</Text>
+          <Text py={'1'}>{paymentForm.address}</Text>
         </Box>
         <Box my="10">
-          <Button color="primary">Total: {priceFormat(customer.total)}</Button>
+          <Button color="primary">
+            Total: {priceFormat(addHistory.results.prepayment)}
+          </Button>
         </Box>
         <Box mb="20" />
       </ScrollView>

@@ -5,27 +5,55 @@ import {
   ScrollView,
   Image,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {Box, Text} from 'native-base';
 import Stepper from '../components/Stepper';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import Rate from '../components/Rate';
 import priceFormat from '../helper/priceFormat';
 import Button from '../components/Button';
+import {getDetailVehicle} from '../redux/actions/vehicles';
+import moment from 'moment';
+import {transactionCode} from '../redux/actions/transaction';
 
 const SecondPayment = ({navigation}) => {
-  const vehicle = {
-    name: 'Vespa Matic',
-    seet: 2,
-    stock: 3,
-    price: 20000,
-    image: require('../assets/imgDummy/scoter.jpg'),
-    rating: 4,
-    qty: 2,
-    days: 4,
-    startDate: 'April 7 2022',
-    endDate: 'April 11 2022',
+  const [paymentCode, setPaymentCode] = useState();
+  const [bookingCode, setBookingCode] = useState();
+  const {detailOrder, paymentForm, myOrder, detailVehicle} = useSelector(
+    state => state,
+  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(getDetailVehicle(myOrder.idVehicle));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    setPaymentCode(
+      `${Math.round(Math.random() * (99999999 - 10000000) + 10000000)}`,
+    );
+    if (detailVehicle.results.brand) {
+      const brand = detailVehicle.results.brand;
+      const startCode = `${brand[0]}${brand[1]}${brand[2]}`;
+      setBookingCode(
+        `${startCode.toUpperCase()}${Math.round(
+          Math.random() * (9999 - 1000) + 1000,
+        )}`,
+      );
+    }
+  }, [detailVehicle.results]);
+
+  const handleSubmit = () => {
+    dispatch(transactionCode(paymentCode, bookingCode));
+    navigation.navigate('ThirdPayment');
+    console.log('test', paymentCode, bookingCode);
   };
+
+  const endDate = moment(
+    moment(detailOrder.startDate).add(detailOrder.totalDay, 'days'),
+  ).format('MMM DD YYYY');
 
   return (
     <Box p="5">
@@ -41,7 +69,16 @@ const SecondPayment = ({navigation}) => {
         </Box>
         <Box style={styles.imgWrapper}>
           <Image
-            source={vehicle.image}
+            source={
+              detailVehicle.results.image
+                ? {
+                    uri: detailVehicle.results.image.replace(
+                      /localhost/g,
+                      '192.168.43.195',
+                    ),
+                  }
+                : require('../assets/img/no-image.jpg')
+            }
             style={styles.imageBg}
             alt="photo vehicle"
           />
@@ -51,29 +88,31 @@ const SecondPayment = ({navigation}) => {
         </Box>
         <Box py={'10'}>
           <Text py={'1'}>
-            {vehicle.qty} {vehicle.name}
+            {detailOrder.qty} {detailVehicle.results.brand}
           </Text>
-          <Text py={'1'}>Prepayment (no tax)</Text>
+          <Text py={'1'}>{paymentForm.payment}</Text>
           <Text py={'1'}>
-            {vehicle.days} {vehicle.days === 1 ? 'day' : 'days'}
+            {detailOrder.totalDay} {detailOrder.totalDay === 1 ? 'day' : 'days'}
           </Text>
           <Text py={'1'}>
-            {vehicle.startDate} to {vehicle.endDate}
+            {moment(detailOrder.startDate).format('MMM DD YYYY')} to {endDate}
           </Text>
         </Box>
         <View style={styles.borderBtm} />
         <Box py="10" flexDirection={'row'} justifyContent="space-between">
           <Text fontSize={'3xl'} bold>
-            {priceFormat(vehicle.price * vehicle.days * vehicle.qty)}
+            {priceFormat(
+              detailVehicle.results.price *
+                detailOrder.totalDay *
+                detailOrder.qty,
+            )}
           </Text>
           <TouchableOpacity>
             <EntypoIcon name="info-with-circle" size={40} color="#d2dae2" />
           </TouchableOpacity>
         </Box>
         <Box py={'5'}>
-          <Button
-            color="primary"
-            onPress={() => navigation.navigate('ThirdPayment')}>
+          <Button color="primary" onPress={handleSubmit}>
             Get Payment Code
           </Button>
         </Box>
