@@ -1,5 +1,6 @@
 const initialState = {
   results: {},
+  isSuccess: false,
   isLoading: false,
   isError: false,
   errMessage: '',
@@ -13,12 +14,14 @@ const addHistory = (state = initialState, action) => {
         results: {},
         isLoading: true,
         isError: false,
+        isSuccess: false,
         errMessage: '',
       };
     }
     case 'ADD_HISTORY': {
       return {
         ...state,
+        isSuccess: true,
         results: action.payload,
         isLoading: false,
         isError: false,
@@ -29,6 +32,7 @@ const addHistory = (state = initialState, action) => {
       return {
         ...state,
         results: {},
+        isSuccess: false,
         isLoading: false,
         isError: true,
         errMessage: action.payload,

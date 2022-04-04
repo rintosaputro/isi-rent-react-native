@@ -16,7 +16,7 @@ const ThirdPayment = ({navigation}) => {
   const {
     transactionCode,
     detailOrder,
-    addHistory: addHisltoryState,
+    addHistory: addHistoryState,
     auth,
     detailVehicle,
     profile,
@@ -38,10 +38,10 @@ const ThirdPayment = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    if (addHisltoryState.results) {
+    if (addHistoryState.isSuccess) {
       navigation.navigate('FinishedPayment');
     }
-  }, [addHisltoryState.results, navigation]);
+  }, [addHistoryState.isSuccess, navigation]);
 
   const handleSubmit = () => {
     dispatch(

@@ -4,6 +4,7 @@ import VehicleList from '../components/VehicleList';
 import {useSelector, useDispatch} from 'react-redux';
 import Button from '../components/Button';
 import {getDetailCategory} from '../redux/actions/detailCategory';
+import {myOrder} from '../redux/actions/transaction';
 
 const DetailCategory = ({navigation}) => {
   const {detailCategory} = useSelector(state => state);
@@ -12,6 +13,11 @@ const DetailCategory = ({navigation}) => {
   const type = detailCategory.nameCategory;
 
   const dispatch = useDispatch();
+
+  const handleOrder = id => {
+    dispatch(myOrder(id));
+    navigation.navigate('Order');
+  };
 
   const nextPage = () => {
     // dispatch(
@@ -33,7 +39,7 @@ const DetailCategory = ({navigation}) => {
         return (
           <TouchableOpacity
             key={index}
-            onPress={() => navigation.navigate('Order')}>
+            onPress={() => handleOrder(data.idVehicle)}>
             <VehicleList
               image={
                 data.image
