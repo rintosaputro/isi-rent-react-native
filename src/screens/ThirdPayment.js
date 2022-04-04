@@ -1,21 +1,61 @@
 import {View, TouchableOpacity, ScrollView, StyleSheet} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {Box, Text} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import Stepper from '../components/Stepper';
 import Button from '../components/Button';
 import priceFormat from '../helper/priceFormat';
+import timer from '../helper/timer';
+import moment from 'moment';
+import {addHistory} from '../redux/actions/history';
 
 const ThirdPayment = ({navigation}) => {
-  const dataOrder = {
-    qty: 2,
-    name: 'Vespa',
-    perpayment: 'no tax',
-    days: 4,
-    startDate: 'April 7 2022',
-    endDate: 'April 11 2022',
-    price: 20000,
+  const dispatch = useDispatch();
+
+  const {
+    transactionCode,
+    detailOrder,
+    addHistory: addHisltoryState,
+    auth,
+    detailVehicle,
+    profile,
+  } = useSelector(state => state);
+  const endDate = moment(
+    moment(detailOrder.startDate).add(detailOrder.totalDay, 'days'),
+  ).format('MMM DD YYYY');
+  const rendEndDate = moment(
+    moment(detailOrder.startDate).add(detailOrder.totalDay, 'days'),
+  ).format('YYYY-MM-DD');
+  // eslint-disable-next-line prettier/prettier
+  const totalPrice = detailVehicle.results.price * detailOrder.totalDay * detailOrder.qty;
+
+  useEffect(() => {
+    dispatch({
+      type: 'CLEAR_ADD_HISTORY',
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (addHisltoryState.results) {
+      navigation.navigate('FinishedPayment');
+    }
+  }, [addHisltoryState.results, navigation]);
+
+  const handleSubmit = () => {
+    dispatch(
+      addHistory(
+        profile.results.idUser,
+        detailVehicle.results.idVehicle,
+        moment(detailOrder.startDate).format('YYYY-MM-DD'),
+        rendEndDate,
+        totalPrice,
+        auth.token,
+      ),
+    );
   };
+
   return (
     <Box p="5">
       <TouchableOpacity style={styles.back} onPress={() => navigation.goBack()}>
@@ -36,7 +76,7 @@ const ThirdPayment = ({navigation}) => {
             Payment Code:
           </Text>
           <Text py="4" fontSize={'4xl'} bold>
-            9075632
+            {transactionCode.paymentCode}
           </Text>
           <Text>Insert your payment code while you transfer booking order</Text>
           <Text>Pay before:</Text>
@@ -50,16 +90,19 @@ const ThirdPayment = ({navigation}) => {
             0290-9023-342-9
           </Text>
           <Text fontSize="md" color="gray.500" bold>
-            Vespa Rental Jogja
+            {detailVehicle.results.brand} Rental{' '}
+            {detailVehicle.results.location}
           </Text>
           <Box py="5" style={styles.borderBtm} />
           <Text fontSize={'md'} pt="5" bold>
             Boking code:{' '}
             <Text color="success.700" fontSize="lg">
-              VSP90322
+              {transactionCode.bookingCode}
             </Text>
           </Text>
-          <Text>Use your booking code to pick your vespa</Text>
+          <Text>
+            Use your booking code to pick your {detailVehicle.results.brand}
+          </Text>
           <Box py="5">
             <Button fontSize={15} color={'primary'}>
               Copy payment & Booking Code
@@ -69,29 +112,31 @@ const ThirdPayment = ({navigation}) => {
         <Box>
           <Text fontSize={'lg'}>Order Details:</Text>
           <Text fontSize={'lg'}>
-            {dataOrder.qty} {dataOrder.name}
+            {detailOrder.qty} {detailVehicle.results.brand}
           </Text>
           <Text fontSize={'lg'}>Prepayment (no tax)</Text>
           <Text fontSize={'lg'}>
-            {dataOrder.days} {dataOrder.days > 1 ? 'Days' : 'Day'}
+            {detailOrder.totalDay} {detailOrder.totalDay > 1 ? 'Days' : 'Day'}
           </Text>
           <Text fontSize={'lg'}>Order Details:</Text>
           <Text fontSize={'lg'}>
-            {dataOrder.startDate} to {dataOrder.endDate}
+            {moment(detailOrder.startDate).format('MMM DD YYYY')} to {endDate}
           </Text>
           <Box py="5" style={styles.borderBtm} />
         </Box>
         <Box py="5" flexDirection={'row'} justifyContent="space-between">
           <Text fontSize={'3xl'} bold>
-            {priceFormat(dataOrder.price * dataOrder.days * dataOrder.qty)}
+            {priceFormat(
+              detailVehicle.results.price *
+                detailOrder.totalDay *
+                detailOrder.qty,
+            )}
           </Text>
           <TouchableOpacity>
             <EntypoIcon name="info-with-circle" size={40} color="#d2dae2" />
           </TouchableOpacity>
         </Box>
-        <Button
-          color="primary"
-          onPress={() => navigation.navigate('FinishedPayment')}>
+        <Button color="primary" onPress={handleSubmit}>
           Finish Payment
         </Button>
         <Box mb={'20'} />

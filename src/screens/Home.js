@@ -16,6 +16,7 @@ import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import {getCategory, getFilter} from '../redux/actions/vehicles';
 import {getDetailCategory} from '../redux/actions/detailCategory';
 import {myOrder} from '../redux/actions/transaction';
+import {getProfile} from '../redux/actions/user';
 
 const DetailTop = ({category, onPress}) => {
   return (
@@ -64,13 +65,14 @@ const Home = ({navigation}) => {
   const [key, setKey] = useState();
 
   const dispatch = useDispatch();
-  const {cars, motorbike, bike, pickup} = useSelector(state => state);
+  const {cars, motorbike, bike, auth, pickup} = useSelector(state => state);
 
   useEffect(() => {
     dispatch(getCategory('CAR'));
     dispatch(getCategory('MOTORBIKE'));
     dispatch(getCategory('BIKE'));
     dispatch(getCategory('PICKUP'));
+    dispatch(getProfile(auth.token));
   }, []);
 
   const gotoDetail = (nameCategory, idCategory) => {

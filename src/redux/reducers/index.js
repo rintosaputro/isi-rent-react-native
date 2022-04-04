@@ -14,6 +14,12 @@ import detailCategory from './detailCategory';
 import filterVehicle from './filterVehicle';
 import myOrder from './myOrder';
 import detailVehicle from './detailVehicle';
+import detailOrder from './detailOrder';
+import paymentForm from './paymentForm';
+import transactionCode from './transactionCode';
+import addHistory from './addHisltory';
+import getHistory from './getHistory';
+import profile from './profile';
 
 const persistConfig = {
   key: 'auth',
@@ -33,6 +39,12 @@ const rootReducers = combineReducers({
   filterVehicle,
   myOrder,
   detailVehicle,
+  detailOrder,
+  paymentForm,
+  transactionCode,
+  addHistory,
+  getHistory,
+  profile,
 });
 
 export default rootReducers;

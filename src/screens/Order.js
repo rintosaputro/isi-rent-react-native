@@ -18,6 +18,7 @@ import priceFormat from '../helper/priceFormat';
 import Button from '../components/Button';
 
 import {getDetailVehicle} from '../redux/actions/vehicles';
+import {detailOrder} from '../redux/actions/transaction';
 
 const LocationSection = ({address, icon}) => {
   return (
@@ -54,7 +55,7 @@ const Order = ({navigation}) => {
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [isStart, setIsStart] = useState(false);
-  const [endDate, setEndDate] = useState();
+  const [endDate, setEndDate] = useState(1);
 
   const {myOrder, detailVehicle} = useSelector(state => state);
 
@@ -65,7 +66,7 @@ const Order = ({navigation}) => {
   }, [dispatch, myOrder.idVehicle]);
 
   const increment = () => {
-    if (count < data.stock) {
+    if (count < qty) {
       setCount(count + 1);
     }
   };
@@ -76,8 +77,9 @@ const Order = ({navigation}) => {
   };
 
   const gotoReservation = () => {
-    // navigation.navigate('PaymentForm')
-    console.log('test', myOrder.idVehicle);
+    dispatch(detailOrder(count, date, endDate));
+    navigation.navigate('PaymentForm');
+    // console.log('test', count, moment(date).format('MMM DD YY'), endDate);
   };
 
   const {type, brand, capacity, prepayment, location, price, qty, image} =
@@ -189,6 +191,7 @@ const Order = ({navigation}) => {
                 mode="date"
                 open={open}
                 date={date}
+                minimumDate={new Date()}
                 onConfirm={dateItem => {
                   setOpen(false);
                   setDate(dateItem);
