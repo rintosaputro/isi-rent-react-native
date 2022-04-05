@@ -9,6 +9,7 @@ import PaymentForm from '../screens/PaymentForm';
 import SecondPayment from '../screens/SecondPayment';
 import ThirdPayment from '../screens/ThirdPayment';
 import FinishedPayment from '../screens/FinishedPayment';
+import Favourites from '../screens/Favourites';
 
 const MainStack = createNativeStackNavigator();
 const MainStackNav = () => {
@@ -25,6 +26,7 @@ const MainStackNav = () => {
       <MainStack.Screen name="SecondPayment" component={SecondPayment} />
       <MainStack.Screen name="ThirdPayment" component={ThirdPayment} />
       <MainStack.Screen name="FinishedPayment" component={FinishedPayment} />
+      <MainStack.Screen name="Favourites" component={Favourites} />
     </MainStack.Navigator>
   );
 };
