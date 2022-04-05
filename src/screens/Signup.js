@@ -49,7 +49,7 @@ const Signup = ({navigation}) => {
     }
   };
   return (
-    <ScrollView>
+    <ScrollView style={styles.scrolView}>
       <ImageBackground
         source={require('../assets/img/bgSignup.jpg')}
         resizeMode="cover"
@@ -123,6 +123,9 @@ const Signup = ({navigation}) => {
 };
 
 const styles = StyleSheet.create({
+  scrolView: {
+    height: '100%',
+  },
   image: {
     height: '100%',
   },
@@ -164,7 +167,7 @@ const styles = StyleSheet.create({
   loginContain: {
     flexDirection: 'row',
     marginTop: 20,
-    marginBottom: 50,
+    marginBottom: 150,
   },
   ['login']: {
     color: '#fff',
