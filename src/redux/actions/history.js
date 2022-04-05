@@ -21,7 +21,10 @@ export const addHistory = (
         rent_end_date,
         prepayment,
       };
-      const {data} = await http(token).post('/histories', qs.stringify(input));
+      const {data} = await http(token).post(
+        '/histories/complete',
+        qs.stringify(input),
+      );
       dispatch({
         type: 'ADD_HISTORY',
         payload: data.results,
