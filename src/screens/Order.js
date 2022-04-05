@@ -39,17 +39,6 @@ const LocationSection = ({address, icon}) => {
 };
 
 const Order = ({navigation}) => {
-  const data = {
-    image: require('../assets/imgDummy/motor.jpg'),
-    rate: 4,
-    brand: 'Vespa Matic',
-    price: 12000,
-    seet: 2,
-    prepayment: false,
-    stock: 4,
-    address: 'Jalan Malioboro, No 24, Yogyakarta',
-  };
-
   const [favorite, setFavorite] = useState(false);
   const [count, setCount] = useState(1);
   const [open, setOpen] = useState(false);
@@ -113,7 +102,7 @@ const Order = ({navigation}) => {
                   <Icon
                     name={favorite ? 'heart' : 'heart-o'}
                     size={35}
-                    color={favorite ? '#eb4d4b' : 'white'}
+                    color={favorite ? '#49BEB7' : 'white'}
                   />
                 </TouchableOpacity>
               </View>

@@ -1,42 +1,37 @@
 const initialState = {
-  results: [],
+  isSuccess: false,
   isLoading: false,
   isError: false,
-  errMessage: false,
-  pageInfo: {},
+  errMessage: '',
 };
 
-const histories = (state = initialState, action) => {
+const deleteHistory = (state = initialState, action) => {
   switch (action.type) {
-    case 'GET_HISTORY_LOADING': {
+    case 'DEL_HISTORY_LOADING': {
       return {
         ...state,
-        results: [],
+        isSuccess: false,
         isLoading: true,
         isError: false,
-        errMessage: false,
-        pageInfo: {},
+        errMessage: '',
       };
     }
-    case 'GET_HISTORY': {
-      const data = action.payload;
-      state.results = data.results;
-      state.pageInfo = data.pageInfo;
+    case 'DEL_HISTORY': {
       return {
         ...state,
+        isSuccess: true,
         isLoading: false,
         isError: false,
-        errMessage: false,
+        errMessage: '',
       };
     }
-    case 'GET_HISTORY_ERR': {
+    case 'DEL_HISTORY_ERR': {
       return {
         ...state,
-        results: [],
+        isSuccess: false,
         isLoading: false,
         isError: true,
         errMessage: action.payload,
-        pageInfo: {},
       };
     }
     default: {
@@ -45,4 +40,4 @@ const histories = (state = initialState, action) => {
   }
 };
 
-export default histories;
+export default deleteHistory;

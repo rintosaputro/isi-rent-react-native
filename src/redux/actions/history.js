@@ -59,3 +59,22 @@ export const getHistories = (user, token) => {
     }
   };
 };
+
+export const deleteHistory = (id, token) => {
+  return async dispatch => {
+    dispatch({
+      type: 'DEL_HISTORY_LOADING',
+    });
+    try {
+      await http(token).delete(`/histories/${id}`);
+      dispatch({
+        type: 'DEL_HISTORY',
+      });
+    } catch (err) {
+      dispatch({
+        type: 'DEL_HISTORY_ERR',
+        payload: err.response.data.message,
+      });
+    }
+  };
+};

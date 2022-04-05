@@ -15,34 +15,15 @@ import {useSelector} from 'react-redux';
 import moment from 'moment';
 
 const FinishedPayment = ({navigation}) => {
-  const vehicle = {
-    name: 'Vespa Matic',
-    seet: 2,
-    stock: 3,
-    price: 20000,
-    image: require('../assets/imgDummy/scoter.jpg'),
-    rating: 4,
-    qty: 2,
-    days: 4,
-    startDate: 'April 7 2022',
-    endDate: 'April 11 2022',
-  };
-  const customer = {
-    id: 13454,
-    name: 'Alexander Grahambel',
-    phone: '089234543',
-    address: 'Jakarta, Indonesia',
-    email: 'alexander@mail.com',
-    total: 245000,
-  };
-
   const {addHistory, paymentForm, detailOrder} = useSelector(state => state);
+
+  const handleClick = () => {
+    navigation.navigate('History');
+  };
 
   return (
     <Box p="5">
-      <TouchableOpacity
-        style={styles.back}
-        onPress={() => navigation.navigate('History')}>
+      <TouchableOpacity style={styles.back} onPress={handleClick}>
         <EntypoIcon name="chevron-left" color="black" size={35} />
         <Text fontSize={'2xl'} pl="2" bold>
           See history
@@ -104,7 +85,7 @@ const FinishedPayment = ({navigation}) => {
           <Text py={'1'}>{paymentForm.address}</Text>
         </Box>
         <Box my="10">
-          <Button color="primary">
+          <Button color="primary" onPress={handleClick}>
             Total: {priceFormat(addHistory.results.prepayment)}
           </Button>
         </Box>
