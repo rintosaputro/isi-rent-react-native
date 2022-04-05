@@ -5,7 +5,7 @@ import React, {useEffect, useState} from 'react';
 import priceFormat from '../helper/priceFormat';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
-import {getHistories} from '../redux/actions/history';
+import {getHistories, deleteHistory} from '../redux/actions/history';
 
 const History = () => {
   const dataDummy = {
@@ -19,12 +19,41 @@ const History = () => {
   };
 
   const [select, setSelect] = useState();
-  const {auth, profile, histories} = useSelector(state => state);
+  const [msgDelete, setMsgDelete] = useState();
+  const {
+    auth,
+    profile,
+    histories,
+    deleteHistory: deleteState,
+    addHistory,
+  } = useSelector(state => state);
+
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getHistories(profile.results.username, auth.token));
   }, []);
 
+  useEffect(() => {
+    if (addHistory.isSuccess) {
+      dispatch(getHistories(profile.results.username, auth.token));
+    }
+  }, [addHistory.isSuccess]);
+
+  useEffect(() => {
+    if (deleteState.isSuccess) {
+      setMsgDelete(true);
+      dispatch(getHistories(profile.results.username, auth.token));
+      setTimeout(() => {
+        setMsgDelete(false);
+      }, 7000);
+    }
+  }, [deleteState.isSuccess]);
+
+  const handleDelete = () => {
+    if (select.length > 0) {
+      dispatch(deleteHistory(select, auth.token));
+    }
+  };
   const test = () => {
     console.log(select);
   };
@@ -40,14 +69,20 @@ const History = () => {
           alignItems={'flex-end'}
           style={styles.delete}
           flexDirection={'row'}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleDelete}>
             <Text color={'gray.500'} fontSize="lg" bold>
-              Select
+              {select && select.length > 0 ? 'Delete' : 'Select'}
             </Text>
           </TouchableOpacity>
         </Box>
       </Box>
+      {msgDelete && !histories.isLoading && (
+        <Text fontSize={'xl'} py="3" style={styles.message} bold>
+          History successfully deleted!
+        </Text>
+      )}
       <FlatList
+        showsVerticalScrollIndicator={false}
         data={histories.results}
         style={styles.flatList}
         renderItem={({item, index}) => (
@@ -100,7 +135,7 @@ const History = () => {
               <Checkbox.Group onChange={setSelect}>
                 <Checkbox
                   aria-label="checkbox"
-                  size={'lg'}
+                  size={'md'}
                   style={styles.checbox}
                   value={item.idHistory}
                 />
@@ -122,6 +157,9 @@ const styles = StyleSheet.create({
     alignContent: 'flex-end',
     justifyContent: 'flex-end',
     paddingRight: 10,
+  },
+  message: {
+    color: '#49BEB7',
   },
   flatList: {
     marginBottom: 38,
@@ -155,10 +193,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   badgeDelete: {
-    // backgroundColor: 'red',
+    backgroundColor: '#55efc4',
+    padding: 2,
+    borderRadius: 10,
   },
   checbox: {
-    width: 30,
+    // width: 30,
     borderRadius: 10,
     // backgroundColor: 'gray',
   },

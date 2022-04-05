@@ -20,6 +20,7 @@ import transactionCode from './transactionCode';
 import addHistory from './addHisltory';
 import histories from './histories';
 import profile from './profile';
+import deleteHistory from './deleteHistory';
 
 const persistConfig = {
   key: 'auth',
@@ -44,6 +45,7 @@ const rootReducers = combineReducers({
   transactionCode,
   addHistory,
   histories,
+  deleteHistory,
   profile,
 });
 
