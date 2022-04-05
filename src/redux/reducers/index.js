@@ -18,7 +18,7 @@ import detailOrder from './detailOrder';
 import paymentForm from './paymentForm';
 import transactionCode from './transactionCode';
 import addHistory from './addHisltory';
-import getHistory from './getHistory';
+import histories from './histories';
 import profile from './profile';
 
 const persistConfig = {
@@ -43,7 +43,7 @@ const rootReducers = combineReducers({
   paymentForm,
   transactionCode,
   addHistory,
-  getHistory,
+  histories,
   profile,
 });
 

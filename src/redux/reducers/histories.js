@@ -6,7 +6,7 @@ const initialState = {
   pageInfo: {},
 };
 
-const getHistory = (state = initialState, action) => {
+const histories = (state = initialState, action) => {
   switch (action.type) {
     case 'GET_HISTORY_LOADING': {
       return {
@@ -20,7 +20,7 @@ const getHistory = (state = initialState, action) => {
     }
     case 'GET_HISTORY': {
       const data = action.payload;
-      state.results.push(data.results);
+      state.results.push(...data.results);
       state.pageInfo = data.pageInfo;
       return {
         ...state,
@@ -45,4 +45,4 @@ const getHistory = (state = initialState, action) => {
   }
 };
 
-export default getHistory;
+export default histories;
