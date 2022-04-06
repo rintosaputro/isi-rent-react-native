@@ -15,8 +15,8 @@ const Main = () => {
   return (
     <NavigationContainer>
       <NativeBaseProvider>
-        {/* {auth.token ? <MainStackNav /> : <AuthStackNav />} */}
-        <AddItem />
+        {auth.token ? <MainStackNav /> : <AuthStackNav />}
+        {/* <AddItem /> */}
       </NativeBaseProvider>
     </NavigationContainer>
   );

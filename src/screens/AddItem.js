@@ -1,5 +1,4 @@
 import {
-  View,
   ScrollView,
   TouchableOpacity,
   TextInput,
@@ -38,7 +37,9 @@ const AddItem = ({navigation}) => {
     <Box p="5">
       <ScrollView showsVerticalScrollIndicator={false}>
         <Box flexDirection={'row'} justifyContent="space-between">
-          <TouchableOpacity style={styles.back}>
+          <TouchableOpacity
+            style={styles.back}
+            onPress={() => navigation.goBack()}>
             <EntypoIcon
               name="chevron-left"
               size={30}
