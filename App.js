@@ -8,7 +8,7 @@ import reduxStore from './src/redux/store';
 
 import MainStackNav from './src/navigation/MainStackNav';
 import AuthStackNav from './src/navigation/AuthStackNav';
-import Favourites from './src/screens/Favourites';
+import AddItem from './src/screens/AddItem';
 
 const Main = () => {
   const {auth} = useSelector(state => state);
@@ -16,7 +16,7 @@ const Main = () => {
     <NavigationContainer>
       <NativeBaseProvider>
         {auth.token ? <MainStackNav /> : <AuthStackNav />}
-        {/* <Favourites /> */}
+        {/* <AddItem /> */}
       </NativeBaseProvider>
     </NavigationContainer>
   );

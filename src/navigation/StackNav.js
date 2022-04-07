@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from '../screens/Home';
 import DetailCategory from '../screens/DetailCategory';
 import SearchList from '../screens/SearchList';
+import AddItem from '../screens/AddItem';
 
 const StackNavigator = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ const StackNav = () => {
         component={DetailCategory}
       />
       <StackNavigator.Screen name="SearchList" component={SearchList} />
+      <StackNavigator.Screen name="AddItem" component={AddItem} />
     </StackNavigator.Navigator>
   );
 };

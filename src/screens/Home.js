@@ -9,6 +9,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import {Box} from 'native-base';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -17,6 +18,7 @@ import {getCategory, getFilter} from '../redux/actions/vehicles';
 import {getDetailCategory} from '../redux/actions/detailCategory';
 import {myOrder} from '../redux/actions/transaction';
 import {getProfile} from '../redux/actions/user';
+import Button from '../components/Button';
 
 const DetailTop = ({category, onPress}) => {
   return (
@@ -65,7 +67,9 @@ const Home = ({navigation}) => {
   const [key, setKey] = useState();
 
   const dispatch = useDispatch();
-  const {cars, motorbike, bike, auth, pickup} = useSelector(state => state);
+  const {cars, motorbike, bike, auth, profile, pickup} = useSelector(
+    state => state,
+  );
 
   useEffect(() => {
     dispatch(getCategory('CAR'));
@@ -111,6 +115,15 @@ const Home = ({navigation}) => {
               <Icon name="search" size={20} style={styles.searchIcon} />
             </TouchableOpacity>
           </View>
+          {profile.results.username === 'Admin' && (
+            <Box px="5">
+              <Button
+                color={'primary'}
+                onPress={() => navigation.navigate('AddItem')}>
+                Add new item
+              </Button>
+            </Box>
+          )}
         </ImageBackground>
         <View style={styles.wrapperProduct}>
           <DetailTop

@@ -51,6 +51,10 @@ const Order = ({navigation}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch({type: 'ADD_VEHICLE_CLEAR'});
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch(getDetailVehicle(myOrder.idVehicle));
   }, [dispatch, myOrder.idVehicle]);
 
