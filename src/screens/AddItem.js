@@ -5,12 +5,18 @@ import {
   StyleSheet,
 } from 'react-native';
 import {Box, Image, Text} from 'native-base';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {Picker} from '@react-native-picker/picker';
 import Button from '../components/Button';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {addVehicle} from '../redux/actions/vehicles';
+import {useDispatch, useSelector} from 'react-redux';
+import RNFetchBlob from 'rn-fetch-blob';
+import {myOrder} from '../redux/actions/transaction';
 
 const AddItem = ({navigation}) => {
+  const BACKEND_URL = 'http://192.168.43.195:5000';
   const location = [
     'Ngawi',
     'Bandung',
@@ -20,16 +26,60 @@ const AddItem = ({navigation}) => {
     'Bali',
     'Malang',
   ];
-  const categories = ['Cars', 'Motorbike', 'Bike', 'Pickup'];
+  const categories = [
+    {name: 'Cars', id: 1},
+    {name: 'Motorbike', id: 2},
+    {name: 'Bike', id: 3},
+    {name: 'Pickup', id: 5},
+  ];
   const [selectedLocation, setSelectedLocation] = useState();
-  const [count, setCount] = useState(1);
+  const [qty, setQty] = useState(1);
+  const [capacity, setCapcity] = useState(1);
+  const [image, setImage] = useState();
+  const [idCategory, setIdCategory] = useState();
+  const [brand, setBrand] = useState();
+  const [price, setPrice] = useState();
 
-  const increment = () => {
-    setCount(count + 1);
+  const {auth, addVehicle: addVehicleState} = useSelector(state => state);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (addVehicleState.isSuccess) {
+      dispatch(myOrder(addVehicleState.results.idVehicle));
+    }
+  }, [addVehicleState.isSuccess, addVehicleState.results.idVehicle, dispatch]);
+
+  const addImage = async () => {
+    const photo = await launchImageLibrary({});
+    setImage(photo.assets[0]);
   };
-  const decrement = () => {
-    if (count > 1) {
-      setCount(count - 1);
+
+  const handleSave = () => {
+    dispatch(
+      addVehicle(
+        idCategory,
+        brand,
+        image,
+        capacity,
+        selectedLocation,
+        price,
+        qty,
+        auth.token,
+      ),
+    );
+  };
+
+  const test = () => {
+    console.log('testt', addVehicleState);
+  };
+
+  const increment = (state, setState) => {
+    setState(state + 1);
+  };
+  const decrement = (state, setState) => {
+    if (state > 1) {
+      setState(state - 1);
     }
   };
 
@@ -61,15 +111,27 @@ const AddItem = ({navigation}) => {
           justifyContent={'center'}
           alignItems="center"
           textAlign={'center'}>
-          <Box background={'gray.200'} style={styles.imgWrapper}>
+          {image ? (
             <Image
-              source={require('../assets/img/upload.png')}
-              size={60}
-              alt="upload"
-              resizeMode="contain"
+              source={{
+                uri: image.uri,
+              }}
+              width={150}
+              alt={image.fileName}
+              height={150}
+              style={styles.imgWrapper}
             />
-          </Box>
-          <TouchableOpacity>
+          ) : (
+            <Box background={'gray.200'} style={styles.imgWrapper}>
+              <Image
+                source={require('../assets/img/upload.png')}
+                size={60}
+                alt="upload"
+                resizeMode="contain"
+              />
+            </Box>
+          )}
+          <TouchableOpacity onPress={addImage}>
             <Box
               background={'black'}
               py="3"
@@ -81,6 +143,7 @@ const AddItem = ({navigation}) => {
               </Text>
             </Box>
           </TouchableOpacity>
+          <Button onPress={test}>Test</Button>
         </Box>
         <Box
           flexDirection="column"
@@ -90,12 +153,15 @@ const AddItem = ({navigation}) => {
             <TextInput
               textAlign="center"
               style={styles.input1}
-              placeholder="Type product name min 30 characters"
+              placeholder="Product name min 30 characters"
+              onChangeText={setBrand}
             />
             <TextInput
               textAlign="center"
               style={styles.input1}
-              placeholder="Type product price"
+              keyboardType="number-pad"
+              placeholder="Product price"
+              onChangeText={setPrice}
             />
           </Box>
         </Box>
@@ -134,15 +200,15 @@ const AddItem = ({navigation}) => {
           <Box style={styles.pickerWrap}>
             <Picker
               style={styles.picker}
-              selectedValue={selectedLocation}
+              selectedValue={idCategory}
               onValueChange={(itemValue, itemIndex) =>
-                setSelectedLocation(itemValue)
+                setIdCategory(itemValue)
               }>
               {/* <Picker.item label="Select Location" color="gray" value={null} /> */}
               {categories.map((data, index) => (
                 <Picker.Item
-                  label={data}
-                  value={data}
+                  label={data.name}
+                  value={data.id}
                   color="gray"
                   key={index}
                 />
@@ -155,18 +221,50 @@ const AddItem = ({navigation}) => {
             justifyContent={'space-between'}
             alignItems="center">
             <Text fontSize={'lg'} my={'3'} bold>
-              Select
+              Stock
             </Text>
             <Box flexDirection={'row'}>
-              <TouchableOpacity style={styles.counter} onPress={increment}>
+              <TouchableOpacity
+                style={styles.counter}
+                onPress={() => increment(qty, setQty)}>
                 <Text fontSize={'lg'} bold>
                   +
                 </Text>
               </TouchableOpacity>
               <Text fontSize={'lg'} mx={'4'} bold>
-                {count}
+                {qty}
               </Text>
-              <TouchableOpacity style={styles.counter} onPress={decrement}>
+              <TouchableOpacity
+                style={styles.counter}
+                onPress={() => decrement(qty, setQty)}>
+                <Text fontSize={'xl'} bold>
+                  -
+                </Text>
+              </TouchableOpacity>
+            </Box>
+          </Box>
+          <Box
+            mt="4"
+            flexDirection={'row'}
+            justifyContent={'space-between'}
+            alignItems="center">
+            <Text fontSize={'lg'} my={'3'} bold>
+              Capacity
+            </Text>
+            <Box flexDirection={'row'}>
+              <TouchableOpacity
+                style={styles.counter}
+                onPress={() => increment(capacity, setCapcity)}>
+                <Text fontSize={'lg'} bold>
+                  +
+                </Text>
+              </TouchableOpacity>
+              <Text fontSize={'lg'} mx={'4'} bold>
+                {capacity}
+              </Text>
+              <TouchableOpacity
+                style={styles.counter}
+                onPress={() => decrement(capacity, setCapcity)}>
                 <Text fontSize={'xl'} bold>
                   -
                 </Text>
@@ -175,7 +273,9 @@ const AddItem = ({navigation}) => {
           </Box>
         </Box>
         <Box my="5">
-          <Button color="primary">Save Product</Button>
+          <Button color="primary" onPress={handleSave}>
+            Save Product
+          </Button>
         </Box>
       </ScrollView>
     </Box>

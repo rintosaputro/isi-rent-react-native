@@ -1,4 +1,8 @@
 import http from '../../helper/http';
+import RNFetchBlob from 'rn-fetch-blob';
+import {NativeModule} from 'react-native';
+// const RNFetchBlob = NativeModules.RNFetchBlob
+const BACKEND_URL = 'http://192.168.43.195:5000';
 
 export const getCategory = (category, page = 1) => {
   return async dispatch => {
@@ -72,6 +76,68 @@ export const getDetailVehicle = id => {
     } catch (err) {
       dispatch({
         type: 'GET_DETAIL_VEHICLE_ERR',
+        payload: err.response.data.message,
+      });
+    }
+  };
+};
+
+export const addVehicle = (
+  id_category,
+  brand,
+  image,
+  capacity,
+  location,
+  price,
+  qty,
+  token,
+) => {
+  return async dispatch => {
+    dispatch({
+      type: 'ADD_VEHICLE_LOADING',
+    });
+    try {
+      const {data} = await RNFetchBlob.fetch(
+        'POST',
+        `${BACKEND_URL}/vehicles`,
+        {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        [
+          {
+            name: 'image',
+            filename: image.fileName,
+            type: image.type,
+            data: RNFetchBlob.wrap(image.uri),
+          },
+          {name: 'id_category', data: String(id_category)},
+          {name: 'brand', data: brand},
+          {name: 'capacity', data: String(capacity)},
+          {name: 'location', data: location},
+          {name: 'price', data: String(price)},
+          {name: 'qty', data: String(qty)},
+        ],
+      );
+
+      dispatch({
+        type: 'ADD_VEHICLE',
+        payload: JSON.parse(data).results,
+      });
+      // if (data.success) {
+      //   dispatch({
+      //     type: 'ADD_VEHICLE',
+      //     payload: data.results,
+      //   });
+      // } else {
+      //   dispatch({
+      //     type: 'ADD_VEHICLE_ERR',
+      //     payload: data.message,
+      //   });
+      // }
+    } catch (err) {
+      dispatch({
+        type: 'ADD_VEHICLE_ERR',
         payload: err.response.data.message,
       });
     }

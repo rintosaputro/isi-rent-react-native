@@ -12,8 +12,9 @@ import motorbike from './motorbike';
 import pickup from './pickup';
 import detailCategory from './detailCategory';
 import filterVehicle from './filterVehicle';
-import myOrder from './myOrder';
 import detailVehicle from './detailVehicle';
+import addVehicle from './addVehicle';
+import myOrder from './myOrder';
 import detailOrder from './detailOrder';
 import paymentForm from './paymentForm';
 import transactionCode from './transactionCode';
@@ -40,6 +41,7 @@ const rootReducers = combineReducers({
   filterVehicle,
   myOrder,
   detailVehicle,
+  addVehicle,
   detailOrder,
   paymentForm,
   transactionCode,
