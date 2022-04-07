@@ -3,6 +3,7 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
+  ActivityIndicator,
   StyleSheet,
 } from 'react-native';
 import {Box, Image, Text} from 'native-base';
@@ -38,6 +39,7 @@ const AddItem = ({navigation}) => {
   const [idCategory, setIdCategory] = useState();
   const [brand, setBrand] = useState();
   const [price, setPrice] = useState();
+  const [err, setErr] = useState();
 
   const {auth, addVehicle: addVehicleState} = useSelector(state => state);
 
@@ -47,6 +49,16 @@ const AddItem = ({navigation}) => {
     if (addVehicleState.results && addVehicleState.isSuccess) {
       dispatch(myOrder(addVehicleState.results.idVehicle));
       navigation.navigate('Order');
+      setSelectedLocation();
+      setQty(1);
+      setCapcity(1);
+      setImage();
+      setIdCategory();
+      setBrand('');
+      setPrice();
+      setErr(false);
+    } else {
+      setErr(true);
     }
   }, [addVehicleState.results]);
 
@@ -68,10 +80,6 @@ const AddItem = ({navigation}) => {
         auth.token,
       ),
     );
-  };
-
-  const test = () => {
-    console.log('testt', addVehicleState.isSuccess);
   };
 
   const increment = (state, setState) => {
@@ -143,7 +151,6 @@ const AddItem = ({navigation}) => {
               </Text>
             </Box>
           </TouchableOpacity>
-          <Button onPress={test}>Test</Button>
         </Box>
         <Box
           flexDirection="column"
@@ -155,6 +162,7 @@ const AddItem = ({navigation}) => {
               style={styles.input1}
               placeholder="Product name min 30 characters"
               onChangeText={setBrand}
+              // value={brand}
             />
             <TextInput
               textAlign="center"
@@ -273,9 +281,13 @@ const AddItem = ({navigation}) => {
           </Box>
         </Box>
         <Box my="5">
-          <Button color="primary" onPress={handleSave}>
-            Save Product
-          </Button>
+          {addVehicleState.isLoading ? (
+            <ActivityIndicator size={'large'} color="#32DBC6" />
+          ) : (
+            <Button color="primary" onPress={handleSave}>
+              Save Product
+            </Button>
+          )}
         </Box>
       </ScrollView>
     </Box>

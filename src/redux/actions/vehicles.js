@@ -138,7 +138,7 @@ export const addVehicle = (
     } catch (err) {
       dispatch({
         type: 'ADD_VEHICLE_ERR',
-        payload: err.response.data.message,
+        payload: err.data,
       });
     }
   };

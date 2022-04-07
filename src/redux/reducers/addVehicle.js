@@ -39,6 +39,9 @@ const addVehicle = (state = intialState, action) => {
         errMessage: action.payload,
       };
     }
+    case 'ADD_VEHICLE_CLEAR': {
+      return {...intialState};
+    }
     default: {
       return {...state};
     }
