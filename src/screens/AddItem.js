@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   ScrollView,
   TouchableOpacity,
@@ -12,11 +13,9 @@ import Button from '../components/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {addVehicle} from '../redux/actions/vehicles';
 import {useDispatch, useSelector} from 'react-redux';
-import RNFetchBlob from 'rn-fetch-blob';
 import {myOrder} from '../redux/actions/transaction';
 
 const AddItem = ({navigation}) => {
-  const BACKEND_URL = 'http://192.168.43.195:5000';
   const location = [
     'Ngawi',
     'Bandung',
@@ -45,10 +44,11 @@ const AddItem = ({navigation}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (addVehicleState.isSuccess) {
+    if (addVehicleState.results && addVehicleState.isSuccess) {
       dispatch(myOrder(addVehicleState.results.idVehicle));
+      navigation.navigate('Order');
     }
-  }, [addVehicleState.isSuccess, addVehicleState.results.idVehicle, dispatch]);
+  }, [addVehicleState.results]);
 
   const addImage = async () => {
     const photo = await launchImageLibrary({});
@@ -71,7 +71,7 @@ const AddItem = ({navigation}) => {
   };
 
   const test = () => {
-    console.log('testt', addVehicleState);
+    console.log('testt', addVehicleState.isSuccess);
   };
 
   const increment = (state, setState) => {
