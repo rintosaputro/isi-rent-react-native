@@ -1,7 +1,5 @@
 import http from '../../helper/http';
 import RNFetchBlob from 'rn-fetch-blob';
-import {NativeModule} from 'react-native';
-// const RNFetchBlob = NativeModules.RNFetchBlob
 const BACKEND_URL = 'http://192.168.43.195:5000';
 
 export const getCategory = (category, page = 1) => {

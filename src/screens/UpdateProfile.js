@@ -5,26 +5,133 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import React from 'react';
-import {Text, Image, Center, Radio, Stack} from 'native-base';
+import React, {useEffect, useState} from 'react';
+import {Text, Image, Center, Radio, Stack, Box} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '../components/Button';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {launchImageLibrary} from 'react-native-image-picker';
+import DatePicker from 'react-native-date-picker';
+import moment from 'moment';
+import {getProfile, updateProfile} from '../redux/actions/user';
+import {checkEmail, checkPhone} from '../helper/check';
 
 const UpdateProfile = ({navigation: {goBack}}) => {
-  const {profile} = useSelector(state => state);
+  const [changed, setChanged] = useState({
+    image,
+    gender: '',
+    name: '',
+    username: '',
+    email: '',
+    phoneNumber: '',
+    birthdate: '',
+    address: '',
+  });
+  const [open, setOpen] = useState();
+  const [date, setDate] = useState(new Date());
+  const [isStart, setIsStart] = useState(false);
+  const [isChanged, setIsChanged] = useState();
+  const [message, setMessage] = useState();
+  const [errMessage, setErrMessage] = useState();
+  const [isErr, setIsErr] = useState();
 
-  const {name, username, image, email, phone, birthdate, address} =
-    profile.results;
+  const {
+    profile,
+    auth,
+    updateProfile: updateProfileState,
+  } = useSelector(state => state);
+  const dispatch = useDispatch();
+
+  const {
+    name,
+    username,
+    gender,
+    image,
+    email,
+    phoneNumber,
+    birthdate,
+    address,
+  } = profile.results;
 
   const dataInput = [
-    {label: 'Name', value: name || username},
-    {label: 'Email Address', value: email, type: 'email-address'},
-    {label: 'Phone Number', value: phone, type: 'name-phone-pad'},
-    {label: 'Date of Birth', value: birthdate},
-    {label: 'Delivery Address', value: address},
+    {
+      label: 'Name',
+      value: name,
+      keyObj: 'name',
+    },
+    {
+      label: 'User Name',
+      value: username,
+      keyObj: 'username',
+    },
+    {
+      label: 'Email Address',
+      value: email,
+      type: 'email-address',
+      keyObj: 'email',
+    },
+    {
+      label: 'Phone Number',
+      value: phoneNumber,
+      type: 'phone-pad',
+      keyObj: 'phoneNumber',
+    },
   ];
+
+  useEffect(() => {
+    if (updateProfileState.isSuccess && updateProfileState.results) {
+      dispatch(getProfile(auth.token));
+      setIsChanged(false);
+      setMessage(true);
+      setTimeout(() => {
+        setMessage(false);
+      }, 10000);
+      dispatch({type: 'UPD_PROFILE_CLEAR'});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateProfileState.results]);
+
+  const getFile = async () => {
+    const file = await launchImageLibrary({});
+    setChanged({...changed, image: file.assets[0]});
+    setIsChanged(true);
+  };
+
+  const saveChanged = () => {
+    setIsErr(false);
+    setErrMessage('');
+    let err;
+    if (changed.email) {
+      if (!checkEmail(changed.email)) {
+        setIsErr(true);
+        setErrMessage('Email is not valid!');
+        err = true;
+      }
+    }
+    if (changed.phoneNumber) {
+      if (!checkPhone(changed.phoneNumber)) {
+        setIsErr(true);
+        setErrMessage('Phone number does not match!');
+        err = true;
+      }
+    }
+    if (changed.address) {
+      if (changed.address.length < 20) {
+        setIsErr(true);
+        setErrMessage('Delivery address must be at least 20 characters');
+        err = true;
+      }
+    }
+    if (err) {
+      // dispatch(updateProfile(auth.token, changed));
+      // console.log(errMessage, isErr);
+      console.log('errorr nih');
+    } else {
+      dispatch(updateProfile(auth.token, changed));
+      console.log('ok');
+    }
+  };
 
   return (
     <View>
@@ -48,7 +155,9 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 resizeMode={'contain'}
                 borderRadius={200}
                 source={
-                  profile.results.image
+                  changed.image
+                    ? {uri: changed.image.uri}
+                    : profile.results.image
                     ? {
                         uri: image.replace(/localhost/g, '192.168.43.195'),
                       }
@@ -57,40 +166,138 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 alt="Photo profile"
               />
             </Center>
-            <View style={styles.iconEdit}>
+            <TouchableOpacity style={styles.iconEdit} onPress={getFile}>
               <MaterialIcon
                 color="white"
                 name="pencil-outline"
                 style={styles.iconPen}
                 size={21}
               />
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.radioGrup}>
-            <Radio.Group defaultValue="1" name="myRadioGroup">
+            <Radio.Group
+              // defaultValue={gender}
+              value={changed.gender || gender}
+              name="myRadioGroup"
+              onChange={value => {
+                setIsChanged(true);
+                setChanged({...changed, gender: value});
+              }}>
               <Stack
                 direction={{base: 'row'}}
                 alignItems="center"
                 space={4}
                 w="75%"
                 maxW="300px">
-                <Radio value="1" my={1}>
+                <Radio value="Female" my={1}>
                   <Text style={styles.textRadio}>Female</Text>
                 </Radio>
-                <Radio value="2" my={1}>
+                <Radio value="Male" my={1}>
                   <Text style={styles.textRadio}>Male</Text>
                 </Radio>
               </Stack>
             </Radio.Group>
           </View>
-          {dataInput.map((data, index) => (
-            <View key={index}>
-              <Text style={styles.label}>{data.label}:</Text>
-              <TextInput defaultValue={data.value} style={styles.input} />
-            </View>
-          ))}
+          {dataInput.map((data, index) => {
+            return (
+              <View key={index}>
+                <Text style={styles.label}>{data.label}:</Text>
+                <TextInput
+                  keyboardType={data.type}
+                  defaultValue={data.value}
+                  style={styles.input}
+                  onChangeText={value => {
+                    setChanged({...changed, [data.keyObj]: value});
+                    setIsChanged(true);
+                  }}
+                />
+              </View>
+            );
+          })}
+          <Text style={styles.label}>Date of Birth:</Text>
+          {/* <TouchableOpacity style={styles.birthdate}> */}
+          <TouchableOpacity
+            style={styles.birthdate}
+            title={String(birthdate)}
+            onPress={() => setOpen(true)}>
+            <Text>
+              {isStart
+                ? moment(changed.birthdate).format('MMM DD YYYY')
+                : moment(birthdate).format('MMM DD YYYY')}
+            </Text>
+          </TouchableOpacity>
+          <DatePicker
+            style={styles.datePicker}
+            fadeToColor="white"
+            theme="dark"
+            textColor="black"
+            modal
+            mode="date"
+            open={open}
+            date={date}
+            maximumDate={new Date()}
+            onConfirm={dateItem => {
+              setOpen(false);
+              setDate(dateItem);
+              setChanged({
+                ...changed,
+                birthdate: moment(dateItem).format('YYYY-MM-DD'),
+              });
+              setIsStart(true);
+              setIsChanged(true);
+            }}
+            onCancel={() => setOpen(false)}
+          />
+          <View>
+            <Text style={styles.label}>Delivery Address:</Text>
+            <TextInput
+              defaultValue={address}
+              style={styles.input}
+              onChangeText={value => {
+                setIsChanged(true);
+                setChanged({...changed, address: value});
+              }}
+            />
+          </View>
+          {/* </TouchableOpacity> */}
           <View style={styles.button}>
-            <Button color="primary">Save change</Button>
+            {message && (
+              <Box justifyContent={'center'} py="5" mb="5">
+                <Text textAlign={'center'} fontSize={'xl'} bold>
+                  Profile successfully updated!
+                </Text>
+              </Box>
+            )}
+            {updateProfileState.isError && (
+              <Box justifyContent={'center'} py="5" mb="5">
+                <Text textAlign={'center'} fontSize={'xl'} bold>
+                  {updateProfileState.errMessage}
+                </Text>
+              </Box>
+            )}
+            {isErr && (
+              <Box justifyContent={'center'} py="5" mb="5">
+                <Text textAlign={'center'} fontSize={'xl'} bold>
+                  {errMessage}
+                </Text>
+              </Box>
+            )}
+            {!isChanged ? (
+              <Box
+                justifyContent={'center'}
+                py="4"
+                background={'gray.400'}
+                style={styles.fakeBtn}>
+                <Text textAlign={'center'} fontSize="xl" color="gray.300" bold>
+                  Save change
+                </Text>
+              </Box>
+            ) : (
+              <Button color="primary" onPress={saveChanged}>
+                Save change
+              </Button>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -146,9 +353,23 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     paddingHorizontal: 15,
   },
+  birthdate: {
+    height: 50,
+    color: 'black',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    paddingHorizontal: 15,
+    // alignItems: 'center',
+    justifyContent: 'center',
+  },
   button: {
     marginBottom: 80,
     marginTop: 40,
+  },
+  fakeBtn: {
+    // backgroundColor: 'gray',
+    borderRadius: 10,
   },
 });
 

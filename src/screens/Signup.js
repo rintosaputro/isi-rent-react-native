@@ -13,6 +13,7 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 
 import {authSignup} from '../redux/actions/signup';
+import {checkEmail, checkPassword, checkPhone} from '../helper/check';
 
 const Signup = ({navigation}) => {
   const [isEmpty, setIsEmpty] = useState();
@@ -20,6 +21,7 @@ const Signup = ({navigation}) => {
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
   const [password, setPassword] = useState();
+  const [errMessage, setErrMessage] = useState();
 
   const dispatch = useDispatch();
 
@@ -33,21 +35,40 @@ const Signup = ({navigation}) => {
   useEffect(() => {
     if (signup.isSuccess) {
       navigation.navigate('Verify');
+      dispatch({type: 'SIGNUP_CLEAR'});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signup]);
 
   const handleSignup = () => {
+    setErrMessage('');
     if (username && email && phone && password) {
+      if (!checkEmail(email)) {
+        setErrMessage('Email is not valid!');
+      }
+      if (!checkPhone(phone)) {
+        setErrMessage('Phone number does not match!');
+      }
+      if (!checkPassword(password)) {
+        setErrMessage(
+          'Password must be at least 6 characters must contain numeric lowercase and uppercase letter!',
+        );
+      }
       setIsEmpty(false);
       dispatch(authSignup(username, email, phone, password));
-      if (signup.isSuccess) {
-        navigation.navigate('Verify');
-      }
+      // if (signup.isSuccess) {
+      //   navigation.navigate('Verify');
+      // }
     } else {
       setIsEmpty(true);
     }
   };
+
+  const goToLogin = () => {
+    navigation.navigate('Login');
+    dispatch({type: 'AUTH_CLEAR_ERR'});
+  };
+
   return (
     <ScrollView style={styles.scrolView}>
       <ImageBackground
@@ -66,7 +87,7 @@ const Signup = ({navigation}) => {
           <View style={styles.form}>
             {(isEmpty || signup.isError) && (
               <Text
-                color={'danger.700'}
+                color={'white'}
                 style={styles.message}
                 py="2"
                 my="7"
@@ -110,7 +131,7 @@ const Signup = ({navigation}) => {
             </View>
             <View style={styles.loginContain}>
               <Text style={styles.login}>Already have account?</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+              <TouchableOpacity onPress={goToLogin}>
                 <Text style={[styles.login, styles.linklogin]}> Login now</Text>
               </TouchableOpacity>
             </View>
@@ -148,7 +169,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   message: {
-    backgroundColor: 'rgba(15, 185, 177,0.7)',
+    backgroundColor: '#ED4C67',
     borderRadius: 10,
   },
   gap: {

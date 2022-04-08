@@ -6,9 +6,9 @@ const intialState = {
   errMessage: '',
 };
 
-const addVehicle = (state = intialState, action) => {
+const updateProfile = (state = intialState, action) => {
   switch (action.type) {
-    case 'ADD_VEHICLE_LOADING': {
+    case 'UPD_PROFILE_LOADING': {
       return {
         ...state,
         isLoading: true,
@@ -18,7 +18,7 @@ const addVehicle = (state = intialState, action) => {
         errMessage: '',
       };
     }
-    case 'ADD_VEHICLE': {
+    case 'UPD_PROFILE': {
       // console.log(action.payload);
       return {
         ...state,
@@ -29,7 +29,7 @@ const addVehicle = (state = intialState, action) => {
         errMessage: '',
       };
     }
-    case 'ADD_VEHICLE_ERR': {
+    case 'UPD_PROFILE_ERR': {
       return {
         ...state,
         isLoading: false,
@@ -39,7 +39,7 @@ const addVehicle = (state = intialState, action) => {
         errMessage: action.payload,
       };
     }
-    case 'ADD_VEHICLE_CLEAR': {
+    case 'UPD_PROFILE_CLEAR': {
       return {...intialState};
     }
     default: {
@@ -48,4 +48,4 @@ const addVehicle = (state = intialState, action) => {
   }
 };
 
-export default addVehicle;
+export default updateProfile;
