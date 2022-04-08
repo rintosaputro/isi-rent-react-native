@@ -5,26 +5,77 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, Image, Center, Radio, Stack} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '../components/Button';
 import {useSelector} from 'react-redux';
+import {launchImageLibrary} from 'react-native-image-picker';
+import DatePicker from 'react-native-date-picker';
+import moment from 'moment';
 
 const UpdateProfile = ({navigation: {goBack}}) => {
+  const [changed, setChanged] = useState({
+    image,
+    gender: '',
+    name: '',
+    username: '',
+    email: '',
+    phoneNumber: '',
+    birthdate: '',
+    address: '',
+  });
+  const [open, setOpen] = useState();
+  const [date, setDate] = useState(new Date());
+  const [isStart, setIsStart] = useState(false);
+
   const {profile} = useSelector(state => state);
 
-  const {name, username, image, email, phone, birthdate, address} =
-    profile.results;
+  const {
+    name,
+    username,
+    gender,
+    image,
+    email,
+    phoneNumber,
+    birthdate,
+    address,
+  } = profile.results;
 
   const dataInput = [
-    {label: 'Name', value: name || username},
-    {label: 'Email Address', value: email, type: 'email-address'},
-    {label: 'Phone Number', value: phone, type: 'name-phone-pad'},
-    {label: 'Date of Birth', value: birthdate},
-    {label: 'Delivery Address', value: address},
+    {
+      label: 'Name',
+      value: name,
+      keyObj: 'name',
+    },
+    {
+      label: 'User Name',
+      value: username,
+      keyObj: 'username',
+    },
+    {
+      label: 'Email Address',
+      value: email,
+      type: 'email-address',
+      keyObj: 'email',
+    },
+    {
+      label: 'Phone Number',
+      value: phoneNumber,
+      type: 'phone-pad',
+      keyObj: 'phoneNumber',
+    },
   ];
+
+  const getFile = async () => {
+    const file = await launchImageLibrary({});
+    setChanged({...changed, image: file.assets[0]});
+  };
+
+  const saveChanged = () => {
+    console.log(changed);
+  };
 
   return (
     <View>
@@ -48,7 +99,9 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 resizeMode={'contain'}
                 borderRadius={200}
                 source={
-                  profile.results.image
+                  changed.image
+                    ? {uri: changed.image.uri}
+                    : profile.results.image
                     ? {
                         uri: image.replace(/localhost/g, '192.168.43.195'),
                       }
@@ -57,40 +110,90 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 alt="Photo profile"
               />
             </Center>
-            <View style={styles.iconEdit}>
+            <TouchableOpacity style={styles.iconEdit} onPress={getFile}>
               <MaterialIcon
                 color="white"
                 name="pencil-outline"
                 style={styles.iconPen}
                 size={21}
               />
-            </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.radioGrup}>
-            <Radio.Group defaultValue="1" name="myRadioGroup">
+            <Radio.Group defaultValue={gender} name="myRadioGroup">
               <Stack
                 direction={{base: 'row'}}
                 alignItems="center"
                 space={4}
                 w="75%"
                 maxW="300px">
-                <Radio value="1" my={1}>
+                <Radio value="Female" my={1}>
                   <Text style={styles.textRadio}>Female</Text>
                 </Radio>
-                <Radio value="2" my={1}>
+                <Radio value="Male" my={1}>
                   <Text style={styles.textRadio}>Male</Text>
                 </Radio>
               </Stack>
             </Radio.Group>
           </View>
-          {dataInput.map((data, index) => (
-            <View key={index}>
-              <Text style={styles.label}>{data.label}:</Text>
-              <TextInput defaultValue={data.value} style={styles.input} />
-            </View>
-          ))}
+          {dataInput.map((data, index) => {
+            return (
+              <View key={index}>
+                <Text style={styles.label}>{data.label}:</Text>
+                <TextInput
+                  keyboardType={data.type}
+                  defaultValue={data.value}
+                  style={styles.input}
+                  onChangeText={value =>
+                    setChanged({...changed, [data.keyObj]: value})
+                  }
+                />
+              </View>
+            );
+          })}
+          <Text style={styles.label}>Date of Birth:</Text>
+          {/* <TouchableOpacity style={styles.birthdate}> */}
+          <TouchableOpacity
+            style={styles.birthdate}
+            title={String(birthdate)}
+            onPress={() => setOpen(true)}>
+            <Text>
+              {isStart
+                ? moment(changed.birthdate).format('MMM DD YYYY')
+                : moment(birthdate).format('MMM DD YYYY')}
+            </Text>
+          </TouchableOpacity>
+          <DatePicker
+            style={styles.datePicker}
+            fadeToColor="white"
+            theme="dark"
+            textColor="black"
+            modal
+            mode="date"
+            open={open}
+            date={date}
+            maximumDate={new Date()}
+            onConfirm={dateItem => {
+              setOpen(false);
+              setDate(dateItem);
+              setChanged({...changed, birthdate: dateItem});
+              setIsStart(true);
+            }}
+            onCancel={() => setOpen(false)}
+          />
+          <View>
+            <Text style={styles.label}>Delivery Address:</Text>
+            <TextInput
+              defaultValue={address}
+              style={styles.input}
+              onChangeText={value => setChanged({...changed, address: value})}
+            />
+          </View>
+          {/* </TouchableOpacity> */}
           <View style={styles.button}>
-            <Button color="primary">Save change</Button>
+            <Button color="primary" onPress={saveChanged}>
+              Save change
+            </Button>
           </View>
         </View>
       </ScrollView>
@@ -145,6 +248,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'gray',
     paddingHorizontal: 15,
+  },
+  birthdate: {
+    height: 50,
+    color: 'black',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    paddingHorizontal: 15,
+    // alignItems: 'center',
+    justifyContent: 'center',
   },
   button: {
     marginBottom: 80,
