@@ -22,6 +22,7 @@ import addHistory from './addHisltory';
 import histories from './histories';
 import profile from './profile';
 import deleteHistory from './deleteHistory';
+import updateProfile from './updateProfile';
 
 const persistConfig = {
   key: 'auth',
@@ -49,6 +50,7 @@ const rootReducers = combineReducers({
   histories,
   deleteHistory,
   profile,
+  updateProfile,
 });
 
 export default rootReducers;

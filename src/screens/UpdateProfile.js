@@ -10,10 +10,11 @@ import {Text, Image, Center, Radio, Stack} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '../components/Button';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
+import {updateProfile} from '../redux/actions/user';
 
 const UpdateProfile = ({navigation: {goBack}}) => {
   const [changed, setChanged] = useState({
@@ -30,7 +31,8 @@ const UpdateProfile = ({navigation: {goBack}}) => {
   const [date, setDate] = useState(new Date());
   const [isStart, setIsStart] = useState(false);
 
-  const {profile} = useSelector(state => state);
+  const {profile, auth} = useSelector(state => state);
+  const dispatch = useDispatch();
 
   const {
     name,
@@ -74,7 +76,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
   };
 
   const saveChanged = () => {
-    console.log(changed);
+    dispatch(updateProfile(auth.token, changed));
   };
 
   return (
