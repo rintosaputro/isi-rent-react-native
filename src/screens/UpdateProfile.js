@@ -5,7 +5,7 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, Image, Center, Radio, Stack} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -31,7 +31,11 @@ const UpdateProfile = ({navigation: {goBack}}) => {
   const [date, setDate] = useState(new Date());
   const [isStart, setIsStart] = useState(false);
 
-  const {profile, auth} = useSelector(state => state);
+  const {
+    profile,
+    auth,
+    updateProfile: updateProfileState,
+  } = useSelector(state => state);
   const dispatch = useDispatch();
 
   const {
@@ -69,6 +73,11 @@ const UpdateProfile = ({navigation: {goBack}}) => {
       keyObj: 'phoneNumber',
     },
   ];
+
+  useEffect(() => {
+    if (updateProfile.isSuccess && updateProfile.results) {
+    }
+  }, []);
 
   const getFile = async () => {
     const file = await launchImageLibrary({});

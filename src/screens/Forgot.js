@@ -14,6 +14,7 @@ import Button from '../components/Button';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
 import {forgotPwd, verifyPwd} from '../redux/actions/forgot';
+import {checkEmail, checkPassword} from '../helper/check';
 
 const Forgot = ({navigation}) => {
   const [email, setEmail] = useState();
@@ -22,6 +23,7 @@ const Forgot = ({navigation}) => {
   const [confirmPassword, setConfirmPassword] = useState();
   const [isEmpty, setIsEmpty] = useState();
   const [checkPwd, setCheckPwd] = useState(true);
+  const [errMessage, setErrMessage] = useState();
 
   const {forgot} = useSelector(state => state);
 
@@ -41,17 +43,28 @@ const Forgot = ({navigation}) => {
   }, [forgot]);
 
   const handleSend = () => {
+    setErrMessage('');
     if (email) {
-      setIsEmpty(false);
-      dispatch(forgotPwd(email));
+      if (checkEmail(email)) {
+        setIsEmpty(false);
+        dispatch(forgotPwd(email));
+      } else {
+        setErrMessage('Wrong email input!');
+      }
     } else {
       setIsEmpty(true);
     }
   };
 
   const confrimPwd = () => {
+    setErrMessage('');
     if (code && password && confirmPassword) {
       setIsEmpty(false);
+      if (!checkPassword(password)) {
+        setErrMessage(
+          'Password must be at least 6 characters must contain numeric lowercase and uppercase letter!',
+        );
+      }
       if (password === confirmPassword) {
         setCheckPwd(true);
         dispatch(verifyPwd(email, code, password, confirmPassword));
@@ -71,7 +84,9 @@ const Forgot = ({navigation}) => {
         style={styles.image}>
         <View style={styles.opacity}>
           <View style={styles.header}>
-            <TouchableOpacity style={styles.back}>
+            <TouchableOpacity
+              style={styles.back}
+              onPress={() => navigation.goBack()}>
               <Icon style={[styles.text, styles.icon]} name="left" size={25} />
               <Text style={[styles.text, styles.textBack]}> Back</Text>
             </TouchableOpacity>
@@ -89,14 +104,18 @@ const Forgot = ({navigation}) => {
               </Text>
               {(isEmpty || forgot.isError) && (
                 <Text
-                  color={'danger.700'}
+                  color={'white'}
                   style={styles.message}
                   py="2"
                   my="7"
                   textAlign={'center'}
                   fontSize="xl"
                   bold>
-                  {forgot.isError ? forgot.errMessage : 'Data must be filled'}
+                  {errMessage
+                    ? errMessage
+                    : forgot.isError
+                    ? forgot.errMessage
+                    : 'Data must be filled'}
                 </Text>
               )}
               <ScrollView>
@@ -125,7 +144,7 @@ const Forgot = ({navigation}) => {
               <ScrollView style={styles.secondForm}>
                 {(isEmpty || forgot.isError || !checkPwd) && (
                   <Text
-                    color={'danger.600'}
+                    color={'white'}
                     style={styles.message}
                     py="2"
                     my="7"
@@ -220,8 +239,9 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   message: {
-    backgroundColor: 'rgba(15, 185, 177,0.9)',
+    // backgroundColor: 'rgba(15, 185, 177,0.9)',
     borderRadius: 10,
+    backgroundColor: '#ED4C67',
   },
   secondForm: {
     marginTop: 120,

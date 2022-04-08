@@ -30,9 +30,30 @@ const Login = ({navigation}) => {
     if (username && password) {
       setIsError(false);
       dispatch(authLogin(username, password));
+      dispatch({
+        type: 'AUTH_CLEAR_ERR',
+      });
     } else {
       setIsError(true);
     }
+  };
+
+  const goToSignup = () => {
+    navigation.navigate('Signup');
+    setIsError(false);
+    dispatch({
+      type: 'AUTH_CLEAR_ERR',
+    });
+    dispatch({
+      type: 'SIGNUP_CLEAR',
+    });
+  };
+  const goToForgot = () => {
+    navigation.navigate('Forgot');
+    setIsError(false);
+    dispatch({
+      type: 'AUTH_CLEAR_ERR',
+    });
   };
 
   return (
@@ -53,14 +74,14 @@ const Login = ({navigation}) => {
           <View style={styles.form}>
             {(isError || auth.isError) && (
               <Text
-                color={'danger.700'}
+                color={'white'}
                 style={styles.message}
                 py="2"
                 my="7"
                 textAlign={'center'}
                 fontSize="xl"
                 bold>
-                {auth.isError ? auth.errMessage : 'Empty username or password'}
+                {auth.isError ? auth.errMessage : 'Empty username or password!'}
               </Text>
             )}
             <Input
@@ -75,7 +96,7 @@ const Login = ({navigation}) => {
               onChangeText={setPassword}
               value={password}
             />
-            <TouchableOpacity onPress={() => navigation.navigate('Forgot')}>
+            <TouchableOpacity onPress={goToForgot}>
               <Text style={styles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
             <View style={styles.btn}>
@@ -85,7 +106,7 @@ const Login = ({navigation}) => {
             </View>
             <View style={styles.signupContain}>
               <Text style={styles.signup}>Don't have account?</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+              <TouchableOpacity onPress={goToSignup}>
                 <Text style={[styles.signup, styles.linkSignup]}>
                   {' '}
                   Sign up now
@@ -123,7 +144,8 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   message: {
-    backgroundColor: 'rgba(15, 185, 177,0.7)',
+    // backgroundColor: 'rgba(15, 185, 177,0.8)',
+    backgroundColor: '#ED4C67',
     borderRadius: 10,
   },
   gap: {
