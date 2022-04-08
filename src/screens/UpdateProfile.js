@@ -6,7 +6,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Text, Image, Center, Radio, Stack} from 'native-base';
+import {Text, Image, Center, Radio, Stack, Box} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '../components/Button';
@@ -14,7 +14,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {launchImageLibrary} from 'react-native-image-picker';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
-import {updateProfile} from '../redux/actions/user';
+import {getProfile, updateProfile} from '../redux/actions/user';
+import {checkEmail, checkPhone} from '../helper/check';
 
 const UpdateProfile = ({navigation: {goBack}}) => {
   const [changed, setChanged] = useState({
@@ -30,6 +31,10 @@ const UpdateProfile = ({navigation: {goBack}}) => {
   const [open, setOpen] = useState();
   const [date, setDate] = useState(new Date());
   const [isStart, setIsStart] = useState(false);
+  const [isChanged, setIsChanged] = useState();
+  const [message, setMessage] = useState();
+  const [errMessage, setErrMessage] = useState();
+  const [isErr, setIsErr] = useState();
 
   const {
     profile,
@@ -75,17 +80,57 @@ const UpdateProfile = ({navigation: {goBack}}) => {
   ];
 
   useEffect(() => {
-    if (updateProfile.isSuccess && updateProfile.results) {
+    if (updateProfileState.isSuccess && updateProfileState.results) {
+      dispatch(getProfile(auth.token));
+      setIsChanged(false);
+      setMessage(true);
+      setTimeout(() => {
+        setMessage(false);
+      }, 10000);
+      dispatch({type: 'UPD_PROFILE_CLEAR'});
     }
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateProfileState.results]);
 
   const getFile = async () => {
     const file = await launchImageLibrary({});
     setChanged({...changed, image: file.assets[0]});
+    setIsChanged(true);
   };
 
   const saveChanged = () => {
-    dispatch(updateProfile(auth.token, changed));
+    setIsErr(false);
+    setErrMessage('');
+    let err;
+    if (changed.email) {
+      if (!checkEmail(changed.email)) {
+        setIsErr(true);
+        setErrMessage('Email is not valid!');
+        err = true;
+      }
+    }
+    if (changed.phoneNumber) {
+      if (!checkPhone(changed.phoneNumber)) {
+        setIsErr(true);
+        setErrMessage('Phone number does not match!');
+        err = true;
+      }
+    }
+    if (changed.address) {
+      if (changed.address.length < 20) {
+        setIsErr(true);
+        setErrMessage('Delivery address must be at least 20 characters');
+        err = true;
+      }
+    }
+    if (err) {
+      // dispatch(updateProfile(auth.token, changed));
+      // console.log(errMessage, isErr);
+      console.log('errorr nih');
+    } else {
+      dispatch(updateProfile(auth.token, changed));
+      console.log('ok');
+    }
   };
 
   return (
@@ -131,7 +176,14 @@ const UpdateProfile = ({navigation: {goBack}}) => {
             </TouchableOpacity>
           </View>
           <View style={styles.radioGrup}>
-            <Radio.Group defaultValue={gender} name="myRadioGroup">
+            <Radio.Group
+              // defaultValue={gender}
+              value={changed.gender || gender}
+              name="myRadioGroup"
+              onChange={value => {
+                setIsChanged(true);
+                setChanged({...changed, gender: value});
+              }}>
               <Stack
                 direction={{base: 'row'}}
                 alignItems="center"
@@ -155,9 +207,10 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                   keyboardType={data.type}
                   defaultValue={data.value}
                   style={styles.input}
-                  onChangeText={value =>
-                    setChanged({...changed, [data.keyObj]: value})
-                  }
+                  onChangeText={value => {
+                    setChanged({...changed, [data.keyObj]: value});
+                    setIsChanged(true);
+                  }}
                 />
               </View>
             );
@@ -187,8 +240,12 @@ const UpdateProfile = ({navigation: {goBack}}) => {
             onConfirm={dateItem => {
               setOpen(false);
               setDate(dateItem);
-              setChanged({...changed, birthdate: dateItem});
+              setChanged({
+                ...changed,
+                birthdate: moment(dateItem).format('YYYY-MM-DD'),
+              });
               setIsStart(true);
+              setIsChanged(true);
             }}
             onCancel={() => setOpen(false)}
           />
@@ -197,14 +254,50 @@ const UpdateProfile = ({navigation: {goBack}}) => {
             <TextInput
               defaultValue={address}
               style={styles.input}
-              onChangeText={value => setChanged({...changed, address: value})}
+              onChangeText={value => {
+                setIsChanged(true);
+                setChanged({...changed, address: value});
+              }}
             />
           </View>
           {/* </TouchableOpacity> */}
           <View style={styles.button}>
-            <Button color="primary" onPress={saveChanged}>
-              Save change
-            </Button>
+            {message && (
+              <Box justifyContent={'center'} py="5" mb="5">
+                <Text textAlign={'center'} fontSize={'xl'} bold>
+                  Profile successfully updated!
+                </Text>
+              </Box>
+            )}
+            {updateProfileState.isError && (
+              <Box justifyContent={'center'} py="5" mb="5">
+                <Text textAlign={'center'} fontSize={'xl'} bold>
+                  {updateProfileState.errMessage}
+                </Text>
+              </Box>
+            )}
+            {isErr && (
+              <Box justifyContent={'center'} py="5" mb="5">
+                <Text textAlign={'center'} fontSize={'xl'} bold>
+                  {errMessage}
+                </Text>
+              </Box>
+            )}
+            {!isChanged ? (
+              <Box
+                justifyContent={'center'}
+                py="4"
+                background={'gray.400'}
+                style={styles.fakeBtn}>
+                <Text textAlign={'center'} fontSize="xl" color="gray.300" bold>
+                  Save change
+                </Text>
+              </Box>
+            ) : (
+              <Button color="primary" onPress={saveChanged}>
+                Save change
+              </Button>
+            )}
           </View>
         </View>
       </ScrollView>
@@ -273,6 +366,10 @@ const styles = StyleSheet.create({
   button: {
     marginBottom: 80,
     marginTop: 40,
+  },
+  fakeBtn: {
+    // backgroundColor: 'gray',
+    borderRadius: 10,
   },
 });
 

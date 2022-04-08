@@ -31,15 +31,15 @@ export const updateProfile = (token, dataInput) => {
       let dataChanged = [];
       if (dataInput.image) {
         dataChanged.push({
-          name: `${dataInput}`,
-          filename: dataInput.image.filName,
+          name: 'image',
+          filename: dataInput.image.fileName,
           type: dataInput.image.type,
           data: RNFetchBlob.wrap(dataInput.image.uri),
         });
       }
       Object.keys(dataInput).forEach(item => {
         if (item) {
-          dataChanged.push({name: `${item}`, data: dataInput[item]});
+          dataChanged.push({name: `${item}`, data: String(dataInput[item])});
         }
       });
 
@@ -55,6 +55,7 @@ export const updateProfile = (token, dataInput) => {
       dispatch({
         type: 'UPD_PROFILE',
         payload: JSON.parse(data).results,
+        // payload: dataChanged,
       });
     } catch (err) {
       dispatch({

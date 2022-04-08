@@ -44,7 +44,7 @@ const Signup = ({navigation}) => {
     setErrMessage('');
     if (username && email && phone && password) {
       if (!checkEmail(email)) {
-        setErrMessage('Wrong email input!');
+        setErrMessage('Email is not valid!');
       }
       if (!checkPhone(phone)) {
         setErrMessage('Phone number does not match!');
