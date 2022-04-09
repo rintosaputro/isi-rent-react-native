@@ -5,7 +5,7 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import {Text} from 'native-base';
+import {Box, Text} from 'native-base';
 import React, {useState, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Input from '../components/Input';
@@ -19,12 +19,19 @@ const Login = ({navigation}) => {
   const [isError, setIsError] = useState();
 
   const dispatch = useDispatch();
-  const {auth} = useSelector(state => state);
+  const {auth, verify, signup} = useSelector(state => state);
   useEffect(() => {
     dispatch({
       type: 'AUTH_CLEAR_ERR',
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
+
+  // useEffect(() => {
+  //   if (verify.gotoVerify === 'verify') {
+  //     navigation.navigate('Verify');
+  //   }
+  // }, [navigation, verify.gotoVerify]);
 
   const handleLogin = () => {
     if (username && password) {
@@ -33,6 +40,7 @@ const Login = ({navigation}) => {
       dispatch({
         type: 'AUTH_CLEAR_ERR',
       });
+      dispatch({type: 'SIGNUP_CLEAR'});
     } else {
       setIsError(true);
     }
@@ -83,6 +91,29 @@ const Login = ({navigation}) => {
                 bold>
                 {auth.isError ? auth.errMessage : 'Empty username or password!'}
               </Text>
+            )}
+            {signup.isSuccess && (
+              <Box my="7" py="5" style={styles.messageSignup}>
+                <Text
+                  // color={'white'}
+                  // style={styles.messageSignup}
+                  // py="2"
+                  // mt="7"
+                  textAlign={'center'}
+                  fontSize="xl"
+                  bold>
+                  Registration successful!
+                </Text>
+                <Text
+                  // style={styles.messageSignup}
+                  // pb="2"
+                  // mb="7"
+                  textAlign={'center'}
+                  fontSize="xl"
+                  bold>
+                  Login to your account
+                </Text>
+              </Box>
             )}
             <Input
               placeholder="Username"
@@ -146,6 +177,10 @@ const styles = StyleSheet.create({
   message: {
     // backgroundColor: 'rgba(15, 185, 177,0.8)',
     backgroundColor: '#ED4C67',
+    borderRadius: 10,
+  },
+  messageSignup: {
+    backgroundColor: '#EBEFD0',
     borderRadius: 10,
   },
   gap: {

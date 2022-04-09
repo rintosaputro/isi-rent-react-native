@@ -138,7 +138,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
         err = true;
       }
     }
-    if (Number(changed.image.fileSize) >= 2000000) {
+    if (Number(changed.image?.fileSize) >= 2000000) {
       setIsErr(true);
       setErrMessage(
         'File image is to large. Make sure the size is less than 2mb',
