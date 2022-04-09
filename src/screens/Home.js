@@ -89,7 +89,8 @@ const Home = ({navigation}) => {
   };
 
   const handleSearch = () => {
-    dispatch(getFilter(key));
+    const dataFilter = {search: key};
+    dispatch(getFilter(dataFilter));
     navigation.navigate('SearchList');
   };
 
