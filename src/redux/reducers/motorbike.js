@@ -12,8 +12,8 @@ const motorbike = (state = initialState, action) => {
     case 'GET_MOTORBIKE_LOADING': {
       return {
         ...state,
-        results: [],
-        isSuccess: false,
+        // results: [],
+        // isSuccess: false,
         isError: false,
         errMessage: '',
         isLoading: true,
@@ -29,6 +29,13 @@ const motorbike = (state = initialState, action) => {
         isError: false,
         errMessage: '',
       };
+    }
+    case 'GET_NEXT_MOTORBIKE': {
+      state.isLoading = false;
+      state.results.push(...action.payload.results);
+      state.pageInfo = action.payload.pageInfo;
+      // state.dataNext = action.payload.results;
+      return {...state};
     }
     case 'GET_MOTORBIKE_ERR': {
       return {
