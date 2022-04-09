@@ -12,13 +12,17 @@ import Input from '../components/Input';
 import Button from '../components/Button';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
-import {verify} from '../redux/actions/verify';
+import {sendCodeVerify, verify} from '../redux/actions/verify';
+import {checkEmail} from '../helper/check';
 
 const Verify = ({navigation}) => {
+  const [email, setEmail] = useState();
   const [code, setCode] = useState();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [isEmpty, setIsEmpty] = useState();
+  const [errMessage, setErrMessage] = useState();
+  const [isErr, setIsErr] = useState();
 
   const dispatch = useDispatch();
 
@@ -26,7 +30,8 @@ const Verify = ({navigation}) => {
 
   useEffect(() => {
     if (verifyState.isSuccess) {
-      navigation.navigate('Login');
+      // navigation.navigate('Login');
+      dispatch({type: 'VERIFY_CLEAR'});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [verifyState]);
@@ -37,6 +42,17 @@ const Verify = ({navigation}) => {
       dispatch(verify(username, code, password));
     } else {
       setIsEmpty(true);
+    }
+  };
+
+  const handleSend = () => {
+    if (checkEmail(email)) {
+      setErrMessage();
+      setIsErr(false);
+      dispatch(sendCodeVerify(email));
+    } else {
+      setIsErr(true);
+      setErrMessage('Email is not valid!');
     }
   };
 
@@ -56,11 +72,15 @@ const Verify = ({navigation}) => {
               Verification
             </Text>
             <Text fontSize="4xl" style={styles.head}>
-              Code
+              {verifyState.isSend ? 'Code' : 'User'}
             </Text>
           </View>
           <View style={styles.form}>
-            <Text style={[styles.text, styles.textForm]}>Enter your code</Text>
+            <Text style={[styles.text, styles.textForm]} bold>
+              {verifyState.isSend
+                ? 'Code verification is send to your email'
+                : 'Enter your email'}
+            </Text>
             {(isEmpty || verifyState.isError) && (
               <Text
                 color={'danger.700'}
@@ -75,35 +95,65 @@ const Verify = ({navigation}) => {
                   : 'All data must be filled'}
               </Text>
             )}
-            <Box my="5">
-              <Input
-                placeholder="Enter your code"
-                onChangeText={setCode}
-                value={code}
-                keyboardType="number-pad"
-              />
-            </Box>
-            <Box my="5">
-              <Input
-                placeholder="Enter your username"
-                onChangeText={setUsername}
-                value={username}
-              />
-            </Box>
-            <Box my="5">
-              <Input
-                onChangeText={setPassword}
-                value={password}
-                placeholder="Enter your password"
-                secureTextEntry={true}
-                keyboardType="number-pad"
-              />
-            </Box>
-            <View style={[styles.btn, styles.sendCode]}>
-              <Button color="primary" onPress={handleSubmit}>
-                Verify
-              </Button>
-            </View>
+            {isErr && (
+              <Text
+                color={'danger.700'}
+                style={styles.message}
+                py="2"
+                my="7"
+                textAlign={'center'}
+                fontSize="xl"
+                bold>
+                {errMessage}
+              </Text>
+            )}
+            {verifyState.isSend ? (
+              <>
+                <Box my="5">
+                  <Input
+                    placeholder="Enter your code"
+                    onChangeText={setCode}
+                    value={code}
+                    keyboardType="number-pad"
+                  />
+                </Box>
+                <Box my="5">
+                  <Input
+                    placeholder="Enter your username"
+                    onChangeText={setUsername}
+                    value={username}
+                  />
+                </Box>
+                <Box my="5">
+                  <Input
+                    onChangeText={setPassword}
+                    value={password}
+                    placeholder="Enter your password"
+                    secureTextEntry={true}
+                    keyboardType="number-pad"
+                  />
+                </Box>
+                <View style={[styles.btn, styles.sendCode]}>
+                  <Button color="primary" onPress={handleSubmit}>
+                    Verify
+                  </Button>
+                </View>
+              </>
+            ) : (
+              <Box style={styles.sendCodeWrap}>
+                <Box my="5">
+                  <Input
+                    placeholder="Enter your Email"
+                    onChangeText={setEmail}
+                    value={code}
+                    keyboardType="email-address"
+                  />
+                </Box>
+                <Box>
+                  <Button onPress={handleSend}>Send Code</Button>
+                </Box>
+              </Box>
+            )}
           </View>
         </ScrollView>
       </ImageBackground>
@@ -155,6 +205,7 @@ const styles = StyleSheet.create({
   textForm: {
     textAlign: 'center',
     marginBottom: 20,
+    fontSize: 19,
   },
   btn: {
     marginTop: 10,
@@ -165,6 +216,11 @@ const styles = StyleSheet.create({
   sendCode: {
     marginTop: 20,
     marginBottom: 90,
+  },
+  sendCodeWrap: {
+    flex: 1,
+    // position: 'relative',
+    marginTop: '30%',
   },
 });
 

@@ -1,9 +1,10 @@
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import {Image, Text} from 'native-base';
+import {Box, Image, Text} from 'native-base';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 import Button from '../components/Button';
+import {goToVerify} from '../redux/actions/verify';
 
 const Profile = ({navigation}) => {
   const dispatch = useDispatch();
@@ -12,6 +13,11 @@ const Profile = ({navigation}) => {
     dispatch({
       type: 'AUTH_LOGOUT',
     });
+  };
+  const handleVerify = () => {
+    dispatch({type: 'AUTH_LOGOUT'});
+    dispatch(goToVerify);
+    // navigation.navigate('Verify');
   };
   return (
     <View style={styles.main}>
@@ -60,6 +66,11 @@ const Profile = ({navigation}) => {
           </TouchableOpacity>
         </View>
         <View style={styles.btnWrapper}>
+          {profile.results?.confirm === '0' && (
+            <Box mb="7">
+              <Button onPress={handleVerify}>Verify account</Button>
+            </Box>
+          )}
           <Button color="primary" onPress={handleLogout}>
             Log out
           </Button>

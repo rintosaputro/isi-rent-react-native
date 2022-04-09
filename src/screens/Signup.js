@@ -34,8 +34,9 @@ const Signup = ({navigation}) => {
   }, [dispatch]);
   useEffect(() => {
     if (signup.isSuccess) {
-      navigation.navigate('Verify');
-      dispatch({type: 'SIGNUP_CLEAR'});
+      // navigation.navigate('Verify');
+      navigation.navigate('Login');
+      // dispatch({type: 'SIGNUP_CLEAR'});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signup]);
