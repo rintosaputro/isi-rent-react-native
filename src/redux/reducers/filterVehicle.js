@@ -1,6 +1,7 @@
 const initialState = {
   results: [],
   pageInfo: {},
+  dataFilter: {},
   keywoard: '',
   isError: false,
   errMessage: '',
@@ -12,8 +13,8 @@ const filterVehicle = (state = initialState, action) => {
     case 'GET_SEARCH_LOADING': {
       return {
         ...state,
-        results: [],
-        pageInfo: {},
+        // results: [],
+        // pageInfo: {},
         keywoard: '',
         isError: false,
         errMessage: '',
@@ -24,6 +25,20 @@ const filterVehicle = (state = initialState, action) => {
       const data = action.payload;
       state.results = data.results;
       state.pageInfo = data.pageInfo;
+      state.dataFilter = action.dataFilter;
+      return {
+        ...state,
+        keywoard: action.keywoard,
+        isError: false,
+        isLoading: false,
+        errMessage: '',
+      };
+    }
+    case 'GET_NEXT_SEARCH': {
+      const data = action.payload;
+      state.results.push(...data.results);
+      state.pageInfo = data.pageInfo;
+      state.dataFilter = action.dataFilter;
       return {
         ...state,
         keywoard: action.keywoard,
@@ -37,6 +52,7 @@ const filterVehicle = (state = initialState, action) => {
         ...state,
         results: [],
         pageInfo: {},
+        dataFilter: {},
         keywoard: '',
         isLoading: false,
         isError: true,

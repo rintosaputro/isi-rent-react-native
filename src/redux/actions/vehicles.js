@@ -73,17 +73,24 @@ export const getFilter = (dataFilter, page = 1) => {
     try {
       let apiUrl = `/vehicles/category/?limit=5&page=${page}`;
       let keywoard = '';
+      let resDataFilter = {...dataFilter};
       Object.keys(dataFilter).forEach(item => {
         if (item) {
           apiUrl += `&${item}=${dataFilter[item]}`;
           keywoard += `${dataFilter[item]}-`;
+          // resDataFilter = {...resDataFilter, item: dataFilter[item]};
         }
       });
       const {data} = await http().get(apiUrl);
+      let type = 'GET_SEARCH';
+      if (page > 1) {
+        type = 'GET_NEXT_SEARCH';
+      }
       dispatch({
-        type: 'GET_SEARCH',
+        type,
         payload: data,
         keywoard: keywoard,
+        dataFilter: resDataFilter,
       });
     } catch (err) {
       dispatch({

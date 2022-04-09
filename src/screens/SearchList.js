@@ -14,6 +14,7 @@ import FaIcon from 'react-native-vector-icons/FontAwesome';
 import VehicleList from '../components/VehicleList';
 import {getFilter} from '../redux/actions/vehicles';
 import {myOrder} from '../redux/actions/transaction';
+import Button from '../components/Button';
 
 const SearchList = ({navigation}) => {
   const [filter, setFilter] = useState(true);
@@ -28,12 +29,27 @@ const SearchList = ({navigation}) => {
   };
 
   const handleSearch = () => {
-    dispatch(getFilter(key));
+    const dataFilter = {search: key};
+    dispatch(getFilter(dataFilter));
   };
 
   const handleOrder = id => {
     dispatch(myOrder(id));
     navigation.navigate('Order');
+  };
+
+  const nextPage = () => {
+    const splitKeyword = filterVehicle.keywoard.split('-');
+    // console.log(filterVehicle.keywoard);
+    // console.log(splitKeyword);
+    console.log(filterVehicle.dataFilter);
+    console.log(filterVehicle.pageInfo.currentPage);
+    dispatch(
+      getFilter(
+        filterVehicle.dataFilter,
+        filterVehicle.pageInfo.currentPage + 1,
+      ),
+    );
   };
 
   return (
@@ -69,22 +85,36 @@ const SearchList = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
           {filterVehicle.results.map((data, index) => (
-            <TouchableOpacity
-              onPress={() => handleOrder(data.idVehicle)}
-              key={index}>
-              <VehicleList
-                image={
-                  data.image
-                    ? {uri: data.image.replace(/localhost/g, '192.168.43.195')}
-                    : require('../assets/img/no-image.jpg')
-                }
-                name={data.brand}
-                seet={data.capacity}
-                stock={data.qty}
-                price={data.price}
-              />
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity
+                onPress={() => handleOrder(data.idVehicle)}
+                key={index}>
+                <VehicleList
+                  image={
+                    data.image
+                      ? {
+                          uri: data.image.replace(
+                            /localhost/g,
+                            '192.168.43.195',
+                          ),
+                        }
+                      : require('../assets/img/no-image.jpg')
+                  }
+                  name={data.brand}
+                  seet={data.capacity}
+                  stock={data.qty}
+                  price={data.price}
+                />
+              </TouchableOpacity>
+            </>
           ))}
+          {!filterVehicle.isLoading && filterVehicle.pageInfo.next && (
+            <Box>
+              <Button color="primary" onPress={nextPage}>
+                Next
+              </Button>
+            </Box>
+          )}
           {!filterVehicle.isLoading && filterVehicle.results.length === 0 && (
             <Center>
               <Box

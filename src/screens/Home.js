@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
     width: 90,
     justifyContent: 'center',
     alignItems: 'flex-end',
+    // backgroundColor: 'red'
   },
   searchIcon: {
     color: '#fff',
