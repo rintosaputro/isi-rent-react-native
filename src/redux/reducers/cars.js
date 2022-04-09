@@ -5,6 +5,7 @@ const initialState = {
   isError: false,
   isLoading: false,
   errMessage: '',
+  dataNext: [],
 };
 
 const cars = (state = initialState, action) => {
@@ -12,8 +13,8 @@ const cars = (state = initialState, action) => {
     case 'GET_CAR_LOADING': {
       return {
         ...state,
-        results: [],
-        isSuccess: false,
+        // results: [],
+        // isSuccess: false,
         isError: false,
         errMessage: '',
         isLoading: true,
@@ -31,7 +32,10 @@ const cars = (state = initialState, action) => {
       };
     }
     case 'GET_NEXT_CAR': {
+      state.isLoading = false;
       state.results.push(...action.payload.results);
+      state.pageInfo = action.payload.pageInfo;
+      // state.dataNext = action.payload.results;
       return {...state};
     }
     case 'GET_CAR_ERR': {

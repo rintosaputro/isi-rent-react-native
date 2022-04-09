@@ -14,7 +14,11 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
-import {getCategory, getFilter} from '../redux/actions/vehicles';
+import {
+  getCategory,
+  getFilter,
+  getNextCategory,
+} from '../redux/actions/vehicles';
 import {getDetailCategory} from '../redux/actions/detailCategory';
 import {myOrder} from '../redux/actions/transaction';
 import {getProfile} from '../redux/actions/user';
@@ -67,7 +71,7 @@ const Home = ({navigation}) => {
   const [key, setKey] = useState();
 
   const dispatch = useDispatch();
-  const {cars, motorbike, bike, auth, profile, pickup} = useSelector(
+  const {car, motorbike, bike, auth, profile, pickup} = useSelector(
     state => state,
   );
 
@@ -127,12 +131,12 @@ const Home = ({navigation}) => {
         </ImageBackground>
         <View style={styles.wrapperProduct}>
           <DetailTop
-            onPress={() => gotoDetail('cars', cars.results[0].idCategory)}
+            onPress={() => gotoDetail('car', car.results[0].idCategory)}
             category="Car"
           />
           <View>
             <FlatListSection
-              dataList={cars.results}
+              dataList={car.results}
               // onPress={() => navigation.navigate('Order')}
               navigation={navigation}
             />

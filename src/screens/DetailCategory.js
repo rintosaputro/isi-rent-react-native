@@ -5,12 +5,15 @@ import {useSelector, useDispatch} from 'react-redux';
 import Button from '../components/Button';
 import {getDetailCategory} from '../redux/actions/detailCategory';
 import {myOrder} from '../redux/actions/transaction';
+import {getCategory} from '../redux/actions/vehicles';
 
 const DetailCategory = ({navigation}) => {
   const {detailCategory} = useSelector(state => state);
   const dataState = useSelector(state => state);
 
   const type = detailCategory.nameCategory;
+
+  const typeState = useSelector(state => state[`${type}`]);
 
   const dispatch = useDispatch();
 
@@ -20,16 +23,11 @@ const DetailCategory = ({navigation}) => {
   };
 
   const nextPage = () => {
-    // dispatch(
-    //   getDetailCategory(
-    //     type.toUpperCase(),
-    //     dataState[`${type}`].pageInfo.currentPage + 1,
-    //   ),
-    // );
-    console.log(
-      'testinngggg',
-      dataState[`${type}`].results.length,
-      dataState[`${type}`].pageInfo.currentPage + 1,
+    dispatch(
+      getCategory(
+        type.toUpperCase(),
+        dataState[`${type}`].pageInfo.currentPage + 1,
+      ),
     );
   };
 

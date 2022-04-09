@@ -9,12 +9,19 @@ export const getCategory = (category, page = 1) => {
     });
     try {
       const {data} = await http().get(
-        `/vehicles/category/?search=${category}&limit=100&page=${page}`,
+        `/vehicles/category/?search=${category}&limit=5&page=${page}`,
       );
-      dispatch({
-        type: `GET_${category}`,
-        payload: data,
-      });
+      if (page > 1) {
+        dispatch({
+          type: `GET_NEXT_${category}`,
+          payload: data,
+        });
+      } else {
+        dispatch({
+          type: `GET_${category}`,
+          payload: data,
+        });
+      }
     } catch (err) {
       dispatch({
         type: 'GET_CARS_ERR',
@@ -32,7 +39,7 @@ export const getFilter = (search, maximum, minimum, location, page = 1) => {
     try {
       const filterKey = [search, maximum, minimum, location];
       const query = ['search', 'maximum', 'minimum', 'location'];
-      let apiUrl = `/vehicles/category/?limit=100&page=${page}`;
+      let apiUrl = `/vehicles/category/?limit=5&page=${page}`;
       let keywoard = '';
       for (let i = 0; i < filterKey.length; i++) {
         if (filterKey[i]) {
