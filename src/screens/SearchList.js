@@ -85,28 +85,23 @@ const SearchList = ({navigation}) => {
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}>
           {filterVehicle.results.map((data, index) => (
-            <>
-              <TouchableOpacity
-                onPress={() => handleOrder(data.idVehicle)}
-                key={index}>
-                <VehicleList
-                  image={
-                    data.image
-                      ? {
-                          uri: data.image.replace(
-                            /localhost/g,
-                            '192.168.43.195',
-                          ),
-                        }
-                      : require('../assets/img/no-image.jpg')
-                  }
-                  name={data.brand}
-                  seet={data.capacity}
-                  stock={data.qty}
-                  price={data.price}
-                />
-              </TouchableOpacity>
-            </>
+            <TouchableOpacity
+              onPress={() => handleOrder(data.idVehicle)}
+              key={index}>
+              <VehicleList
+                image={
+                  data.image
+                    ? {
+                        uri: data.image.replace(/localhost/g, '192.168.43.195'),
+                      }
+                    : require('../assets/img/no-image.jpg')
+                }
+                name={data.brand}
+                seet={data.capacity}
+                stock={data.qty}
+                price={data.price}
+              />
+            </TouchableOpacity>
           ))}
           {!filterVehicle.isLoading && filterVehicle.pageInfo.next && (
             <Box>
