@@ -53,7 +53,13 @@ const Filter = ({navigation}) => {
   };
 
   const handleFilter = () => {
-    dispatch(getFilter(selectedType, max, min, selectedLocation));
+    const dataFilter = {
+      search: selectedType || '',
+      maximum: max || 0,
+      minimum: min || 0,
+      location: selectedLocation || '',
+    };
+    dispatch(getFilter(dataFilter));
     navigation.navigate('SearchList');
     // console.log('testinggg', selectedType, max, min, selectedLocation);
   };
@@ -137,7 +143,7 @@ const Filter = ({navigation}) => {
                 onChangeText={setMin}
                 value={min}
               />
-              <AntIcon name="caretdown" size={10} style={styles.iconInput} />
+              {/* <AntIcon name="caretdown" size={10} style={styles.iconInput} /> */}
             </View>
           </View>
           <View style={styles.select}>
@@ -153,7 +159,7 @@ const Filter = ({navigation}) => {
                 onChangeText={setMax}
                 value={max}
               />
-              <AntIcon name="caretdown" size={10} style={styles.iconInput} />
+              {/* <AntIcon name="caretdown" size={10} style={styles.iconInput} /> */}
             </View>
           </View>
           <View style={styles.select}>

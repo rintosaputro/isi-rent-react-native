@@ -31,32 +31,66 @@ export const getCategory = (category, page = 1) => {
   };
 };
 
-export const getFilter = (search, maximum, minimum, location, page = 1) => {
+// export const getFilter = (search, maximum, minimum, location, page = 1) => {
+//   return async dispatch => {
+//     dispatch({
+//       type: 'GET_SEARCH_LOADING',
+//     });
+//     try {
+//       const filterKey = [search, maximum, minimum, location];
+//       const query = ['search', 'maximum', 'minimum', 'location'];
+//       let apiUrl = `/vehicles/category/?limit=5&page=${page}`;
+//       let keywoard = '';
+//       for (let i = 0; i < filterKey.length; i++) {
+//         if (filterKey[i]) {
+//           apiUrl += `&${query[i]}=${filterKey[i]}`;
+//           keywoard += `${filterKey[i]}-`;
+//         }
+//       }
+//       const {data} = await http().get(apiUrl);
+//       // const {data} = await http().get(
+//       //   `/vehicles/category/?search=${search}&location=${location}&maximum=${maximum}&minimum=${minimum}&limit=100&page=${page}`,
+//       // );
+//       // const keywoard = `${search}-${location}-${maximum}-${minimum}`;
+//       dispatch({
+//         type: 'GET_SEARCH',
+//         payload: data,
+//         keywoard: keywoard,
+//       });
+//     } catch (err) {
+//       dispatch({
+//         type: 'GET_SEARCH_ERR',
+//         payload: err.response.data.message,
+//       });
+//     }
+//   };
+// };
+export const getFilter = (dataFilter, page = 1) => {
   return async dispatch => {
     dispatch({
       type: 'GET_SEARCH_LOADING',
     });
     try {
-      const filterKey = [search, maximum, minimum, location];
-      const query = ['search', 'maximum', 'minimum', 'location'];
       let apiUrl = `/vehicles/category/?limit=5&page=${page}`;
       let keywoard = '';
-      for (let i = 0; i < filterKey.length; i++) {
-        if (filterKey[i]) {
-          apiUrl += `&${query[i]}=${filterKey[i]}`;
-          keywoard += `${filterKey[i]}-`;
+      let resDataFilter = {...dataFilter};
+      Object.keys(dataFilter).forEach(item => {
+        if (item) {
+          apiUrl += `&${item}=${dataFilter[item]}`;
+          keywoard += `${dataFilter[item]}-`;
+          // resDataFilter = {...resDataFilter, item: dataFilter[item]};
         }
-      }
-      console.log('testt', apiUrl);
+      });
       const {data} = await http().get(apiUrl);
-      // const {data} = await http().get(
-      //   `/vehicles/category/?search=${search}&location=${location}&maximum=${maximum}&minimum=${minimum}&limit=100&page=${page}`,
-      // );
-      // const keywoard = `${search}-${location}-${maximum}-${minimum}`;
+      let type = 'GET_SEARCH';
+      if (page > 1) {
+        type = 'GET_NEXT_SEARCH';
+      }
       dispatch({
-        type: 'GET_SEARCH',
+        type,
         payload: data,
         keywoard: keywoard,
+        dataFilter: resDataFilter,
       });
     } catch (err) {
       dispatch({

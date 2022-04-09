@@ -84,13 +84,28 @@ const UpdateProfile = ({navigation: {goBack}}) => {
       dispatch(getProfile(auth.token));
       setIsChanged(false);
       setMessage(true);
-      setTimeout(() => {
-        setMessage(false);
-      }, 10000);
       dispatch({type: 'UPD_PROFILE_CLEAR'});
+      setChanged({
+        image,
+        gender: '',
+        name: '',
+        username: '',
+        email: '',
+        phoneNumber: '',
+        birthdate: '',
+        address: '',
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateProfileState.results]);
+
+  useEffect(() => {
+    if (message) {
+      setTimeout(() => {
+        setMessage(false);
+      }, 8000);
+    }
+  }, [message]);
 
   const getFile = async () => {
     const file = await launchImageLibrary({});
@@ -123,13 +138,15 @@ const UpdateProfile = ({navigation: {goBack}}) => {
         err = true;
       }
     }
-    if (err) {
-      // dispatch(updateProfile(auth.token, changed));
-      // console.log(errMessage, isErr);
-      console.log('errorr nih');
-    } else {
+    if (Number(changed.image.fileSize) >= 2000000) {
+      setIsErr(true);
+      setErrMessage(
+        'File image is to large. Make sure the size is less than 2mb',
+      );
+      err = true;
+    }
+    if (!err) {
       dispatch(updateProfile(auth.token, changed));
-      console.log('ok');
     }
   };
 
@@ -155,7 +172,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 resizeMode={'contain'}
                 borderRadius={200}
                 source={
-                  changed.image
+                  changed.image?.uri
                     ? {uri: changed.image.uri}
                     : profile.results.image
                     ? {
@@ -165,6 +182,19 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 }
                 alt="Photo profile"
               />
+              {/* {<Image
+                size={99}
+                resizeMode={'contain'}
+                borderRadius={200}
+                source={
+                  profile.results.image
+                    ? {
+                        uri: image.replace(/localhost/g, '192.168.43.195'),
+                      }
+                    : require('../assets/img/no-pp.jpg')
+                }
+                alt="Photo profile"
+              />} */}
             </Center>
             <TouchableOpacity style={styles.iconEdit} onPress={getFile}>
               <MaterialIcon

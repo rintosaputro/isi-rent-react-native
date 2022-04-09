@@ -32,14 +32,16 @@ const AddItem = ({navigation}) => {
     {name: 'Bike', id: 3},
     {name: 'Pickup', id: 5},
   ];
+  const [image, setImage] = useState();
+  const [brand, setBrand] = useState('');
+  const [price, setPrice] = useState();
+  const [desc, setDesc] = useState('');
   const [selectedLocation, setSelectedLocation] = useState();
+  const [idCategory, setIdCategory] = useState();
   const [qty, setQty] = useState(1);
   const [capacity, setCapcity] = useState(1);
-  const [image, setImage] = useState();
-  const [idCategory, setIdCategory] = useState();
-  const [brand, setBrand] = useState();
-  const [price, setPrice] = useState();
   const [err, setErr] = useState();
+  const [errMessage, setErrMessage] = useState();
 
   const {auth, addVehicle: addVehicleState} = useSelector(state => state);
 
@@ -57,8 +59,6 @@ const AddItem = ({navigation}) => {
       setBrand('');
       setPrice();
       setErr(false);
-    } else {
-      setErr(true);
     }
   }, [addVehicleState.results]);
 
@@ -68,18 +68,59 @@ const AddItem = ({navigation}) => {
   };
 
   const handleSave = () => {
-    dispatch(
-      addVehicle(
-        idCategory,
-        brand,
-        image,
-        capacity,
-        selectedLocation,
-        price,
-        qty,
-        auth.token,
-      ),
-    );
+    let errForm = false;
+    setErrMessage('');
+    if (!idCategory) {
+      errForm = true;
+      setErr(true);
+      setErrMessage('Category not selected!');
+    }
+    if (!selectedLocation) {
+      errForm = true;
+      setErr(true);
+      setErrMessage('Location not selected!');
+    }
+    if (desc.length < 150) {
+      errForm = true;
+      setErr(true);
+      setErrMessage('Description product min 150 characters!');
+    }
+    if (!price) {
+      errForm = true;
+      setErr(true);
+      setErrMessage('Price is required!');
+    }
+    if (brand.length < 20) {
+      errForm = true;
+      setErr(true);
+      setErrMessage('Product name min 20 characters!');
+    }
+    if (image && image.fileSize >= 2000000) {
+      errForm = true;
+      setErr(true);
+      setErrMessage(
+        'File image is to large. Make sure the size is less than 2mb',
+      );
+    }
+    if (!image) {
+      errForm = true;
+      setErr(true);
+      setErrMessage('Image not selected!');
+    }
+    if (!errForm) {
+      dispatch(
+        addVehicle(
+          idCategory,
+          brand,
+          image,
+          capacity,
+          selectedLocation,
+          price,
+          qty,
+          auth.token,
+        ),
+      );
+    }
   };
 
   const increment = (state, setState) => {
@@ -160,7 +201,7 @@ const AddItem = ({navigation}) => {
             <TextInput
               textAlign="center"
               style={styles.input1}
-              placeholder="Product name min 30 characters"
+              placeholder="Product name min 20 characters"
               onChangeText={setBrand}
               // value={brand}
             />
@@ -179,6 +220,7 @@ const AddItem = ({navigation}) => {
           </Text>
           <TextInput
             style={styles.input1}
+            onChangeText={setDesc}
             placeholder="Describe your product min 150 characters"
           />
           <Text fontSize={'xl'} mt="5" bold>
@@ -191,12 +233,12 @@ const AddItem = ({navigation}) => {
               onValueChange={(itemValue, itemIndex) =>
                 setSelectedLocation(itemValue)
               }>
-              {/* <Picker.item label="Select Location" color="gray" value={null} /> */}
+              <Picker.Item label={'Select location'} color="gray" />
               {location.map((data, index) => (
                 <Picker.Item
                   label={data}
                   value={data}
-                  color="gray"
+                  color="black"
                   key={index}
                 />
               ))}
@@ -212,12 +254,12 @@ const AddItem = ({navigation}) => {
               onValueChange={(itemValue, itemIndex) =>
                 setIdCategory(itemValue)
               }>
-              {/* <Picker.item label="Select Location" color="gray" value={null} /> */}
+              <Picker.Item label={'Select category'} color="gray" />
               {categories.map((data, index) => (
                 <Picker.Item
                   label={data.name}
                   value={data.id}
-                  color="gray"
+                  color="black"
                   key={index}
                 />
               ))}
@@ -280,6 +322,13 @@ const AddItem = ({navigation}) => {
             </Box>
           </Box>
         </Box>
+        {(err || addVehicleState.isError) && (
+          <Box my="5">
+            <Text textAlign={'center'} color="danger.700" fontSize={'3xl'} bold>
+              {errMessage}
+            </Text>
+          </Box>
+        )}
         <Box my="5">
           {addVehicleState.isLoading ? (
             <ActivityIndicator size={'large'} color="#32DBC6" />

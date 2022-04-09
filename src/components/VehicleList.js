@@ -47,7 +47,7 @@ const VehicleList = ({image, name, seet, stock, price, ...set}) => {
           )}
         </View>
         <Text fontSize={'lg'} bold style={styles.price}>
-          Rp.{priceFormat(price)}/day
+          {priceFormat(price)}/day
         </Text>
       </View>
     </View>
