@@ -19,6 +19,7 @@ import Button from '../components/Button';
 
 import {getDetailVehicle} from '../redux/actions/vehicles';
 import {detailOrder} from '../redux/actions/transaction';
+import {goToVerify} from '../redux/actions/verify';
 
 const LocationSection = ({address, icon}) => {
   return (
@@ -46,7 +47,7 @@ const Order = ({navigation}) => {
   const [isStart, setIsStart] = useState(false);
   const [endDate, setEndDate] = useState(1);
 
-  const {myOrder, detailVehicle} = useSelector(state => state);
+  const {myOrder, detailVehicle, profile} = useSelector(state => state);
 
   const dispatch = useDispatch();
 
@@ -73,6 +74,10 @@ const Order = ({navigation}) => {
     dispatch(detailOrder(count, date, endDate));
     navigation.navigate('PaymentForm');
     // console.log('test', count, moment(date).format('MMM DD YY'), endDate);
+  };
+  const handleVerify = () => {
+    dispatch({type: 'AUTH_LOGOUT'});
+    dispatch(goToVerify);
   };
 
   const {type, brand, capacity, prepayment, location, price, qty, image} =
@@ -209,11 +214,22 @@ const Order = ({navigation}) => {
               </Picker>
             </TouchableOpacity>
           </Box>
-          <Box mt={'25'}>
-            <Button color="primary" onPress={gotoReservation}>
-              Reservation
-            </Button>
-          </Box>
+          {profile.results?.confirm === '0' ? (
+            <Box>
+              <Text mt="5" mb="2" bold>
+                You must verify your account, before making a reservation!
+              </Text>
+              <Button color="primary" onPress={handleVerify}>
+                Verify account
+              </Button>
+            </Box>
+          ) : (
+            <Box mt={'25'}>
+              <Button color="primary" onPress={gotoReservation}>
+                Reservation
+              </Button>
+            </Box>
+          )}
         </View>
       </View>
     </ScrollView>
