@@ -8,6 +8,7 @@ import InputPayment from '../components/InputPayment';
 import {Picker} from '@react-native-picker/picker';
 import Button from '../components/Button';
 import {paymentForm} from '../redux/actions/transaction';
+import {checkEmail, checkPhone} from '../helper/check';
 
 const PaymentForm = ({navigation}) => {
   const payment = [
@@ -24,11 +25,15 @@ const PaymentForm = ({navigation}) => {
   const [phone, setPhone] = useState();
   const [email, setEmail] = useState();
   const [location, setLocation] = useState();
-  const [isEmpty, setIsEmpty] = useState();
+  const [isErr, setIsErr] = useState();
+  const [errMessage, setErrMessage] = useState();
 
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
+    let err = false;
+    setIsErr(false);
+    setErrMessage();
     if (
       idCard &&
       firstName &&
@@ -38,32 +43,34 @@ const PaymentForm = ({navigation}) => {
       location &&
       selectPayment
     ) {
-      setIsEmpty(false);
-      dispatch(
-        paymentForm(
-          idCard,
-          firstName,
-          lastName,
-          phone,
-          email,
-          location,
-          selectPayment,
-        ),
-      );
-      navigation.navigate('SecondPayment');
+      setIsErr(false);
+      if (!checkEmail(email)) {
+        setIsErr(true);
+        err = true;
+        setErrMessage('Email is not valid!');
+      }
+      if (!checkPhone(phone)) {
+        setIsErr(true);
+        err = true;
+        setErrMessage('Phone number does not match!');
+      }
+      if (!err) {
+        dispatch(
+          paymentForm(
+            idCard,
+            firstName,
+            lastName,
+            phone,
+            email,
+            location,
+            selectPayment,
+          ),
+        );
+        navigation.navigate('SecondPayment');
+      }
     } else {
-      setIsEmpty(true);
+      setIsErr(true);
     }
-    // console.log(
-    //   'test',
-    //   idCard,
-    //   firstName,
-    //   lastName,
-    //   phone,
-    //   email,
-    //   location,
-    //   selectPayment,
-    // );
   };
 
   return (
@@ -78,7 +85,7 @@ const PaymentForm = ({navigation}) => {
         <Box py={'10'}>
           <Stepper currentlyActive={1} />
         </Box>
-        {isEmpty && (
+        {isErr && (
           <Text
             color={'danger.700'}
             style={styles.message}
@@ -87,7 +94,7 @@ const PaymentForm = ({navigation}) => {
             textAlign={'center'}
             fontSize="xl"
             bold>
-            All data must be filled
+            {errMessage || 'All data must be filled'}
           </Text>
         )}
         <Box py="2">
