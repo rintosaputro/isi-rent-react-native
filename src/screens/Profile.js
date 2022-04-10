@@ -44,12 +44,14 @@ const Profile = ({navigation}) => {
       </View>
       <View style={styles.container}>
         <View>
-          <TouchableOpacity
-            style={styles.linkItem}
-            onPress={() => navigation.navigate('Favourites')}>
-            <Text fontSize="2xl">Your favourites</Text>
-            <FaIcon name="chevron-right" size={25} />
-          </TouchableOpacity>
+          {profile.results?.confirm !== '0' && (
+            <TouchableOpacity
+              style={styles.linkItem}
+              onPress={() => navigation.navigate('Favourites')}>
+              <Text fontSize="2xl">Your favourites</Text>
+              <FaIcon name="chevron-right" size={25} />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.linkItem}>
             <Text fontSize="2xl">FAQ</Text>
             <FaIcon name="chevron-right" size={25} />
@@ -58,12 +60,14 @@ const Profile = ({navigation}) => {
             <Text fontSize="2xl">Help</Text>
             <FaIcon name="chevron-right" size={25} />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.linkItem}
-            onPress={() => navigation.navigate('UpdateProfile')}>
-            <Text fontSize="2xl">Update profile</Text>
-            <FaIcon name="chevron-right" size={25} />
-          </TouchableOpacity>
+          {profile.results?.confirm !== '0' && (
+            <TouchableOpacity
+              style={styles.linkItem}
+              onPress={() => navigation.navigate('UpdateProfile')}>
+              <Text fontSize="2xl">Update profile</Text>
+              <FaIcon name="chevron-right" size={25} />
+            </TouchableOpacity>
+          )}
         </View>
         <View style={styles.btnWrapper}>
           {profile.results?.confirm === '0' && (
