@@ -102,7 +102,7 @@ const Login = ({navigation}) => {
                   textAlign={'center'}
                   fontSize="xl"
                   bold>
-                  Registration successful!
+                  Registration success!
                 </Text>
                 <Text
                   // style={styles.messageSignup}

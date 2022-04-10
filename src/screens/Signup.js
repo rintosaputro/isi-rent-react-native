@@ -16,7 +16,7 @@ import {authSignup} from '../redux/actions/signup';
 import {checkEmail, checkPassword, checkPhone} from '../helper/check';
 
 const Signup = ({navigation}) => {
-  const [isEmpty, setIsEmpty] = useState();
+  const [isErr, setIsErr] = useState();
   const [username, setUsername] = useState();
   const [email, setEmail] = useState();
   const [phone, setPhone] = useState();
@@ -35,6 +35,10 @@ const Signup = ({navigation}) => {
   useEffect(() => {
     if (signup.isSuccess) {
       // navigation.navigate('Verify');
+      setUsername();
+      setEmail();
+      setPhone();
+      setPassword();
       navigation.navigate('Login');
       // dispatch({type: 'SIGNUP_CLEAR'});
     }
@@ -42,26 +46,35 @@ const Signup = ({navigation}) => {
   }, [signup]);
 
   const handleSignup = () => {
-    setErrMessage('');
+    let err = false;
+    setErrMessage();
+    console.log(errMessage);
     if (username && email && phone && password) {
-      if (!checkEmail(email)) {
-        setErrMessage('Email is not valid!');
-      }
-      if (!checkPhone(phone)) {
-        setErrMessage('Phone number does not match!');
-      }
+      setIsErr(false);
       if (!checkPassword(password)) {
+        err = true;
+        setIsErr(true);
         setErrMessage(
           'Password must be at least 6 characters must contain numeric lowercase and uppercase letter!',
         );
       }
-      setIsEmpty(false);
-      dispatch(authSignup(username, email, phone, password));
-      // if (signup.isSuccess) {
-      //   navigation.navigate('Verify');
-      // }
+      if (!checkPhone(phone)) {
+        err = true;
+        setIsErr(true);
+        setErrMessage('Phone number does not match!');
+      }
+      if (!checkEmail(email)) {
+        err = true;
+        setIsErr(true);
+        setErrMessage('Email is not valid!');
+      }
+      if (!err) {
+        setIsErr(false);
+        setErrMessage('');
+        dispatch(authSignup(username, email, phone, password));
+      }
     } else {
-      setIsEmpty(true);
+      setIsErr(true);
     }
   };
 
@@ -86,7 +99,7 @@ const Signup = ({navigation}) => {
             </Text>
           </View>
           <View style={styles.form}>
-            {(isEmpty || signup.isError) && (
+            {(isErr || signup.isError) && (
               <Text
                 color={'white'}
                 style={styles.message}
@@ -95,7 +108,9 @@ const Signup = ({navigation}) => {
                 textAlign={'center'}
                 fontSize="xl"
                 bold>
-                {signup.isError ? signup.errMessage : 'All data must be filled'}
+                {signup.isError
+                  ? signup.errMessage
+                  : errMessage || 'All data must be filled'}
               </Text>
             )}
             <Input
