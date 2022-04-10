@@ -65,8 +65,8 @@ const Verify = ({navigation}) => {
         <ScrollView style={styles.opacity}>
           <View style={styles.header}>
             <TouchableOpacity style={styles.back}>
-              <Icon style={[styles.text, styles.icon]} name="left" size={25} />
-              <Text style={[styles.text, styles.textBack]}> Back</Text>
+              {/* <Icon style={[styles.text, styles.icon]} name="left" size={25} />
+              <Text style={[styles.text, styles.textBack]}> Back</Text> */}
             </TouchableOpacity>
             <Text fontSize="4xl" style={styles.head}>
               Verification
