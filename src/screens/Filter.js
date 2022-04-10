@@ -63,10 +63,8 @@ const Filter = ({navigation}) => {
       sort: sortBy || '',
       prepayment: isPrepayment || '',
     };
-    console.log(dataFilter);
     dispatch(getFilter(dataFilter));
     navigation.navigate('SearchList');
-    // console.log('testinggg', selectedType, max, min, selectedLocation);
   };
 
   return (
@@ -146,7 +144,7 @@ const Filter = ({navigation}) => {
               onValueChange={(itemValue, itemIndex) => setSortBy(itemValue)}>
               <Picker.Item label="Select" color="gray" />
               <Picker.Item label="Popular" value={'popular'} color="black" />
-              <Picker.Item label="New Product" value={'latest'} color="black" />
+              <Picker.Item label="New Vehicle" value={'latest'} color="black" />
             </Picker>
           </View>
           <View style={styles.select}>
