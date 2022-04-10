@@ -1,4 +1,4 @@
-package com.firstreactnative;
+package com.rinto.isirent;
 
 import com.facebook.react.ReactActivity;
 import android.os.Bundle;
@@ -16,6 +16,6 @@ public class MainActivity extends ReactActivity {
   }
   @Override
   protected String getMainComponentName() {
-    return "firstReactNative";
+    return "IsiRent";
   }
 }

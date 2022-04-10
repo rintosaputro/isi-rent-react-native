@@ -9,6 +9,7 @@ import priceFormat from '../helper/priceFormat';
 import timer from '../helper/timer';
 import moment from 'moment';
 import {addHistory} from '../redux/actions/history';
+import PushNotification from 'react-native-push-notification';
 
 const ThirdPayment = ({navigation}) => {
   const dispatch = useDispatch();
@@ -40,8 +41,15 @@ const ThirdPayment = ({navigation}) => {
   useEffect(() => {
     if (addHistoryState.isSuccess) {
       navigation.navigate('FinishedPayment');
+      PushNotification.localNotification({
+        channelId: 'transaction',
+        message: `Yeay! payment success for ${detailVehicle.results.brand}`,
+        title: 'Payment Suceess!',
+        soundName: 'default',
+        vibrate: true,
+      });
     }
-  }, [addHistoryState.isSuccess, navigation]);
+  }, [addHistoryState.isSuccess, detailVehicle.results.brand, navigation]);
 
   const handleSubmit = () => {
     dispatch(
