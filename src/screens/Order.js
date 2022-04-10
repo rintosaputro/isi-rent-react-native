@@ -46,6 +46,7 @@ const Order = ({navigation}) => {
   const [date, setDate] = useState(new Date());
   const [isStart, setIsStart] = useState(false);
   const [endDate, setEndDate] = useState(1);
+  const [stock, setStock] = useState();
 
   const {myOrder, detailVehicle, profile} = useSelector(state => state);
 
@@ -101,20 +102,29 @@ const Order = ({navigation}) => {
                 style={styles.backWrapper}>
                 <Icon name="angle-left" size={45} color="white" />
               </TouchableOpacity>
-              <View style={styles.rateWrapper}>
-                <View style={styles.rate}>
-                  <Rate rate={4.5} />
+              {profile.results.username === 'Admin' ? (
+                <View style={styles.rateWrapperAdmin}>
+                  <View style={styles.rate}>
+                    <Rate rate={4.5} />
+                  </View>
                 </View>
-                <TouchableOpacity
-                  style={styles.favorite}
-                  onPress={() => setFavorite(!favorite)}>
-                  <Icon
-                    name={favorite ? 'heart' : 'heart-o'}
-                    size={35}
-                    color={favorite ? '#49BEB7' : 'white'}
-                  />
-                </TouchableOpacity>
-              </View>
+              ) : (
+                <View style={styles.rateWrapper}>
+                  <View style={styles.rate}>
+                    <Rate rate={4.5} />
+                  </View>
+
+                  <TouchableOpacity
+                    style={styles.favorite}
+                    onPress={() => setFavorite(!favorite)}>
+                    <Icon
+                      name={favorite ? 'heart' : 'heart-o'}
+                      size={35}
+                      color={favorite ? '#49BEB7' : 'white'}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
             </View>
           </View>
         </ImageBackground>
@@ -124,7 +134,11 @@ const Order = ({navigation}) => {
               {brand}
             </Text>
             <TouchableOpacity>
-              <Icon name="comment-o" size={35} color="#32DBC6" />
+              {profile.results?.username === 'Admin' ? (
+                <Icon name="trash" size={35} color="#32DBC6" />
+              ) : (
+                <Icon name="comment-o" size={35} color="#32DBC6" />
+              )}
             </TouchableOpacity>
           </Box>
           <Text mb="1.5" fontSize={'3xl'} bold>
@@ -153,7 +167,9 @@ const Order = ({navigation}) => {
             justifyContent={'space-between'}
             alignItems="center">
             <Text fontSize={'lg'} my={'3'} bold>
-              Select {type}
+              {profile.results?.username === 'Admin'
+                ? 'Update stock'
+                : `Select ${type}`}
             </Text>
             <Box flexDirection={'row'}>
               <TouchableOpacity style={styles.counter} onPress={increment}>
@@ -171,50 +187,74 @@ const Order = ({navigation}) => {
               </TouchableOpacity>
             </Box>
           </Box>
-          <Box my={'2'} justifyContent="space-between" flexDirection={'row'}>
-            <TouchableOpacity style={styles.startDate}>
-              <TouchableOpacity
-                title={String(date)}
-                onPress={() => setOpen(true)}>
-                <Text style={styles.textBtn}>
-                  {isStart ? moment(date).format('MMM DD YYYY') : 'Select date'}
-                </Text>
-              </TouchableOpacity>
-              <DatePicker
-                style={styles.datePicker}
-                fadeToColor="white"
-                theme="dark"
-                textColor="black"
-                modal
-                mode="date"
-                open={open}
-                date={date}
-                minimumDate={new Date()}
-                onConfirm={dateItem => {
-                  setOpen(false);
-                  setDate(dateItem);
-                  setIsStart(true);
-                }}
-                onCancel={() => {
-                  setOpen(false);
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.endDate}>
+          {profile.results?.username === 'Admin' ? (
+            <TouchableOpacity style={styles.updStock}>
               <Picker
-                selectedValue={endDate}
-                onValueChange={(itemValue, itemIndex) => setEndDate(itemValue)}>
-                {[...Array(7)].map((data, index) => (
-                  <Picker.Item
-                    label={String(index + 1) + ' Day'}
-                    value={index + 1}
-                    key={index}
-                  />
-                ))}
+                selectedValue={stock}
+                onValueChange={(itemValue, itemIndex) => setStock(itemValue)}>
+                <Picker.Item label="Update stock status" color="gray" />
+                <Picker.Item
+                  value="Available"
+                  label="Available"
+                  color="black"
+                />
+                <Picker.Item value="Full" label="Full Booked" color="black" />
               </Picker>
             </TouchableOpacity>
-          </Box>
-          {profile.results?.confirm === '0' ? (
+          ) : (
+            <Box my={'2'} justifyContent="space-between" flexDirection={'row'}>
+              <TouchableOpacity style={styles.startDate}>
+                <TouchableOpacity
+                  title={String(date)}
+                  onPress={() => setOpen(true)}>
+                  <Text style={styles.textBtn}>
+                    {isStart
+                      ? moment(date).format('MMM DD YYYY')
+                      : 'Select date'}
+                  </Text>
+                </TouchableOpacity>
+                <DatePicker
+                  style={styles.datePicker}
+                  fadeToColor="white"
+                  theme="dark"
+                  textColor="black"
+                  modal
+                  mode="date"
+                  open={open}
+                  date={date}
+                  minimumDate={new Date()}
+                  onConfirm={dateItem => {
+                    setOpen(false);
+                    setDate(dateItem);
+                    setIsStart(true);
+                  }}
+                  onCancel={() => {
+                    setOpen(false);
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.endDate}>
+                <Picker
+                  selectedValue={endDate}
+                  onValueChange={(itemValue, itemIndex) =>
+                    setEndDate(itemValue)
+                  }>
+                  {[...Array(7)].map((data, index) => (
+                    <Picker.Item
+                      label={String(index + 1) + ' Day'}
+                      value={index + 1}
+                      key={index}
+                    />
+                  ))}
+                </Picker>
+              </TouchableOpacity>
+            </Box>
+          )}
+          {profile.results?.username === 'Admin' ? (
+            <Box mt={'25'}>
+              <Button color={'primary'}>Update Item</Button>
+            </Box>
+          ) : profile.results?.confirm === '0' ? (
             <Box>
               <Text mt="5" mb="2" bold>
                 You must verify your account, before making a reservation!
@@ -260,6 +300,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  rateWrapperAdmin: {
+    paddingRight: 15,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   rate: {
     backgroundColor: 'gray',
     alignSelf: 'center',
@@ -293,6 +339,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 50,
+  },
+  updStock: {
+    borderRadius: 10,
+    backgroundColor: 'rgba(57, 57, 57, 0.15)',
+    // paddingVertical: 3,
+    marginTop: 10,
   },
   startDate: {
     borderRadius: 10,
