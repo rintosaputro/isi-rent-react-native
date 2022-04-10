@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import {Provider, useSelector} from 'react-redux';
@@ -10,6 +10,7 @@ import MainStackNav from './src/navigation/MainStackNav';
 import AuthStackNav from './src/navigation/AuthStackNav';
 
 import PushNotification from 'react-native-push-notification';
+import RNBootSplash from 'react-native-bootsplash';
 
 PushNotification.createChannel({
   channelId: 'transaction',
@@ -21,7 +22,7 @@ PushNotification.createChannel({
 const Main = () => {
   const {auth} = useSelector(state => state);
   return (
-    <NavigationContainer>
+    <NavigationContainer onReady={() => RNBootSplash.hide({fade: true})}>
       <NativeBaseProvider>
         {auth.token ? <MainStackNav /> : <AuthStackNav />}
       </NativeBaseProvider>
@@ -32,6 +33,11 @@ const Main = () => {
 const {store, persistor} = reduxStore();
 
 const App = () => {
+  // useEffect(() => {
+  //   return async () => {
+  //     await RNBootSplash.hide({fade: true});
+  //   };
+  // }, []);
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
