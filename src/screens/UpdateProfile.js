@@ -150,6 +150,11 @@ const UpdateProfile = ({navigation: {goBack}}) => {
     }
   };
 
+  const getGender = value => {
+    setChanged({...changed, gender: value});
+    setIsChanged(true);
+  };
+
   return (
     <View>
       <TouchableOpacity style={styles.back} onPress={() => goBack()}>
@@ -182,19 +187,6 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 }
                 alt="Photo profile"
               />
-              {/* {<Image
-                size={99}
-                resizeMode={'contain'}
-                borderRadius={200}
-                source={
-                  profile.results.image
-                    ? {
-                        uri: image.replace(/localhost/g, '192.168.43.195'),
-                      }
-                    : require('../assets/img/no-pp.jpg')
-                }
-                alt="Photo profile"
-              />} */}
             </Center>
             <TouchableOpacity style={styles.iconEdit} onPress={getFile}>
               <MaterialIcon
@@ -210,10 +202,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
               // defaultValue={gender}
               value={changed.gender || gender}
               name="myRadioGroup"
-              onChange={value => {
-                setIsChanged(true);
-                setChanged({...changed, gender: value});
-              }}>
+              onChange={value => getGender(value)}>
               <Stack
                 direction={{base: 'row'}}
                 alignItems="center"

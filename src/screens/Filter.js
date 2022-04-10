@@ -31,6 +31,7 @@ const Filter = ({navigation}) => {
 
   const [selectedLocation, setSelectedLocation] = useState();
   const [selectRate, setSelectRate] = useState();
+  const [sortBy, setSortBy] = useState();
   const [min, setMin] = useState();
   const [max, setMax] = useState();
   const [date, setDate] = useState(new Date());
@@ -50,6 +51,7 @@ const Filter = ({navigation}) => {
     setIsPrepayment(false);
     setIsDeal(false);
     setIsAvailable(false);
+    setSortBy();
   };
 
   const handleFilter = () => {
@@ -58,7 +60,10 @@ const Filter = ({navigation}) => {
       maximum: max || 0,
       minimum: min || 0,
       location: selectedLocation || '',
+      sort: sortBy || '',
+      prepayment: isPrepayment || '',
     };
+    console.log(dataFilter);
     dispatch(getFilter(dataFilter));
     navigation.navigate('SearchList');
     // console.log('testinggg', selectedType, max, min, selectedLocation);
@@ -98,11 +103,12 @@ const Filter = ({navigation}) => {
               onValueChange={(itemValue, itemIndex) =>
                 setSelectedLocation(itemValue)
               }>
+              <Picker.Item label="Select" color="gray" />
               {location.map((data, index) => (
                 <Picker.Item
                   label={data}
                   value={data}
-                  color="gray"
+                  color="black"
                   key={index}
                 />
               ))}
@@ -125,9 +131,22 @@ const Filter = ({navigation}) => {
                   key={index}
                   label={String(index + 1)}
                   value={index + 1}
-                  color="gray"
+                  color="black"
                 />
               ))}
+            </Picker>
+          </View>
+          <View style={styles.select}>
+            <Text color={'black'} fontSize={'xl'}>
+              Sort By
+            </Text>
+            <Picker
+              style={styles.picker}
+              selectedValue={sortBy}
+              onValueChange={(itemValue, itemIndex) => setSortBy(itemValue)}>
+              <Picker.Item label="Select" color="gray" />
+              <Picker.Item label="Popular" value={'popular'} color="black" />
+              <Picker.Item label="New Product" value={'latest'} color="black" />
             </Picker>
           </View>
           <View style={styles.select}>
@@ -204,18 +223,19 @@ const Filter = ({navigation}) => {
               onValueChange={(itemValue, itemIndex) =>
                 setSelectedType(itemValue)
               }>
+              <Picker.Item label="Select" color="gray" />
               {type.map((data, index) => (
                 <Picker.Item
                   key={index}
                   label={data}
                   value={data}
-                  color="gray"
+                  color="black"
                 />
               ))}
             </Picker>
           </View>
           <SwitchSection
-            title="No Prepayment"
+            title="Prepayment"
             state={isPrepayment}
             setState={setIsPrepayment}
           />
@@ -299,6 +319,7 @@ const styles = StyleSheet.create({
   },
   btnWrapper: {
     marginTop: 50,
+    paddingBottom: 150,
   },
 });
 
