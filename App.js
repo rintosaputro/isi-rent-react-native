@@ -8,7 +8,15 @@ import reduxStore from './src/redux/store';
 
 import MainStackNav from './src/navigation/MainStackNav';
 import AuthStackNav from './src/navigation/AuthStackNav';
-import AddItem from './src/screens/AddItem';
+
+import PushNotification from 'react-native-push-notification';
+
+PushNotification.createChannel({
+  channelId: 'transaction',
+  channelName: 'transaction notification',
+  soundName: 'default',
+  vibrate: true,
+});
 
 const Main = () => {
   const {auth} = useSelector(state => state);
@@ -16,7 +24,6 @@ const Main = () => {
     <NavigationContainer>
       <NativeBaseProvider>
         {auth.token ? <MainStackNav /> : <AuthStackNav />}
-        {/* <AddItem /> */}
       </NativeBaseProvider>
     </NavigationContainer>
   );

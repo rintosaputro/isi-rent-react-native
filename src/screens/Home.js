@@ -14,11 +14,7 @@ import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
-import {
-  getCategory,
-  getFilter,
-  getNextCategory,
-} from '../redux/actions/vehicles';
+import {getCategory, getFilter} from '../redux/actions/vehicles';
 import {getDetailCategory} from '../redux/actions/detailCategory';
 import {myOrder} from '../redux/actions/transaction';
 import {getProfile} from '../redux/actions/user';
@@ -92,11 +88,6 @@ const Home = ({navigation}) => {
     const dataFilter = {search: key};
     dispatch(getFilter(dataFilter));
     navigation.navigate('SearchList');
-  };
-
-  const handleOrder = id => {
-    dispatch(myOrder(id));
-    navigation.navigate('Order');
   };
 
   return (
