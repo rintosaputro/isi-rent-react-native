@@ -11,13 +11,18 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import priceFormat from '../helper/priceFormat';
 import Rate from '../components/Rate';
 import Button from '../components/Button';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 
 const FinishedPayment = ({navigation}) => {
   const {addHistory, paymentForm, detailOrder} = useSelector(state => state);
 
+  const dispatch = useDispatch();
+
   const handleClick = () => {
+    dispatch({
+      type: 'CLEAR_ADD_HISTORY',
+    });
     navigation.navigate('History');
   };
 

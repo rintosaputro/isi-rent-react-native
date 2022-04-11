@@ -1,5 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import {View, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Modal,
+  Pressable,
+  FlatList,
+} from 'react-native';
 import {Text, Image, Checkbox, Box, Button} from 'native-base';
 import React, {useEffect, useState} from 'react';
 import priceFormat from '../helper/priceFormat';
@@ -20,6 +28,7 @@ const History = () => {
 
   const [select, setSelect] = useState();
   const [msgDelete, setMsgDelete] = useState();
+  const [modalVisible, setModalVisible] = useState(false);
   const {
     auth,
     profile,
@@ -52,6 +61,7 @@ const History = () => {
   const handleDelete = () => {
     if (select.length > 0) {
       dispatch(deleteHistory(select, auth.token));
+      setModalVisible(!modalVisible);
     }
   };
   const test = () => {
@@ -64,6 +74,40 @@ const History = () => {
         {histories.results.length > 0 ? 'History Order' : 'History is Empty'}
       </Text>
       {/* <Button onPress={test}>Test</Button> */}
+      <View>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert('Modal has been closed.');
+            setModalVisible(!modalVisible);
+          }}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>
+                Are you sure to delete the selected history?
+              </Text>
+              <Box
+                flexDirection={'row'}
+                justifyContent={'space-between'}
+                alignItems={'center'}
+                style={styles.btnModalWrap}>
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => setModalVisible(!modalVisible)}>
+                  <Text style={styles.textStyle}>Cancel</Text>
+                </Pressable>
+                <Pressable
+                  style={[styles.button, styles.buttonConfirm]}
+                  onPress={handleDelete}>
+                  <Text style={styles.textStyle}>Delete</Text>
+                </Pressable>
+              </Box>
+            </View>
+          </View>
+        </Modal>
+      </View>
       {histories.results.length > 0 && (
         <>
           <Box mt={'5'} justifyContent="flex-end" style={styles.deleteWrap}>
@@ -71,11 +115,19 @@ const History = () => {
               alignItems={'flex-end'}
               style={styles.delete}
               flexDirection={'row'}>
-              <TouchableOpacity onPress={handleDelete}>
-                <Text color={'gray.500'} fontSize="lg" bold>
-                  {select && select.length > 0 ? 'Delete' : 'Select'}
-                </Text>
-              </TouchableOpacity>
+              {select && select.length > 0 ? (
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                  <Text color={'gray.500'} fontSize="lg" bold>
+                    Delete
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <View>
+                  <Text color={'gray.500'} fontSize="lg" bold>
+                    Select
+                  </Text>
+                </View>
+              )}
             </Box>
           </Box>
           {msgDelete && !histories.isLoading && (
@@ -210,6 +262,58 @@ const styles = StyleSheet.create({
   },
   bottom: {
     marginBottom: 350,
+  },
+  //Modal
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  btnModalWrap: {
+    justifyContent: 'space-between',
+  },
+  button: {
+    borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 39,
+    elevation: 2,
+    marginHorizontal: 20,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: 'gray',
+  },
+  buttonConfirm: {
+    backgroundColor: '#49BEB7',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    fontSize: 20,
+    textAlign: 'center',
   },
 });
 
