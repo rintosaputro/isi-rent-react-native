@@ -20,6 +20,7 @@ import Button from '../components/Button';
 import {getDetailVehicle} from '../redux/actions/vehicles';
 import {detailOrder} from '../redux/actions/transaction';
 import {goToVerify} from '../redux/actions/verify';
+import {addFavourite, deleteFavourite} from '../redux/actions/favourite';
 
 const LocationSection = ({address, icon}) => {
   return (
@@ -41,6 +42,7 @@ const LocationSection = ({address, icon}) => {
 
 const Order = ({navigation}) => {
   const [favorite, setFavorite] = useState(false);
+  const [dataFav, setDataFav] = useState();
   const [count, setCount] = useState(1);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -48,17 +50,42 @@ const Order = ({navigation}) => {
   const [endDate, setEndDate] = useState(1);
   const [stock, setStock] = useState();
 
-  const {myOrder, detailVehicle, profile} = useSelector(state => state);
+  const {
+    myOrder,
+    detailVehicle,
+    profile,
+    favourite: favouriteState,
+  } = useSelector(state => state);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch({type: 'ADD_VEHICLE_CLEAR'});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(getDetailVehicle(myOrder.idVehicle));
   }, [dispatch, myOrder.idVehicle]);
+
+  useEffect(() => {
+    if (favouriteState.results.length > 0) {
+      const isFav = favouriteState.results.filter(
+        data => data.idVehicle === detailVehicle.results.idVehicle,
+      );
+      if (isFav.length > 0) {
+        setFavorite(true);
+      } else {
+        setFavorite(false);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [favouriteState]);
+
+  const handleBack = () => {
+    dispatch({type: 'GET_DETAIL_VEHICLE_CLEAR'});
+    navigation.goBack();
+  };
 
   const increment = () => {
     if (count < qty) {
@@ -81,8 +108,39 @@ const Order = ({navigation}) => {
     dispatch(goToVerify);
   };
 
-  const {type, brand, capacity, prepayment, location, price, qty, image} =
-    detailVehicle.results;
+  const {
+    type,
+    idVehicle,
+    brand,
+    capacity,
+    payment,
+    location,
+    price,
+    qty,
+    image,
+  } = detailVehicle.results;
+
+  const handleFavourite = () => {
+    if (favorite) {
+      setFavorite(false);
+      const filterFav = favouriteState.results.filter(
+        data => data.idVehicle !== idVehicle,
+      );
+      dispatch(deleteFavourite(filterFav));
+    } else {
+      setFavorite(true);
+      const data = {
+        idVehicle,
+        image,
+        brand,
+        payment,
+        rentStart: date,
+        totalDay: endDate,
+        location,
+      };
+      dispatch(addFavourite(data));
+    }
+  };
 
   return (
     <ScrollView>
@@ -97,9 +155,7 @@ const Order = ({navigation}) => {
           style={styles.imageProduct}>
           <View style={styles.opacity}>
             <View style={styles.header}>
-              <TouchableOpacity
-                onPress={() => navigation.goBack()}
-                style={styles.backWrapper}>
+              <TouchableOpacity onPress={handleBack} style={styles.backWrapper}>
                 <Icon name="angle-left" size={45} color="white" />
               </TouchableOpacity>
               {profile.results.username === 'Admin' ? (
@@ -116,7 +172,7 @@ const Order = ({navigation}) => {
 
                   <TouchableOpacity
                     style={styles.favorite}
-                    onPress={() => setFavorite(!favorite)}>
+                    onPress={handleFavourite}>
                     <Icon
                       name={favorite ? 'heart' : 'heart-o'}
                       size={35}
@@ -146,7 +202,7 @@ const Order = ({navigation}) => {
           </Text>
           <Text fontSize={'lg'}>Max for {capacity} person</Text>
           <Text fontSize={'lg'}>
-            {prepayment ? 'Prepayment' : 'No prepayment'}
+            {payment ? 'Prepayment' : 'No prepayment'}
           </Text>
           {qty <= 2 ? (
             <Text mb={'3'} fontSize={'lg'} bold color="#d63031">

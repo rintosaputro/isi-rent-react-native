@@ -5,75 +5,31 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import AntIcon from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 import priceFormat from '../helper/priceFormat';
+import {useDispatch, useSelector} from 'react-redux';
+import {deleteFavourite} from '../redux/actions/favourite';
+import {myOrder} from '../redux/actions/transaction';
 
 const Favourites = ({navigation}) => {
-  const dataDummy = [
-    {
-      brand: 'Vespa Matic',
-      location: 'Senayan, Jakarta',
-      prepayment: 245000,
-      rentStartDate: '2022-04-11',
-      rentEndDate: '2022-04-13',
-      image: require('../assets/imgDummy/motor.jpg'),
-    },
-    {
-      brand: 'Jupiter',
-      location: 'Senayan, Jakarta',
-      prepayment: 245000,
-      rentStartDate: '2022-04-11',
-      rentEndDate: '2022-04-13',
-      image: require('../assets/imgDummy/scoter.jpg'),
-    },
-    {
-      brand: 'Honda Supra',
-      location: 'Senayan, Jakarta',
-      prepayment: 245000,
-      rentStartDate: '2022-04-11',
-      rentEndDate: '2022-04-13',
-      image: require('../assets/imgDummy/motor.jpg'),
-    },
-    {
-      brand: 'Ymah KLX',
-      location: 'Senayan, Jakarta',
-      prepayment: 245000,
-      rentStartDate: '2022-04-11',
-      rentEndDate: '2022-04-13',
-      image: require('../assets/imgDummy/car.jpg'),
-    },
-    {
-      brand: 'Vespa Matic',
-      location: 'Senayan, Jakarta',
-      prepayment: 245000,
-      rentStartDate: '2022-04-11',
-      rentEndDate: '2022-04-13',
-      image: require('../assets/imgDummy/motor.jpg'),
-    },
-    {
-      brand: 'Jupiter',
-      location: 'Senayan, Jakarta',
-      prepayment: 245000,
-      rentStartDate: '2022-04-11',
-      rentEndDate: '2022-04-13',
-      image: require('../assets/imgDummy/scoter.jpg'),
-    },
-    {
-      brand: 'Honda Supra',
-      location: 'Senayan, Jakarta',
-      prepayment: 245000,
-      rentStartDate: '2022-04-11',
-      rentEndDate: '2022-04-13',
-      image: require('../assets/imgDummy/motor.jpg'),
-    },
-    {
-      brand: 'Ymah KLX',
-      location: 'Senayan, Jakarta',
-      prepayment: 245000,
-      rentStartDate: '2022-04-11',
-      rentEndDate: '2022-04-13',
-      image: require('../assets/imgDummy/car.jpg'),
-    },
-  ];
   const [favourite, setFavourite] = useState(true);
+
+  const {favourite: favouriteState} = useSelector(state => state);
+
+  const dispatch = useDispatch();
+
+  const handleDelete = id => {
+    const filterFav = favouriteState.results.filter(
+      data => data.idVehicle !== id,
+    );
+    dispatch(deleteFavourite(filterFav));
+    console.log(id);
+    console.log();
+    console.log(filterFav);
+  };
+
+  const handleOrder = id => {
+    dispatch(myOrder(id));
+    navigation.navigate('Order');
+  };
 
   return (
     <Box p="5">
@@ -83,54 +39,77 @@ const Favourites = ({navigation}) => {
           Your Favourites
         </Text>
       </TouchableOpacity>
-      <Text color={'gray.500'} my="5" textAlign={'center'}>
-        Tap love to unlike
-      </Text>
+      {favouriteState.results?.length > 0 && (
+        <Text color={'gray.500'} my="5" textAlign={'center'}>
+          Tap love to unlike
+        </Text>
+      )}
       <Box style={styles.listWrapper}>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={dataDummy}
-          renderItem={({item, index}) => (
-            <Box
-              justifyContent={'space-between'}
-              alignItems="center"
-              flexDirection="row">
-              <View style={styles.listVehicles}>
-                <View style={styles.left}>
-                  <Image
-                    source={item.image}
-                    alt="photo product"
-                    resizeMode={'cover'}
-                    width={130}
-                    height={100}
-                    borderRadius={30}
-                    style={styles.image}
-                  />
-                </View>
-                <Box style={styles.right} ml="5">
-                  <Text fontSize={'lg'} bold>
-                    {item.brand}
-                  </Text>
-                  <Text>
-                    {moment(item.rentStartDate).format('MMM DD')} to{' '}
-                    {moment(item.rentEndDate).format('MMM DD YYYY')}
-                  </Text>
-                  {item.prepayment ? (
-                    <Text bold>Prepayment: {priceFormat(item.prepayment)}</Text>
-                  ) : (
-                    <Text bold>No prepayment</Text>
-                  )}
-                  <Text bold>{item.location}</Text>
-                </Box>
-              </View>
-              <TouchableOpacity
-                style={styles.badgeDelete}
-                onPress={() => setFavourite(false)}>
-                <AntIcon name="heart" color={'#49BEB7'} size={30} />
-              </TouchableOpacity>
-            </Box>
-          )}
-        />
+        {favouriteState.results?.length > 0 ? (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={favouriteState.results}
+            renderItem={({item, index}) => (
+              <Box
+                justifyContent={'space-between'}
+                alignItems="center"
+                flexDirection="row">
+                <TouchableOpacity
+                  style={styles.listVehicles}
+                  onPress={() => handleOrder(item.idVehicle)}>
+                  <View style={styles.left}>
+                    <Image
+                      source={
+                        item.image
+                          ? {
+                              uri: item.image.replace(
+                                /localhost/g,
+                                '192.168.43.195',
+                              ),
+                            }
+                          : require('../assets/img/no-image.jpg')
+                      }
+                      alt="photo product"
+                      resizeMode={'cover'}
+                      width={130}
+                      height={100}
+                      borderRadius={30}
+                      style={styles.image}
+                    />
+                  </View>
+                  <Box style={styles.right} ml="5">
+                    <Text fontSize={'lg'} bold>
+                      {item.brand}
+                    </Text>
+                    <Text>
+                      {moment(item.rentStart).format('MMM DD')} to{' '}
+                      {moment(item.rentStart)
+                        .add(item.totalDay)
+                        .format('MMM DD YYYY')}
+                    </Text>
+                    {item.payment ? (
+                      <Text bold>Prepayment: {priceFormat(item.payment)}</Text>
+                    ) : (
+                      <Text bold>No prepayment</Text>
+                    )}
+                    <Text bold>{item.location}</Text>
+                  </Box>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.badgeDelete}
+                  onPress={() => handleDelete(item.idVehicle)}>
+                  <AntIcon name="heart" color={'#49BEB7'} size={30} />
+                </TouchableOpacity>
+              </Box>
+            )}
+          />
+        ) : (
+          <Box my="20">
+            <Text textAlign={'center'} fontSize="2xl" bold>
+              Your Favourite is Empty
+            </Text>
+          </Box>
+        )}
       </Box>
     </Box>
   );

@@ -23,9 +23,14 @@ import histories from './histories';
 import profile from './profile';
 import deleteHistory from './deleteHistory';
 import updateProfile from './updateProfile';
+import favourite from './favourite';
 
 const persistConfig = {
   key: 'auth',
+  storage: AsyncStorage,
+};
+const persistFav = {
+  key: 'favourite',
   storage: AsyncStorage,
 };
 
@@ -51,6 +56,7 @@ const rootReducers = combineReducers({
   deleteHistory,
   profile,
   updateProfile,
+  favourite: persistReducer(persistFav, favourite),
 });
 
 export default rootReducers;

@@ -13,6 +13,9 @@ const Profile = ({navigation}) => {
     dispatch({
       type: 'AUTH_LOGOUT',
     });
+    dispatch({
+      type: 'CLEAR_FAV',
+    });
   };
   const handleVerify = () => {
     dispatch({type: 'AUTH_LOGOUT'});
