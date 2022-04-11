@@ -224,6 +224,13 @@ const Order = ({navigation}) => {
         data.price = chPrice;
       }
     }
+    if (Number(file?.fileSize) >= 2000000) {
+      setIsErr(true);
+      err = true;
+      setErrMessage(
+        'File image is to large. Make sure the size is less than 2mb',
+      );
+    }
     if (!err) {
       dispatch(updateVehicle(auth.token, idVehicle, data));
     }
@@ -234,7 +241,7 @@ const Order = ({navigation}) => {
   };
 
   const testing = () => {
-    console.log(detailVehicle.results.type.toUpperCase());
+    console.log(file);
   };
 
   return (
