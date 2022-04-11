@@ -49,6 +49,7 @@ const ThirdPayment = ({navigation}) => {
         vibrate: true,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [addHistoryState.isSuccess, detailVehicle.results.brand, navigation]);
 
   const handleSubmit = () => {
