@@ -25,6 +25,9 @@ const detailVehicle = (state = initialState, action) => {
         errMessage: '',
       };
     }
+    case 'GET_DETAIL_VEHICLE_CLEAR': {
+      return {...initialState};
+    }
     case 'GET_DETAIL_VEHICLE_ERR': {
       return {
         ...state,
