@@ -220,3 +220,18 @@ export const updateVehicle = (token, id, dataInput) => {
     }
   };
 };
+
+export const deleteVehicle = (token, id) => {
+  return async dispatch => {
+    dispatch({type: 'DEL_VEHICLE_LOADING'});
+    try {
+      const {data} = await http(token).delete(`/vehicles/${id}`);
+      dispatch({type: 'DEL_VEHICLE', payload: data});
+    } catch (err) {
+      dispatch({
+        type: 'DEL_VEHICLE_ERR',
+        payload: err.response.data.message,
+      });
+    }
+  };
+};
