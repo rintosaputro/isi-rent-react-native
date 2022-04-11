@@ -13,11 +13,17 @@ import {Box, Text, Badge} from 'native-base';
 import DatePicker from 'react-native-date-picker';
 import {Picker} from '@react-native-picker/picker';
 import moment from 'moment';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 import priceFormat from '../helper/priceFormat';
 import Button from '../components/Button';
+import InputBorderBottom from '../components/InputBorderBottom';
 
-import {getDetailVehicle} from '../redux/actions/vehicles';
+import {
+  getCategory,
+  getDetailVehicle,
+  updateVehicle,
+} from '../redux/actions/vehicles';
 import {detailOrder} from '../redux/actions/transaction';
 import {goToVerify} from '../redux/actions/verify';
 import {addFavourite, deleteFavourite} from '../redux/actions/favourite';
@@ -42,18 +48,28 @@ const LocationSection = ({address, icon}) => {
 
 const Order = ({navigation}) => {
   const [favorite, setFavorite] = useState(false);
-  const [dataFav, setDataFav] = useState();
-  const [count, setCount] = useState(1);
+  const [file, setFile] = useState();
+  const [chBrand, setChBrand] = useState();
+  const [chPrice, setChPrice] = useState();
+  // const [chCapacity, setChCapacity] = useState();
+  const [chLocation, setChLocation] = useState();
+  const [chQty, setChQty] = useState(0);
+  const [count, setCount] = useState(0);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [isStart, setIsStart] = useState(false);
   const [endDate, setEndDate] = useState(1);
   const [stock, setStock] = useState();
+  const [isChange, setIsChange] = useState();
+  const [isErr, setIsErr] = useState();
+  const [errMessage, setErrMessage] = useState();
 
   const {
     myOrder,
     detailVehicle,
     profile,
+    auth,
+    updateVehicle: updVehicleState,
     favourite: favouriteState,
   } = useSelector(state => state);
 
@@ -61,7 +77,6 @@ const Order = ({navigation}) => {
 
   useEffect(() => {
     dispatch({type: 'ADD_VEHICLE_CLEAR'});
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   useEffect(() => {
@@ -82,9 +97,28 @@ const Order = ({navigation}) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [favouriteState]);
 
+  useEffect(() => {
+    if (updVehicleState.isSuccess) {
+      if (detailVehicle.results.type === 'Cars') {
+        dispatch(getCategory('CAR'));
+      } else {
+        dispatch(getCategory(detailVehicle.results.type.toUpperCase()));
+      }
+      dispatch({type: 'UPD_VEHICLE_CLEAR'});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updVehicleState.isSuccess]);
+
   const handleBack = () => {
     dispatch({type: 'GET_DETAIL_VEHICLE_CLEAR'});
     navigation.goBack();
+    // if (profile.results.username === 'Admin') {
+    //   if (detailVehicle.results.type === 'Cars') {
+    //     dispatch(getCategory('CAR'));
+    //   } else {
+    //     dispatch(getCategory(detailVehicle.results.type.toUpperCase()));
+    //   }
+    // }
   };
 
   const increment = () => {
@@ -142,12 +176,51 @@ const Order = ({navigation}) => {
     }
   };
 
+  const getFile = async () => {
+    const picture = await launchImageLibrary({});
+    setFile(picture.assets[0]);
+    setIsChange(true);
+  };
+
+  const test = () => {
+    setErrMessage();
+    setIsErr(false);
+    let err = false;
+    const data = {
+      location: chLocation,
+      brand: chBrand,
+      // price: chPrice,
+      qty: chQty,
+      image: file,
+      status: stock,
+    };
+    const pola = /\D/g;
+    if (chPrice) {
+      if (pola.test(chPrice)) {
+        setErrMessage('Price must be number');
+        setIsErr(true);
+        err = true;
+      } else {
+        data.price = chPrice;
+      }
+    }
+    if (!err) {
+      dispatch(updateVehicle(auth.token, idVehicle, data));
+    }
+  };
+
+  const testing = () => {
+    console.log(detailVehicle.results.type.toUpperCase());
+  };
+
   return (
     <ScrollView>
       <View style={styles.headerWrapper}>
         <ImageBackground
           source={
-            image
+            file?.uri
+              ? {uri: file.uri}
+              : image
               ? {uri: image.replace(/localhost/g, '192.168.43.195')}
               : require('../assets/img/no-image.jpg')
           }
@@ -182,13 +255,56 @@ const Order = ({navigation}) => {
                 </View>
               )}
             </View>
+            <TouchableOpacity style={styles.changeImg} onPress={getFile}>
+              <Icon
+                color="white"
+                name="pencil"
+                size={30}
+                style={styles.iconChange}
+              />
+            </TouchableOpacity>
           </View>
         </ImageBackground>
         <View style={styles.container}>
+          {updVehicleState.isError ||
+            (isErr && (
+              <Box justifyContent={'center'} py="5">
+                <Text
+                  textAlign={'center'}
+                  color="danger.700"
+                  fontSize={'xl'}
+                  bold>
+                  {updVehicleState.errMessage || errMessage}
+                </Text>
+              </Box>
+            ))}
+          {updVehicleState.isSuccess && (
+            <Box justifyContent={'center'} py="5">
+              <Text
+                textAlign={'center'}
+                // color="danger.700"
+                fontSize={'xl'}
+                bold>
+                Update Product Success!
+              </Text>
+            </Box>
+          )}
           <Box style={styles.topDetail}>
-            <Text fontSize={'3xl'} bold>
-              {brand}
-            </Text>
+            {profile.results?.username === 'Admin' ? (
+              <InputBorderBottom
+                defaultValue={brand}
+                placeholder={brand}
+                onChangeText={value => {
+                  setChBrand(value);
+                  setIsChange(true);
+                }}
+                border
+              />
+            ) : (
+              <Text fontSize={'3xl'} bold>
+                {brand}
+              </Text>
+            )}
             <TouchableOpacity>
               {profile.results?.username === 'Admin' ? (
                 <Icon name="trash" size={35} color="#32DBC6" />
@@ -197,9 +313,28 @@ const Order = ({navigation}) => {
               )}
             </TouchableOpacity>
           </Box>
-          <Text mb="1.5" fontSize={'3xl'} bold>
-            {priceFormat(price)}/day
-          </Text>
+          {profile.results?.username === 'Admin' ? (
+            <>
+              <Box mb="3">
+                <InputBorderBottom
+                  keyboard={'numeric'}
+                  placeholder={priceFormat(price) + '/day'}
+                  onChangeText={value => {
+                    setChPrice(value);
+                    setIsChange(true);
+                  }}
+                  border
+                  price
+                />
+              </Box>
+            </>
+          ) : (
+            <>
+              <Text mb="1.5" fontSize={'3xl'} bold>
+                {priceFormat(price)}/day
+              </Text>
+            </>
+          )}
           <Text fontSize={'lg'}>Max for {capacity} person</Text>
           <Text fontSize={'lg'}>
             {payment ? 'Prepayment' : 'No prepayment'}
@@ -213,7 +348,29 @@ const Order = ({navigation}) => {
               Available
             </Text>
           )}
-          <LocationSection address={location} icon={'map-marker'} />
+          {profile.results?.username === 'Admin' ? (
+            <Box style={styles.location}>
+              <Badge
+                my={'2'}
+                mr="2"
+                colorScheme="light"
+                py={'2'}
+                width={'9'}
+                style={styles.borderBadge}>
+                <Icon name={'map-marker'} size={20} color="#49BEB7" />
+              </Badge>
+              <InputBorderBottom
+                defaultValue={location}
+                placeholder={location}
+                onChangeText={value => {
+                  setChLocation(value);
+                  setIsChange(true);
+                }}
+              />
+            </Box>
+          ) : (
+            <LocationSection address={location} icon={'map-marker'} />
+          )}
           <LocationSection
             address="3.2 miles from your location"
             icon="street-view"
@@ -227,21 +384,49 @@ const Order = ({navigation}) => {
                 ? 'Update stock'
                 : `Select ${type}`}
             </Text>
-            <Box flexDirection={'row'}>
-              <TouchableOpacity style={styles.counter} onPress={increment}>
-                <Text fontSize={'lg'} bold>
-                  +
+            {profile.results?.username === 'Admin' ? (
+              <Box flexDirection={'row'}>
+                <TouchableOpacity
+                  style={styles.counter}
+                  onPress={() => {
+                    setChQty(chQty + 1);
+                    setIsChange(true);
+                  }}>
+                  <Text fontSize={'lg'} bold>
+                    +
+                  </Text>
+                </TouchableOpacity>
+                <Text fontSize={'lg'} mx={'4'} bold>
+                  {chQty > 0 ? chQty : qty}
                 </Text>
-              </TouchableOpacity>
-              <Text fontSize={'lg'} mx={'4'} bold>
-                {count}
-              </Text>
-              <TouchableOpacity style={styles.counter} onPress={decrement}>
-                <Text fontSize={'xl'} bold>
-                  -
+                <TouchableOpacity
+                  style={styles.counter}
+                  onPress={() => {
+                    chQty > 1 && setChQty(chQty - 1);
+                    chQty !== 0 && setIsChange(true);
+                  }}>
+                  <Text fontSize={'xl'} bold>
+                    -
+                  </Text>
+                </TouchableOpacity>
+              </Box>
+            ) : (
+              <Box flexDirection={'row'}>
+                <TouchableOpacity style={styles.counter} onPress={increment}>
+                  <Text fontSize={'lg'} bold>
+                    +
+                  </Text>
+                </TouchableOpacity>
+                <Text fontSize={'lg'} mx={'4'} bold>
+                  {count}
                 </Text>
-              </TouchableOpacity>
-            </Box>
+                <TouchableOpacity style={styles.counter} onPress={decrement}>
+                  <Text fontSize={'xl'} bold>
+                    -
+                  </Text>
+                </TouchableOpacity>
+              </Box>
+            )}
           </Box>
           {profile.results?.username === 'Admin' ? (
             <TouchableOpacity style={styles.updStock}>
@@ -249,12 +434,8 @@ const Order = ({navigation}) => {
                 selectedValue={stock}
                 onValueChange={(itemValue, itemIndex) => setStock(itemValue)}>
                 <Picker.Item label="Update stock status" color="gray" />
-                <Picker.Item
-                  value="Available"
-                  label="Available"
-                  color="black"
-                />
-                <Picker.Item value="Full" label="Full Booked" color="black" />
+                <Picker.Item value="1" label="Available" color="black" />
+                <Picker.Item value="2" label="Full Booked" color="black" />
               </Picker>
             </TouchableOpacity>
           ) : (
@@ -307,9 +488,24 @@ const Order = ({navigation}) => {
             </Box>
           )}
           {profile.results?.username === 'Admin' ? (
-            <Box mt={'25'}>
-              <Button color={'primary'}>Update Item</Button>
-            </Box>
+            !isChange ? (
+              <Box
+                justifyContent={'center'}
+                py="4"
+                background={'gray.400'}
+                mt={'25'}
+                style={styles.fakeBtn}>
+                <Text textAlign={'center'} fontSize="xl" color="gray.300" bold>
+                  Save change
+                </Text>
+              </Box>
+            ) : (
+              <Box mt={'25'}>
+                <Button color={'primary'} onPress={test}>
+                  Update Item
+                </Button>
+              </Box>
+            )
           ) : profile.results?.confirm === '0' ? (
             <Box>
               <Text mt="5" mb="2" bold>
@@ -373,6 +569,19 @@ const styles = StyleSheet.create({
     // paddingBottom: 10,
     alignItems: 'flex-end',
   },
+  changeImg: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingLeft: 140,
+    paddingBottom: 10,
+    paddingTop: 80,
+  },
+  iconChange: {
+    // padding: 29,
+  },
   container: {
     padding: 20,
   },
@@ -412,6 +621,10 @@ const styles = StyleSheet.create({
     width: '35%',
     borderRadius: 10,
     backgroundColor: 'rgba(57, 57, 57, 0.15)',
+  },
+  fakeBtn: {
+    // backgroundColor: 'gray',
+    borderRadius: 10,
   },
 });
 

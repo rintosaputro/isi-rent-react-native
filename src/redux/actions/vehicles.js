@@ -31,6 +31,35 @@ export const getCategory = (category, page = 1) => {
   };
 };
 
+export const getCategoryAfterUpdate = (category, page = 1) => {
+  return async dispatch => {
+    dispatch({
+      type: `GET_${category}_LOADING`,
+    });
+    try {
+      const {data} = await http().get(
+        `/vehicles/category/?search=${category}&limit=5&page=${page}`,
+      );
+      if (page > 1) {
+        dispatch({
+          type: `GET_NEXT_${category}`,
+          payload: data,
+        });
+      } else {
+        dispatch({
+          type: `GET_${category}`,
+          payload: data,
+        });
+      }
+    } catch (err) {
+      dispatch({
+        type: 'GET_CARS_ERR',
+        payload: err.response.data.message,
+      });
+    }
+  };
+};
+
 export const getFilter = (dataFilter, page = 1) => {
   return async dispatch => {
     dispatch({
@@ -144,6 +173,49 @@ export const addVehicle = (
       dispatch({
         type: 'ADD_VEHICLE_ERR',
         payload: err.data,
+      });
+    }
+  };
+};
+
+export const updateVehicle = (token, id, dataInput) => {
+  return async dispatch => {
+    dispatch({
+      type: 'UPD_VEHICLE_LOADING',
+    });
+    try {
+      let dataUpdate = [];
+      if (dataInput.image) {
+        dataUpdate.push({
+          name: 'image',
+          filename: dataInput.image.fileName,
+          type: dataInput.image.type,
+          data: RNFetchBlob.wrap(dataInput.image.uri),
+        });
+      }
+      Object.keys(dataInput).forEach(item => {
+        if (item) {
+          dataUpdate.push({name: `${item}`, data: String(dataInput[item])});
+        }
+      });
+
+      const {data} = await RNFetchBlob.fetch(
+        'PATCH',
+        `${BACKEND_URL}/vehicles/${id}`,
+        {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        dataUpdate,
+      );
+      dispatch({
+        type: 'UPD_VEHICLE',
+        payload: JSON.parse(data).results,
+      });
+    } catch (err) {
+      dispatch({
+        type: 'UPD_VEHICLE_ERR',
+        payload: err,
       });
     }
   };
