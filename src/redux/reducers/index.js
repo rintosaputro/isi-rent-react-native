@@ -25,6 +25,7 @@ import deleteHistory from './deleteHistory';
 import updateProfile from './updateProfile';
 import favourite from './favourite';
 import updateVehicle from './updateVehicle';
+import deleteVehicle from './deleteVehicle';
 
 const persistConfig = {
   key: 'auth',
@@ -50,6 +51,7 @@ const rootReducers = combineReducers({
   detailVehicle,
   addVehicle,
   updateVehicle,
+  deleteVehicle,
   detailOrder,
   paymentForm,
   transactionCode,

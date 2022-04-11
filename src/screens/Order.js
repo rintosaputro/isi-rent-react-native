@@ -4,6 +4,9 @@ import {
   ImageBackground,
   StyleSheet,
   TouchableOpacity,
+  Alert,
+  Modal,
+  Pressable,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -20,6 +23,7 @@ import Button from '../components/Button';
 import InputBorderBottom from '../components/InputBorderBottom';
 
 import {
+  deleteVehicle,
   getCategory,
   getDetailVehicle,
   updateVehicle,
@@ -63,12 +67,15 @@ const Order = ({navigation}) => {
   const [isChange, setIsChange] = useState();
   const [isErr, setIsErr] = useState();
   const [errMessage, setErrMessage] = useState();
+  const [messageSuccess, setMessageSuccess] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const {
     myOrder,
     detailVehicle,
     profile,
     auth,
+    deleteVehicle: delVehicleState,
     updateVehicle: updVehicleState,
     favourite: favouriteState,
   } = useSelector(state => state);
@@ -99,6 +106,7 @@ const Order = ({navigation}) => {
 
   useEffect(() => {
     if (updVehicleState.isSuccess) {
+      setMessageSuccess(true);
       if (detailVehicle.results.type === 'Cars') {
         dispatch(getCategory('CAR'));
       } else {
@@ -108,17 +116,30 @@ const Order = ({navigation}) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updVehicleState.isSuccess]);
+  useEffect(() => {
+    if (messageSuccess) {
+      setTimeout(() => {
+        setMessageSuccess(false);
+      }, 8000);
+    }
+  }, [messageSuccess]);
+
+  useEffect(() => {
+    if (delVehicleState.isSuccess) {
+      if (detailVehicle.results.type === 'Cars') {
+        dispatch(getCategory('CAR'));
+      } else {
+        dispatch(getCategory(detailVehicle.results.type.toUpperCase()));
+      }
+      // dispatch({type: 'DEL_VEHICLE_CLEAR'});
+      // navigation.goBack();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [delVehicleState.isSuccess]);
 
   const handleBack = () => {
     dispatch({type: 'GET_DETAIL_VEHICLE_CLEAR'});
     navigation.goBack();
-    // if (profile.results.username === 'Admin') {
-    //   if (detailVehicle.results.type === 'Cars') {
-    //     dispatch(getCategory('CAR'));
-    //   } else {
-    //     dispatch(getCategory(detailVehicle.results.type.toUpperCase()));
-    //   }
-    // }
   };
 
   const increment = () => {
@@ -135,7 +156,6 @@ const Order = ({navigation}) => {
   const gotoReservation = () => {
     dispatch(detailOrder(count, date, endDate));
     navigation.navigate('PaymentForm');
-    // console.log('test', count, moment(date).format('MMM DD YY'), endDate);
   };
   const handleVerify = () => {
     dispatch({type: 'AUTH_LOGOUT'});
@@ -209,6 +229,10 @@ const Order = ({navigation}) => {
     }
   };
 
+  const handleDelete = () => {
+    dispatch(deleteVehicle(auth.token, detailVehicle.results.idVehicle));
+  };
+
   const testing = () => {
     console.log(detailVehicle.results.type.toUpperCase());
   };
@@ -257,7 +281,7 @@ const Order = ({navigation}) => {
             </View>
             <TouchableOpacity style={styles.changeImg} onPress={getFile}>
               <Icon
-                color="white"
+                color="#fff"
                 name="pencil"
                 size={30}
                 style={styles.iconChange}
@@ -266,7 +290,61 @@ const Order = ({navigation}) => {
           </View>
         </ImageBackground>
         <View style={styles.container}>
+          <View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    {delVehicleState.isError
+                      ? delVehicleState.errMessage
+                      : delVehicleState.isSuccess
+                      ? 'Successfully deleted Vehicle!'
+                      : 'Are you sure to delete this vehicle?'}
+                  </Text>
+                  <Box
+                    mt={'5'}
+                    flexDirection={'row'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                    style={styles.btnModalWrap}>
+                    {delVehicleState.isSuccess ? (
+                      <Pressable
+                        style={[styles.button, styles.buttonConfirm]}
+                        onPress={() => {
+                          setModalVisible(!modalVisible);
+                          dispatch({type: 'DEL_VEHICLE_CLEAR'});
+                          navigation.goBack();
+                        }}>
+                        <Text style={styles.textStyle}>Ok!</Text>
+                      </Pressable>
+                    ) : (
+                      <>
+                        <Pressable
+                          style={[styles.button, styles.buttonClose]}
+                          onPress={() => setModalVisible(!modalVisible)}>
+                          <Text style={styles.textStyle}>Cancel</Text>
+                        </Pressable>
+                        <Pressable
+                          style={[styles.button, styles.buttonConfirm]}
+                          onPress={handleDelete}>
+                          <Text style={styles.textStyle}>Delete</Text>
+                        </Pressable>
+                      </>
+                    )}
+                  </Box>
+                </View>
+              </View>
+            </Modal>
+          </View>
           {updVehicleState.isError ||
+            delVehicleState.isError ||
             (isErr && (
               <Box justifyContent={'center'} py="5">
                 <Text
@@ -274,11 +352,13 @@ const Order = ({navigation}) => {
                   color="danger.700"
                   fontSize={'xl'}
                   bold>
-                  {updVehicleState.errMessage || errMessage}
+                  {updVehicleState.errMessage ||
+                    delVehicleState.errMessage ||
+                    errMessage}
                 </Text>
               </Box>
             ))}
-          {updVehicleState.isSuccess && (
+          {messageSuccess && (
             <Box justifyContent={'center'} py="5">
               <Text
                 textAlign={'center'}
@@ -305,13 +385,15 @@ const Order = ({navigation}) => {
                 {brand}
               </Text>
             )}
-            <TouchableOpacity>
-              {profile.results?.username === 'Admin' ? (
+            {profile.results?.username === 'Admin' ? (
+              <TouchableOpacity onPress={() => setModalVisible(true)}>
                 <Icon name="trash" size={35} color="#32DBC6" />
-              ) : (
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity>
                 <Icon name="comment-o" size={35} color="#32DBC6" />
-              )}
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )}
           </Box>
           {profile.results?.username === 'Admin' ? (
             <>
@@ -580,7 +662,10 @@ const styles = StyleSheet.create({
     paddingTop: 80,
   },
   iconChange: {
-    // padding: 29,
+    paddingHorizontal: 9,
+    paddingVertical: 6,
+    backgroundColor: '#49BEB7',
+    borderRadius: 10,
   },
   container: {
     padding: 20,
@@ -625,6 +710,59 @@ const styles = StyleSheet.create({
   fakeBtn: {
     // backgroundColor: 'gray',
     borderRadius: 10,
+  },
+
+  //Modal
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    width: '90%',
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.95,
+    shadowRadius: 6,
+    elevation: 95,
+  },
+  btnModalWrap: {
+    justifyContent: 'space-between',
+  },
+  button: {
+    borderRadius: 10,
+    paddingVertical: 16,
+    paddingHorizontal: 39,
+    elevation: 2,
+    marginHorizontal: 20,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    backgroundColor: 'gray',
+  },
+  buttonConfirm: {
+    backgroundColor: '#49BEB7',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    fontSize: 20,
+    textAlign: 'center',
   },
 });
 
