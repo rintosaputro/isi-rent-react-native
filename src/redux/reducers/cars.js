@@ -21,7 +21,8 @@ const cars = (state = initialState, action) => {
       };
     }
     case 'GET_CAR': {
-      state.results.push(...action.payload.results);
+      // state.results.push(...action.payload.results);
+      state.results = action.payload.results;
       state.pageInfo = action.payload.pageInfo;
       return {
         ...state,
