@@ -8,6 +8,7 @@ import priceFormat from '../helper/priceFormat';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteFavourite} from '../redux/actions/favourite';
 import {myOrder} from '../redux/actions/transaction';
+import checkImage from '../helper/checkImage';
 
 const Favourites = ({navigation}) => {
   const [favourite, setFavourite] = useState(true);
@@ -61,12 +62,9 @@ const Favourites = ({navigation}) => {
                     <Image
                       source={
                         item.image
-                          ? {
-                              uri: item.image.replace(
-                                /localhost/g,
-                                '192.168.43.195',
-                              ),
-                            }
+                          ? checkImage(item.image)
+                            ? {uri: item.image}
+                            : require('../assets/img/defaultItem.jpg')
                           : require('../assets/img/no-image.jpg')
                       }
                       alt="photo product"

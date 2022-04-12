@@ -13,6 +13,7 @@ import Rate from '../components/Rate';
 import Button from '../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
+import checkImage from '../helper/checkImage';
 
 const FinishedPayment = ({navigation}) => {
   const {addHistory, paymentForm, detailOrder} = useSelector(state => state);
@@ -47,12 +48,9 @@ const FinishedPayment = ({navigation}) => {
           <Image
             source={
               addHistory.results.image
-                ? {
-                    uri: addHistory.results.image.replace(
-                      /localhost/g,
-                      '192.168.43.195',
-                    ),
-                  }
+                ? checkImage(addHistory.results.image)
+                  ? {uri: addHistory.results.image}
+                  : require('../assets/img/defaultItem.jpg')
                 : require('../assets/img/no-image.jpg')
             }
             style={styles.imageBg}

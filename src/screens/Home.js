@@ -19,6 +19,7 @@ import {getDetailCategory} from '../redux/actions/detailCategory';
 import {myOrder} from '../redux/actions/transaction';
 import {getProfile} from '../redux/actions/user';
 import Button from '../components/Button';
+import checkImage from '../helper/checkImage';
 
 const DetailTop = ({category, onPress}) => {
   return (
@@ -49,7 +50,9 @@ const FlatListSection = ({dataList, onPress, navigation}) => {
               <ImageBackground
                 source={
                   item.image
-                    ? {uri: item.image.replace(/localhost/g, '192.168.43.195')}
+                    ? checkImage(item.image)
+                      ? {uri: item.image}
+                      : require('../assets/img/defaultItem.jpg')
                     : require('../assets/img/no-image.jpg')
                 }
                 style={styles.imgProduct}

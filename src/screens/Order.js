@@ -19,6 +19,7 @@ import moment from 'moment';
 import {launchImageLibrary} from 'react-native-image-picker';
 
 import priceFormat from '../helper/priceFormat';
+import checkImage from '../helper/checkImage';
 import Button from '../components/Button';
 import InputBorderBottom from '../components/InputBorderBottom';
 
@@ -58,7 +59,7 @@ const Order = ({navigation}) => {
   // const [chCapacity, setChCapacity] = useState();
   const [chLocation, setChLocation] = useState();
   const [chQty, setChQty] = useState(0);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [isStart, setIsStart] = useState(false);
@@ -252,7 +253,9 @@ const Order = ({navigation}) => {
             file?.uri
               ? {uri: file.uri}
               : image
-              ? {uri: image.replace(/localhost/g, '192.168.43.195')}
+              ? checkImage(image)
+                ? {uri: image}
+                : require('../assets/img/defaultItem.jpg')
               : require('../assets/img/no-image.jpg')
           }
           alt={brand}

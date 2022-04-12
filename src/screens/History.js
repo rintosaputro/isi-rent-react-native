@@ -14,6 +14,7 @@ import priceFormat from '../helper/priceFormat';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {getHistories, deleteHistory} from '../redux/actions/history';
+import checkImage from '../helper/checkImage';
 
 const History = () => {
   const dataDummy = {
@@ -149,12 +150,9 @@ const History = () => {
                     <Image
                       source={
                         item.image
-                          ? {
-                              uri: item.image.replace(
-                                /localhost/g,
-                                '192.168.43.195',
-                              ),
-                            }
+                          ? checkImage(item.image)
+                            ? {uri: item.image}
+                            : require('../assets/img/defaultItem.jpg')
                           : require('../assets/img/no-image.jpg')
                       }
                       alt={dataDummy.name}

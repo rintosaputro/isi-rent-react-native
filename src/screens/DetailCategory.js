@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import {getDetailCategory} from '../redux/actions/detailCategory';
 import {myOrder} from '../redux/actions/transaction';
 import {getCategory} from '../redux/actions/vehicles';
+import checkImage from '../helper/checkImage';
 
 const DetailCategory = ({navigation}) => {
   const {detailCategory} = useSelector(state => state);
@@ -41,7 +42,9 @@ const DetailCategory = ({navigation}) => {
             <VehicleList
               image={
                 data.image
-                  ? {uri: data.image.replace(/localhost/g, '192.168.43.195')}
+                  ? checkImage(data.image)
+                    ? {uri: data.image}
+                    : require('../assets/img/defaultItem.jpg')
                   : require('../assets/img/no-image.jpg')
               }
               name={data.brand}

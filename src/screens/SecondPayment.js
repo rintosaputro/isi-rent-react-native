@@ -16,6 +16,7 @@ import Button from '../components/Button';
 import {getDetailVehicle} from '../redux/actions/vehicles';
 import moment from 'moment';
 import {transactionCode} from '../redux/actions/transaction';
+import checkImage from '../helper/checkImage';
 
 const SecondPayment = ({navigation}) => {
   const [paymentCode, setPaymentCode] = useState();
@@ -71,12 +72,9 @@ const SecondPayment = ({navigation}) => {
           <Image
             source={
               detailVehicle.results.image
-                ? {
-                    uri: detailVehicle.results.image.replace(
-                      /localhost/g,
-                      '192.168.43.195',
-                    ),
-                  }
+                ? checkImage(detailVehicle.results.image)
+                  ? {uri: detailVehicle.results.image}
+                  : require('../assets/img/defaultItem.jpg')
                 : require('../assets/img/no-image.jpg')
             }
             style={styles.imageBg}

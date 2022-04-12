@@ -16,6 +16,7 @@ import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import {getProfile, updateProfile} from '../redux/actions/user';
 import {checkEmail, checkPhone} from '../helper/check';
+import checkImage from '../helper/checkImage';
 
 const UpdateProfile = ({navigation: {goBack}}) => {
   const [changed, setChanged] = useState({
@@ -179,10 +180,12 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 source={
                   changed.image?.uri
                     ? {uri: changed.image.uri}
-                    : profile.results.image
-                    ? {
-                        uri: image.replace(/localhost/g, '192.168.43.195'),
-                      }
+                    : profile.results?.image
+                    ? checkImage(profile.results?.image)
+                      ? {
+                          uri: profile.results.image,
+                        }
+                      : require('../assets/img/defaultPict.png')
                     : require('../assets/img/no-pp.jpg')
                 }
                 alt="Photo profile"

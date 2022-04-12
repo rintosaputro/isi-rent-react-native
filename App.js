@@ -22,7 +22,8 @@ PushNotification.createChannel({
 const Main = () => {
   const {auth} = useSelector(state => state);
   return (
-    <NavigationContainer onReady={() => RNBootSplash.hide({fade: true})}>
+    // <NavigationContainer onReady={() => RNBootSplash.hide({fade: true})}>
+    <NavigationContainer>
       <NativeBaseProvider>
         {auth.token ? <MainStackNav /> : <AuthStackNav />}
       </NativeBaseProvider>
@@ -38,6 +39,7 @@ const App = () => {
   //     await RNBootSplash.hide({fade: true});
   //   };
   // }, []);
+  RNBootSplash.hide({fade: true});
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
