@@ -1,6 +1,7 @@
 import http from '../../helper/http';
 import RNFetchBlob from 'rn-fetch-blob';
 const BACKEND_URL = 'http://192.168.43.195:5000';
+const BACKEND_URL2 = 'https://isi-rent.herokuapp.com';
 
 export const getCategory = (category, page = 1) => {
   return async dispatch => {
@@ -133,7 +134,7 @@ export const addVehicle = (
     try {
       const {data} = await RNFetchBlob.fetch(
         'POST',
-        `${BACKEND_URL}/vehicles`,
+        `${BACKEND_URL2}/vehicles`,
         {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -201,7 +202,7 @@ export const updateVehicle = (token, id, dataInput) => {
 
       const {data} = await RNFetchBlob.fetch(
         'PATCH',
-        `${BACKEND_URL}/vehicles/${id}`,
+        `${BACKEND_URL2}/vehicles/${id}`,
         {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

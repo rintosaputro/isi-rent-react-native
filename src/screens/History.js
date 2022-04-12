@@ -136,6 +136,11 @@ const History = () => {
               History successfully deleted!
             </Text>
           )}
+          {deleteState.isError && (
+            <Text fontSize={'xl'} py="3" style={styles.message} bold>
+              {deleteState.errMessage}
+            </Text>
+          )}
           <FlatList
             showsVerticalScrollIndicator={false}
             data={histories.results}

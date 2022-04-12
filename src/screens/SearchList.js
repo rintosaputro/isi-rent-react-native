@@ -15,6 +15,7 @@ import VehicleList from '../components/VehicleList';
 import {getFilter} from '../redux/actions/vehicles';
 import {myOrder} from '../redux/actions/transaction';
 import Button from '../components/Button';
+import checkImage from '../helper/checkImage';
 
 const SearchList = ({navigation}) => {
   const [filter, setFilter] = useState(true);
@@ -91,9 +92,9 @@ const SearchList = ({navigation}) => {
               <VehicleList
                 image={
                   data.image
-                    ? {
-                        uri: data.image.replace(/localhost/g, '192.168.43.195'),
-                      }
+                    ? checkImage(data.image)
+                      ? {uri: data.image}
+                      : require('../assets/img/defaultItem.jpg')
                     : require('../assets/img/no-image.jpg')
                 }
                 name={data.brand}

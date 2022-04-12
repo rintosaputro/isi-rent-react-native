@@ -381,15 +381,17 @@ const Order = ({navigation}) => {
           )}
           <Box style={styles.topDetail}>
             {profile.results?.username === 'Admin' ? (
-              <InputBorderBottom
-                defaultValue={brand}
-                placeholder={brand}
-                onChangeText={value => {
-                  setChBrand(value);
-                  setIsChange(true);
-                }}
-                border
-              />
+              <Box style={styles.wrapBrand}>
+                <InputBorderBottom
+                  defaultValue={brand}
+                  placeholder={brand}
+                  onChangeText={value => {
+                    setChBrand(value);
+                    setIsChange(true);
+                  }}
+                  border
+                />
+              </Box>
             ) : (
               <Text fontSize={'3xl'} bold>
                 {brand}
@@ -679,6 +681,9 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
+  },
+  wrapBrand: {
+    maxWidth: '85%',
   },
   topDetail: {
     flexDirection: 'row',

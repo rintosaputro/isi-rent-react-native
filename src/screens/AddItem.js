@@ -325,7 +325,7 @@ const AddItem = ({navigation}) => {
         {(err || addVehicleState.isError) && (
           <Box my="5">
             <Text textAlign={'center'} color="danger.700" fontSize={'3xl'} bold>
-              {errMessage}
+              {errMessage || 'Add item error!'}
             </Text>
           </Box>
         )}
