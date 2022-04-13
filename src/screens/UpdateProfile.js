@@ -246,7 +246,9 @@ const UpdateProfile = ({navigation: {goBack}}) => {
             <Text>
               {isStart
                 ? moment(changed.birthdate).format('MMM DD YYYY')
-                : moment(birthdate).format('MMM DD YYYY')}
+                : birthdate
+                ? moment(birthdate).format('MMM DD YYYY')
+                : ''}
             </Text>
           </TouchableOpacity>
           <DatePicker
