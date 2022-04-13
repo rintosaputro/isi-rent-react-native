@@ -58,7 +58,7 @@ const Order = ({navigation}) => {
   // const [chCapacity, setChCapacity] = useState();
   const [chLocation, setChLocation] = useState();
   const [chQty, setChQty] = useState(0);
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(1);
   const [open, setOpen] = useState(false);
   const [date, setDate] = useState(new Date());
   const [isStart, setIsStart] = useState(false);
@@ -208,13 +208,19 @@ const Order = ({navigation}) => {
     let err = false;
     const data = {
       location: chLocation,
-      brand: chBrand,
+      // brand: chBrand,
       // price: chPrice,
-      qty: chQty,
+      // qty: chQty !== 0 ? chQty : qty,
       image: file,
       status: stock,
     };
     const pola = /\D/g;
+    if (chQty !== 0) {
+      data.qty = chQty;
+    }
+    if (chBrand) {
+      data.brand = chBrand;
+    }
     if (chPrice) {
       if (pola.test(chPrice)) {
         setErrMessage('Price must be number');
@@ -286,14 +292,16 @@ const Order = ({navigation}) => {
                 </View>
               )}
             </View>
-            <TouchableOpacity style={styles.changeImg} onPress={getFile}>
-              <Icon
-                color="#fff"
-                name="pencil"
-                size={30}
-                style={styles.iconChange}
-              />
-            </TouchableOpacity>
+            {profile.results.username === 'Admin' && (
+              <TouchableOpacity style={styles.changeImg} onPress={getFile}>
+                <Icon
+                  color="#fff"
+                  name="pencil"
+                  size={30}
+                  style={styles.iconChange}
+                />
+              </TouchableOpacity>
+            )}
           </View>
         </ImageBackground>
         <View style={styles.container}>
