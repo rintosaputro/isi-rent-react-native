@@ -1,14 +1,20 @@
-import {View, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
+// import {Image} from 'native-base';
 import React, {useEffect, useState} from 'react';
 import VehicleList from '../components/VehicleList';
 import {useSelector, useDispatch} from 'react-redux';
 import Button from '../components/Button';
-import {getDetailCategory} from '../redux/actions/detailCategory';
 import {myOrder} from '../redux/actions/transaction';
 import {getCategory} from '../redux/actions/vehicles';
-import checkImage from '../helper/checkImage';
 
 const DetailCategory = ({navigation}) => {
+  const [errImg, setErrImg] = useState(false);
   const {detailCategory} = useSelector(state => state);
   const dataState = useSelector(state => state);
 
@@ -36,23 +42,32 @@ const DetailCategory = ({navigation}) => {
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {dataState[`${type}`].results.map((data, index) => {
         return (
-          <TouchableOpacity
-            key={index}
-            onPress={() => handleOrder(data.idVehicle)}>
-            <VehicleList
-              image={
-                data.image
-                  ? checkImage(data.image)
-                    ? {uri: data.image}
-                    : require('../assets/img/defaultItem.jpg')
-                  : require('../assets/img/no-image.jpg')
-              }
-              name={data.brand}
-              seet={data.capacity}
-              stock={data.qty}
-              price={data.price}
-            />
-          </TouchableOpacity>
+          <>
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleOrder(data.idVehicle)}>
+              <VehicleList
+                name={data.brand}
+                seet={data.capacity}
+                stock={data.qty}
+                price={data.price}
+                Image={() => (
+                  <Image
+                    alt={data.brand}
+                    source={
+                      data.image
+                        ? !errImg
+                          ? {uri: data.image}
+                          : require('../assets/img/defaultItem.jpg')
+                        : require('../assets/img/no-image.jpg')
+                    }
+                    onError={setErrImg}
+                    style={styles.img}
+                  />
+                )}
+              />
+            </TouchableOpacity>
+          </>
         );
       })}
       {dataState[`${type}`].pageInfo && dataState[`${type}`].pageInfo.next ? (
@@ -80,7 +95,12 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '40%',
   },
-  image: {},
+  img: {
+    width: 150,
+    height: 120,
+    borderRadius: 30,
+    resizeMode: 'cover',
+  },
   rate: {
     flexDirection: 'row',
     width: 65,

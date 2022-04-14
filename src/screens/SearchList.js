@@ -3,6 +3,7 @@ import {
   ScrollView,
   TextInput,
   TouchableOpacity,
+  Image,
   StyleSheet,
 } from 'react-native';
 import {Box, Center} from 'native-base';
@@ -19,6 +20,7 @@ import checkImage from '../helper/checkImage';
 
 const SearchList = ({navigation}) => {
   const [filter, setFilter] = useState(true);
+  const [errImg, setErrImg] = useState();
   const [key, setKey] = useState();
 
   const dispatch = useDispatch();
@@ -90,17 +92,24 @@ const SearchList = ({navigation}) => {
               onPress={() => handleOrder(data.idVehicle)}
               key={index}>
               <VehicleList
-                image={
-                  data.image
-                    ? checkImage(data.image)
-                      ? {uri: data.image}
-                      : require('../assets/img/defaultItem.jpg')
-                    : require('../assets/img/no-image.jpg')
-                }
                 name={data.brand}
                 seet={data.capacity}
                 stock={data.qty}
                 price={data.price}
+                Image={() => (
+                  <Image
+                    alt={data.brand}
+                    source={
+                      data.image
+                        ? !errImg
+                          ? {uri: data.image}
+                          : require('../assets/img/defaultItem.jpg')
+                        : require('../assets/img/no-image.jpg')
+                    }
+                    onError={setErrImg}
+                    style={styles.img}
+                  />
+                )}
               />
             </TouchableOpacity>
           ))}
@@ -181,6 +190,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 30,
     fontSize: 30,
+  },
+  img: {
+    width: 150,
+    height: 120,
+    borderRadius: 30,
+    resizeMode: 'cover',
   },
 });
 

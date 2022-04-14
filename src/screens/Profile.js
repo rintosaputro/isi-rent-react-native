@@ -1,12 +1,12 @@
 import {View, StyleSheet, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {Box, Image, Text} from 'native-base';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 import Button from '../components/Button';
 import {goToVerify} from '../redux/actions/verify';
-import checkImage from '../helper/checkImage';
 const Profile = ({navigation}) => {
+  const [errImg, setErrImg] = useState(false);
   const dispatch = useDispatch();
   const {profile} = useSelector(state => state);
   const handleLogout = () => {
@@ -22,13 +22,7 @@ const Profile = ({navigation}) => {
     dispatch(goToVerify);
     // navigation.navigate('Verify');
   };
-  const test = () => {
-    if (checkImage(profile.results.image)) {
-      console.log('ok');
-    } else {
-      console.log('gagal');
-    }
-  };
+
   return (
     <View style={styles.main}>
       <View style={styles.header}>
@@ -38,14 +32,15 @@ const Profile = ({navigation}) => {
           borderRadius={200}
           source={
             profile.results?.image
-              ? checkImage(profile.results?.image)
-                ? {
+              ? !errImg
+                ? require('../assets/img/defaultPict.png')
+                : {
                     uri: profile.results.image,
                   }
-                : require('../assets/img/defaultPict.png')
               : require('../assets/img/no-pp.jpg')
           }
           alt="Photo profile"
+          onError={setErrImg}
         />
         <Text bold fontSize="2xl" style={styles.name}>
           {profile.results.name || profile.results.username}

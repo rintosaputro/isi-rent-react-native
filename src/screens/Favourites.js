@@ -8,10 +8,9 @@ import priceFormat from '../helper/priceFormat';
 import {useDispatch, useSelector} from 'react-redux';
 import {deleteFavourite} from '../redux/actions/favourite';
 import {myOrder} from '../redux/actions/transaction';
-import checkImage from '../helper/checkImage';
 
 const Favourites = ({navigation}) => {
-  const [favourite, setFavourite] = useState(true);
+  const [errImg, setErrImg] = useState(false);
 
   const {favourite: favouriteState} = useSelector(state => state);
 
@@ -62,7 +61,7 @@ const Favourites = ({navigation}) => {
                     <Image
                       source={
                         item.image
-                          ? checkImage(item.image)
+                          ? !errImg
                             ? {uri: item.image}
                             : require('../assets/img/defaultItem.jpg')
                           : require('../assets/img/no-image.jpg')
@@ -72,6 +71,7 @@ const Favourites = ({navigation}) => {
                       width={130}
                       height={100}
                       borderRadius={30}
+                      onError={setErrImg}
                       style={styles.image}
                     />
                   </View>

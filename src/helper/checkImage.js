@@ -5,9 +5,11 @@ const checkImage = url => {
     .get(url)
     .then(res => {
       if (res.status > 400) {
+        console.log(url);
         // return require('../assets/img/no-image.jpg');
         return false;
       } else {
+        // console.log('okee nih');
         return true;
       }
     })

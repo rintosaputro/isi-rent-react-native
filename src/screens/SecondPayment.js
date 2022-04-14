@@ -21,6 +21,7 @@ import checkImage from '../helper/checkImage';
 const SecondPayment = ({navigation}) => {
   const [paymentCode, setPaymentCode] = useState();
   const [bookingCode, setBookingCode] = useState();
+  const [errImg, setErrImg] = useState();
   const {detailOrder, paymentForm, myOrder, detailVehicle} = useSelector(
     state => state,
   );
@@ -72,13 +73,14 @@ const SecondPayment = ({navigation}) => {
           <Image
             source={
               detailVehicle.results.image
-                ? checkImage(detailVehicle.results.image)
+                ? !errImg
                   ? {uri: detailVehicle.results.image}
                   : require('../assets/img/defaultItem.jpg')
                 : require('../assets/img/no-image.jpg')
             }
             style={styles.imageBg}
             alt="photo vehicle"
+            onError={setErrImg}
           />
           <Box>
             <Rate rate={4} right={30} top={-60} />

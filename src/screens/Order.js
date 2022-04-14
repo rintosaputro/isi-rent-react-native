@@ -70,6 +70,7 @@ const Order = ({navigation}) => {
   const [errMessage, setErrMessage] = useState();
   const [messageSuccess, setMessageSuccess] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [errImg, setErrImg] = useState(false);
 
   const {
     myOrder,
@@ -247,10 +248,6 @@ const Order = ({navigation}) => {
     dispatch(deleteVehicle(auth.token, detailVehicle.results.idVehicle));
   };
 
-  const testing = () => {
-    console.log(file);
-  };
-
   return (
     <ScrollView>
       <View style={styles.headerWrapper}>
@@ -259,12 +256,13 @@ const Order = ({navigation}) => {
             file?.uri
               ? {uri: file.uri}
               : image
-              ? checkImage(image)
+              ? !errImg
                 ? {uri: image}
                 : require('../assets/img/defaultItem.jpg')
               : require('../assets/img/no-image.jpg')
           }
           alt={brand}
+          onError={err => setErrImg(err)}
           style={styles.imageProduct}>
           <View style={styles.opacity}>
             <View style={styles.header}>

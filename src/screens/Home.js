@@ -33,11 +33,13 @@ const DetailTop = ({category, onPress}) => {
   );
 };
 const FlatListSection = ({dataList, onPress, navigation}) => {
+  const [errImg, setErrImg] = useState(false);
   const dispatch = useDispatch();
   const handleOrder = id => {
     dispatch(myOrder(id));
     navigation.navigate('Order');
   };
+
   return (
     <FlatList
       data={dataList}
@@ -46,19 +48,22 @@ const FlatListSection = ({dataList, onPress, navigation}) => {
       renderItem={({item, index}) => {
         if (index < 5) {
           return (
-            <TouchableOpacity onPress={() => handleOrder(item.idVehicle)}>
-              <ImageBackground
-                source={
-                  item.image
-                    ? checkImage(item.image)
-                      ? {uri: item.image}
-                      : require('../assets/img/defaultItem.jpg')
-                    : require('../assets/img/no-image.jpg')
-                }
-                style={styles.imgProduct}
-                resizeMode="cover"
-              />
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity onPress={() => handleOrder(item.idVehicle)}>
+                <ImageBackground
+                  source={
+                    item.image
+                      ? errImg
+                        ? require('../assets/img/defaultItem.jpg')
+                        : {uri: item.image}
+                      : require('../assets/img/no-image.jpg')
+                  }
+                  onError={setErrImg}
+                  style={styles.imgProduct}
+                  resizeMode="cover"
+                />
+              </TouchableOpacity>
+            </>
           );
         }
       }}

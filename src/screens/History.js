@@ -7,14 +7,14 @@ import {
   Modal,
   Pressable,
   FlatList,
+  Image,
 } from 'react-native';
-import {Text, Image, Checkbox, Box, Button} from 'native-base';
+import {Text, Checkbox, Box, Button} from 'native-base';
 import React, {useEffect, useState} from 'react';
 import priceFormat from '../helper/priceFormat';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import {getHistories, deleteHistory} from '../redux/actions/history';
-import checkImage from '../helper/checkImage';
 
 const History = () => {
   const dataDummy = {
@@ -30,6 +30,7 @@ const History = () => {
   const [select, setSelect] = useState();
   const [msgDelete, setMsgDelete] = useState();
   const [modalVisible, setModalVisible] = useState(false);
+  const [errImg, setErrImg] = useState(false);
   const {
     auth,
     profile,
@@ -65,16 +66,12 @@ const History = () => {
       setModalVisible(!modalVisible);
     }
   };
-  const test = () => {
-    console.log(select);
-  };
 
   return (
     <Box p="4" my="10">
       <Text fontSize={'3xl'} textAlign="center" bold>
         {histories.results.length > 0 ? 'History Order' : 'History is Empty'}
       </Text>
-      {/* <Button onPress={test}>Test</Button> */}
       <View>
         <Modal
           animationType="slide"
@@ -154,10 +151,10 @@ const History = () => {
                   <View style={styles.left}>
                     <Image
                       source={
-                        item.image
-                          ? checkImage(item.image)
-                            ? {uri: item.image}
-                            : require('../assets/img/defaultItem.jpg')
+                        item?.image
+                          ? errImg
+                            ? require('../assets/img/defaultItem.jpg')
+                            : {uri: item?.image}
                           : require('../assets/img/no-image.jpg')
                       }
                       alt={dataDummy.name}
@@ -165,6 +162,7 @@ const History = () => {
                       width={130}
                       height={100}
                       borderRadius={30}
+                      onError={setErrImg}
                       style={styles.image}
                     />
                   </View>
@@ -234,7 +232,12 @@ const styles = StyleSheet.create({
     position: 'relative',
     width: '40%',
   },
-  image: {},
+  image: {
+    width: 130,
+    height: 100,
+    borderRadius: 30,
+    resizeMode: 'cover',
+  },
   rate: {
     flexDirection: 'row',
     width: 65,
