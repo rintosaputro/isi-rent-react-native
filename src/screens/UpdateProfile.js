@@ -16,7 +16,6 @@ import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import {getProfile, updateProfile} from '../redux/actions/user';
 import {checkEmail, checkPhone} from '../helper/check';
-import checkImage from '../helper/checkImage';
 
 const UpdateProfile = ({navigation: {goBack}}) => {
   const [changed, setChanged] = useState({

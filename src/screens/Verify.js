@@ -5,12 +5,12 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {Box, Text} from 'native-base';
 import React, {useState, useEffect} from 'react';
 import Input from '../components/Input';
 import Button from '../components/Button';
-import Icon from 'react-native-vector-icons/AntDesign';
 import {useDispatch, useSelector} from 'react-redux';
 import {sendCodeVerify, verify} from '../redux/actions/verify';
 import {checkEmail} from '../helper/check';
@@ -26,7 +26,7 @@ const Verify = ({navigation}) => {
 
   const dispatch = useDispatch();
 
-  const {verify: verifyState} = useSelector(state => state);
+  const {verify: verifyState, profile} = useSelector(state => state);
 
   useEffect(() => {
     if (verifyState.isSuccess) {
@@ -37,9 +37,9 @@ const Verify = ({navigation}) => {
   }, [verifyState]);
 
   const handleSubmit = () => {
-    if (code && username && password) {
+    if (code && password) {
       setIsEmpty(false);
-      dispatch(verify(username, code, password));
+      dispatch(verify(profile.results.username, code, password));
     } else {
       setIsEmpty(true);
     }
@@ -64,22 +64,19 @@ const Verify = ({navigation}) => {
         style={styles.image}>
         <ScrollView style={styles.opacity}>
           <View style={styles.header}>
-            <TouchableOpacity style={styles.back}>
-              {/* <Icon style={[styles.text, styles.icon]} name="left" size={25} />
-              <Text style={[styles.text, styles.textBack]}> Back</Text> */}
-            </TouchableOpacity>
+            <TouchableOpacity style={styles.back} />
             <Text fontSize="4xl" style={styles.head}>
               Verification
             </Text>
             <Text fontSize="4xl" style={styles.head}>
-              {verifyState.isSend ? 'Code' : 'User'}
+              Code
             </Text>
           </View>
           <View style={styles.form}>
             <Text style={[styles.text, styles.textForm]} bold>
               {verifyState.isSend
                 ? 'Code verification is send to your email'
-                : 'Enter your email'}
+                : ''}
             </Text>
             {(isEmpty || verifyState.isError) && (
               <Text
@@ -117,13 +114,13 @@ const Verify = ({navigation}) => {
                     keyboardType="number-pad"
                   />
                 </Box>
-                <Box my="5">
+                {/* <Box my="5">
                   <Input
                     placeholder="Enter your username"
                     onChangeText={setUsername}
                     value={username}
                   />
-                </Box>
+                </Box> */}
                 <Box my="5">
                   <Input
                     onChangeText={setPassword}
@@ -141,7 +138,7 @@ const Verify = ({navigation}) => {
               </>
             ) : (
               <Box style={styles.sendCodeWrap}>
-                <Box my="5">
+                {/* <Box my="5">
                   <Input
                     placeholder="Enter your Email"
                     onChangeText={setEmail}
@@ -151,7 +148,8 @@ const Verify = ({navigation}) => {
                 </Box>
                 <Box>
                   <Button onPress={handleSend}>Send Code</Button>
-                </Box>
+                </Box> */}
+                <ActivityIndicator size="large" color="#00ff00" />
               </Box>
             )}
           </View>

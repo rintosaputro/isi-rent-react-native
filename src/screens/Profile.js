@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Box, Image, Text} from 'native-base';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 import Button from '../components/Button';
-import {goToVerify} from '../redux/actions/verify';
+import {goToVerify, sendCodeVerify} from '../redux/actions/verify';
 const Profile = ({navigation}) => {
   const [errImg, setErrImg] = useState(false);
   const dispatch = useDispatch();
@@ -21,6 +21,7 @@ const Profile = ({navigation}) => {
     dispatch({type: 'AUTH_LOGOUT'});
     dispatch(goToVerify);
     // navigation.navigate('Verify');
+    dispatch(sendCodeVerify(profile.results.email));
   };
 
   return (

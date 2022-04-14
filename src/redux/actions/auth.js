@@ -6,6 +6,7 @@ export const authLogin = (username, password) => {
     dispatch({
       type: 'AUTH_CLEAR_ERR',
     });
+    dispatch({type: 'AUTH_LOGIN_LOADING'});
     try {
       const input = {username: username, password: password};
       const {data} = await http().post('/auth/login', qs.stringify(input));
