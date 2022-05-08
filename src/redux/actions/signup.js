@@ -6,6 +6,9 @@ export const authSignup = (username, email, phone, password) => {
     dispatch({
       type: 'SIGNUP_CLEAR',
     });
+    dispatch({
+      type: 'SIGNUP_LOADING',
+    });
     try {
       const input = {
         username,

@@ -10,7 +10,7 @@ import {deleteFavourite} from '../redux/actions/favourite';
 import {myOrder} from '../redux/actions/transaction';
 
 const Favourites = ({navigation}) => {
-  const [favourite, setFavourite] = useState(true);
+  const [errImg, setErrImg] = useState(false);
 
   const {favourite: favouriteState} = useSelector(state => state);
 
@@ -61,12 +61,9 @@ const Favourites = ({navigation}) => {
                     <Image
                       source={
                         item.image
-                          ? {
-                              uri: item.image.replace(
-                                /localhost/g,
-                                '192.168.43.195',
-                              ),
-                            }
+                          ? !errImg
+                            ? {uri: item.image}
+                            : require('../assets/img/defaultItem.jpg')
                           : require('../assets/img/no-image.jpg')
                       }
                       alt="photo product"
@@ -74,6 +71,7 @@ const Favourites = ({navigation}) => {
                       width={130}
                       height={100}
                       borderRadius={30}
+                      onError={setErrImg}
                       style={styles.image}
                     />
                   </View>

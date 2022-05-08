@@ -4,6 +4,7 @@ import {
   // Dimensions,
   ImageBackground,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import {Box, Text} from 'native-base';
 import React, {useState, useEffect} from 'react';
@@ -131,9 +132,13 @@ const Login = ({navigation}) => {
               <Text style={styles.forgot}>Forgot Password?</Text>
             </TouchableOpacity>
             <View style={styles.btn}>
-              <Button color="primary" onPress={handleLogin}>
-                Login
-              </Button>
+              {auth.isLoading ? (
+                <ActivityIndicator size="large" color="#00ff00" />
+              ) : (
+                <Button color="primary" onPress={handleLogin}>
+                  Login
+                </Button>
+              )}
             </View>
             <View style={styles.signupContain}>
               <Text style={styles.signup}>Don't have account?</Text>

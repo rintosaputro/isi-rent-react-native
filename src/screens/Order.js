@@ -19,6 +19,7 @@ import moment from 'moment';
 import {launchImageLibrary} from 'react-native-image-picker';
 
 import priceFormat from '../helper/priceFormat';
+import checkImage from '../helper/checkImage';
 import Button from '../components/Button';
 import InputBorderBottom from '../components/InputBorderBottom';
 
@@ -69,6 +70,7 @@ const Order = ({navigation}) => {
   const [errMessage, setErrMessage] = useState();
   const [messageSuccess, setMessageSuccess] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [errImg, setErrImg] = useState(false);
 
   const {
     myOrder,
@@ -246,10 +248,6 @@ const Order = ({navigation}) => {
     dispatch(deleteVehicle(auth.token, detailVehicle.results.idVehicle));
   };
 
-  const testing = () => {
-    console.log(file);
-  };
-
   return (
     <ScrollView>
       <View style={styles.headerWrapper}>
@@ -258,10 +256,13 @@ const Order = ({navigation}) => {
             file?.uri
               ? {uri: file.uri}
               : image
-              ? {uri: image.replace(/localhost/g, '192.168.43.195')}
+              ? !errImg
+                ? {uri: image}
+                : require('../assets/img/defaultItem.jpg')
               : require('../assets/img/no-image.jpg')
           }
           alt={brand}
+          onError={err => setErrImg(err)}
           style={styles.imageProduct}>
           <View style={styles.opacity}>
             <View style={styles.header}>
@@ -386,15 +387,17 @@ const Order = ({navigation}) => {
           )}
           <Box style={styles.topDetail}>
             {profile.results?.username === 'Admin' ? (
-              <InputBorderBottom
-                defaultValue={brand}
-                placeholder={brand}
-                onChangeText={value => {
-                  setChBrand(value);
-                  setIsChange(true);
-                }}
-                border
-              />
+              <Box style={styles.wrapBrand}>
+                <InputBorderBottom
+                  defaultValue={brand}
+                  placeholder={brand}
+                  onChangeText={value => {
+                    setChBrand(value);
+                    setIsChange(true);
+                  }}
+                  border
+                />
+              </Box>
             ) : (
               <Text fontSize={'3xl'} bold>
                 {brand}
@@ -684,6 +687,9 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
+  },
+  wrapBrand: {
+    maxWidth: '85%',
   },
   topDetail: {
     flexDirection: 'row',

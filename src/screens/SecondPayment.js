@@ -16,10 +16,12 @@ import Button from '../components/Button';
 import {getDetailVehicle} from '../redux/actions/vehicles';
 import moment from 'moment';
 import {transactionCode} from '../redux/actions/transaction';
+import checkImage from '../helper/checkImage';
 
 const SecondPayment = ({navigation}) => {
   const [paymentCode, setPaymentCode] = useState();
   const [bookingCode, setBookingCode] = useState();
+  const [errImg, setErrImg] = useState();
   const {detailOrder, paymentForm, myOrder, detailVehicle} = useSelector(
     state => state,
   );
@@ -71,16 +73,14 @@ const SecondPayment = ({navigation}) => {
           <Image
             source={
               detailVehicle.results.image
-                ? {
-                    uri: detailVehicle.results.image.replace(
-                      /localhost/g,
-                      '192.168.43.195',
-                    ),
-                  }
+                ? !errImg
+                  ? {uri: detailVehicle.results.image}
+                  : require('../assets/img/defaultItem.jpg')
                 : require('../assets/img/no-image.jpg')
             }
             style={styles.imageBg}
             alt="photo vehicle"
+            onError={setErrImg}
           />
           <Box>
             <Rate rate={4} right={30} top={-60} />

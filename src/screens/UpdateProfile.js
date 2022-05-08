@@ -35,6 +35,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
   const [message, setMessage] = useState();
   const [errMessage, setErrMessage] = useState();
   const [isErr, setIsErr] = useState();
+  const [errImg, setErrImg] = useState();
 
   const {
     profile,
@@ -172,21 +173,32 @@ const UpdateProfile = ({navigation: {goBack}}) => {
         <View style={styles.wrapper}>
           <View style={styles.profilePict}>
             <Center>
-              <Image
-                size={99}
-                resizeMode={'contain'}
-                borderRadius={200}
-                source={
-                  changed.image?.uri
-                    ? {uri: changed.image.uri}
-                    : profile.results.image
-                    ? {
-                        uri: image.replace(/localhost/g, '192.168.43.195'),
-                      }
-                    : require('../assets/img/no-pp.jpg')
-                }
-                alt="Photo profile"
-              />
+              {changed.image?.uri ? (
+                <Image
+                  size={99}
+                  resizeMode={'contain'}
+                  borderRadius={200}
+                  source={{uri: changed.image.uri}}
+                  alt="Photo profile"
+                />
+              ) : (
+                <Image
+                  size={99}
+                  resizeMode={'contain'}
+                  borderRadius={200}
+                  source={
+                    profile.results?.image
+                      ? !errImg
+                        ? require('../assets/img/defaultPict.png')
+                        : {
+                            uri: profile.results.image,
+                          }
+                      : require('../assets/img/no-pp.jpg')
+                  }
+                  alt="Photo profile"
+                  onError={setErrImg}
+                />
+              )}
             </Center>
             <TouchableOpacity style={styles.iconEdit} onPress={getFile}>
               <MaterialIcon

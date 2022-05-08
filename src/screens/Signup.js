@@ -4,6 +4,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import {Text} from 'native-base';
 import React, {useEffect, useState} from 'react';
@@ -141,9 +142,13 @@ const Signup = ({navigation}) => {
               secureTextEntry={true}
             />
             <View style={styles.btn}>
-              <Button color="primary" onPress={handleSignup}>
-                Signup
-              </Button>
+              {signup.isLoading ? (
+                <ActivityIndicator size="large" color="#00ff00" />
+              ) : (
+                <Button color="primary" onPress={handleSignup}>
+                  Signup
+                </Button>
+              )}
             </View>
             <View style={styles.loginContain}>
               <Text style={styles.login}>Already have account?</Text>

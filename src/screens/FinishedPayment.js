@@ -5,7 +5,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {Box, Text} from 'native-base';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import priceFormat from '../helper/priceFormat';
@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import moment from 'moment';
 
 const FinishedPayment = ({navigation}) => {
+  const [errImg, setErrImg] = useState(false);
   const {addHistory, paymentForm, detailOrder} = useSelector(state => state);
 
   const dispatch = useDispatch();
@@ -47,16 +48,14 @@ const FinishedPayment = ({navigation}) => {
           <Image
             source={
               addHistory.results.image
-                ? {
-                    uri: addHistory.results.image.replace(
-                      /localhost/g,
-                      '192.168.43.195',
-                    ),
-                  }
+                ? !errImg
+                  ? {uri: addHistory.results.image}
+                  : require('../assets/img/defaultItem.jpg')
                 : require('../assets/img/no-image.jpg')
             }
             style={styles.imageBg}
             alt="photo vehicle"
+            onError={setErrImg}
           />
           <Box>
             <Rate rate={4} right={30} top={-60} />

@@ -1,6 +1,7 @@
 import http from '../../helper/http';
 import RNFetchBlob from 'rn-fetch-blob';
-const BACKEND_URL = 'http://192.168.43.195:5000';
+// const BACKEND_URL = 'http://192.168.43.195:5000';
+const BACKEND_URL = 'https://isi-rent.herokuapp.com';
 
 export const getCategory = (category, page = 1) => {
   return async dispatch => {
@@ -9,7 +10,7 @@ export const getCategory = (category, page = 1) => {
     });
     try {
       const {data} = await http().get(
-        `/vehicles/category/?search=${category}&limit=5&page=${page}`,
+        `/vehicles/?search=${category}&limit=5&page=${page}`,
       );
       if (page > 1) {
         dispatch({
@@ -38,7 +39,7 @@ export const getCategoryAfterUpdate = (category, page = 1) => {
     });
     try {
       const {data} = await http().get(
-        `/vehicles/category/?search=${category}&limit=5&page=${page}`,
+        `/vehicles/?search=${category}&limit=5&page=${page}`,
       );
       if (page > 1) {
         dispatch({
@@ -66,7 +67,7 @@ export const getFilter = (dataFilter, page = 1) => {
       type: 'GET_SEARCH_LOADING',
     });
     try {
-      let apiUrl = `/vehicles/category/?limit=5&page=${page}`;
+      let apiUrl = `/vehicles/?limit=5&page=${page}`;
       let keywoard = '';
       let resDataFilter = {...dataFilter};
       Object.keys(dataFilter).forEach(item => {
