@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 // import {Image} from 'native-base';
 import React, {useEffect, useState} from 'react';
@@ -30,34 +31,41 @@ const DetailCategory = ({navigation}) => {
   };
 
   const nextPage = () => {
-    dispatch(
-      getCategory(
-        type.toUpperCase(),
-        dataState[`${type}`].pageInfo.currentPage + 1,
-      ),
-    );
+    if (dataState[`${type}`].pageInfo.next) {
+      dispatch(
+        getCategory(
+          type.toUpperCase(),
+          dataState[`${type}`].pageInfo.currentPage + 1,
+        ),
+      );
+    }
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      {dataState[`${type}`].results.map((data, index) => {
-        return (
+    <>
+      <FlatList
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        data={dataState[`${type}`].results}
+        onEndReachedThreshold={0.2}
+        onEndReached={nextPage}
+        renderItem={({item, index}) => (
           <>
             <TouchableOpacity
               key={index}
-              onPress={() => handleOrder(data.idVehicle)}>
+              onPress={() => handleOrder(item.idVehicle)}>
               <VehicleList
-                name={data.brand}
-                seet={data.capacity}
-                stock={data.qty}
-                price={data.price}
+                name={item.brand}
+                seet={item.capacity}
+                stock={item.qty}
+                price={item.price}
                 Image={() => (
                   <Image
-                    alt={data.brand}
+                    alt={item.brand}
                     source={
-                      data.image
+                      item.image
                         ? !errImg
-                          ? {uri: data.image}
+                          ? {uri: item.image}
                           : require('../assets/img/defaultItem.jpg')
                         : require('../assets/img/no-image.jpg')
                     }
@@ -68,24 +76,16 @@ const DetailCategory = ({navigation}) => {
               />
             </TouchableOpacity>
           </>
-        );
-      })}
-      {dataState[`${type}`].pageInfo && dataState[`${type}`].pageInfo.next ? (
-        <Button color="primary" onPress={nextPage}>
-          Next
-        </Button>
-      ) : (
-        <></>
-      )}
-      <View style={styles.bottom} />
-    </ScrollView>
+        )}
+      />
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingVertical: 10,
   },
   listVehicles: {
     flexDirection: 'row',

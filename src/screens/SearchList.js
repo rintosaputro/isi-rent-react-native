@@ -1,12 +1,11 @@
 import {
   View,
-  ScrollView,
   TextInput,
   TouchableOpacity,
   Image,
+  FlatList,
   StyleSheet,
 } from 'react-native';
-import {Box, Center} from 'native-base';
 import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {Text} from 'native-base';
@@ -15,8 +14,6 @@ import FaIcon from 'react-native-vector-icons/FontAwesome';
 import VehicleList from '../components/VehicleList';
 import {getFilter} from '../redux/actions/vehicles';
 import {myOrder} from '../redux/actions/transaction';
-import Button from '../components/Button';
-import checkImage from '../helper/checkImage';
 
 const SearchList = ({navigation}) => {
   const [filter, setFilter] = useState(true);
@@ -42,29 +39,18 @@ const SearchList = ({navigation}) => {
   };
 
   const nextPage = () => {
-    const splitKeyword = filterVehicle.keywoard.split('-');
-    // console.log(filterVehicle.keywoard);
-    // console.log(splitKeyword);
-    console.log(filterVehicle.dataFilter);
-    console.log(filterVehicle.pageInfo.currentPage);
-    dispatch(
-      getFilter(
-        filterVehicle.dataFilter,
-        filterVehicle.pageInfo.currentPage + 1,
-      ),
-    );
+    if (filterVehicle.pageInfo.next) {
+      dispatch(
+        getFilter(
+          filterVehicle.dataFilter,
+          filterVehicle.pageInfo.currentPage + 1,
+        ),
+      );
+    }
   };
 
   return (
     <View style={styles.mainWrapper}>
-      {/* <View style={styles.search}>
-        <TextInput
-          placeholder="Motorbike-Sleman-January"
-          placeholderTextColor="black"
-          style={styles.input}
-        />
-        <Icon name="caretdown" size={15} />
-      </View> */}
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -84,56 +70,40 @@ const SearchList = ({navigation}) => {
           <Icon name="filter" size={20} />
           <Text>Filter Search</Text>
         </TouchableOpacity>
-        <ScrollView
+        <FlatList
           showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}>
-          {filterVehicle.results.map((data, index) => (
-            <TouchableOpacity
-              onPress={() => handleOrder(data.idVehicle)}
-              key={index}>
-              <VehicleList
-                name={data.brand}
-                seet={data.capacity}
-                stock={data.qty}
-                price={data.price}
-                Image={() => (
-                  <Image
-                    alt={data.brand}
-                    source={
-                      data.image
-                        ? !errImg
-                          ? {uri: data.image}
-                          : require('../assets/img/defaultItem.jpg')
-                        : require('../assets/img/no-image.jpg')
-                    }
-                    onError={setErrImg}
-                    style={styles.img}
-                  />
-                )}
-              />
-            </TouchableOpacity>
-          ))}
-          {!filterVehicle.isLoading && filterVehicle.pageInfo.next && (
-            <Box>
-              <Button color="primary" onPress={nextPage}>
-                Next
-              </Button>
-            </Box>
+          data={filterVehicle.results}
+          onEndReachedThreshold={0.2}
+          onEndReached={nextPage}
+          renderItem={({item, index}) => (
+            <>
+              <TouchableOpacity
+                onPress={() => handleOrder(item.idVehicle)}
+                key={index}>
+                <VehicleList
+                  name={item.brand}
+                  seet={item.capacity}
+                  stock={item.qty}
+                  price={item.price}
+                  Image={() => (
+                    <Image
+                      alt={item.brand}
+                      source={
+                        item.image
+                          ? !errImg
+                            ? {uri: item.image}
+                            : require('../assets/img/defaultItem.jpg')
+                          : require('../assets/img/no-image.jpg')
+                      }
+                      onError={setErrImg}
+                      style={styles.img}
+                    />
+                  )}
+                />
+              </TouchableOpacity>
+            </>
           )}
-          {!filterVehicle.isLoading && filterVehicle.results.length === 0 && (
-            <Center>
-              <Box
-                my="20"
-                justifyContent={'center'}
-                alignItems="center"
-                style={styles.alert}>
-                <Text style={styles.textAlert}>
-                  Sorry, we couldn`t find any results
-                </Text>
-              </Box>
-            </Center>
-          )}
-        </ScrollView>
+        />
       </View>
     </View>
   );
@@ -145,7 +115,7 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
-    marginBottom: 140,
+    marginBottom: 120,
   },
   search: {
     flexDirection: 'row',
