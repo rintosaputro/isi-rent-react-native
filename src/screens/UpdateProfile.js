@@ -11,11 +11,12 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import {getProfile, updateProfile} from '../redux/actions/user';
 import {checkEmail, checkPhone} from '../helper/check';
+import ImagePickerModal from '../components/ImagePickerModal';
 
 const UpdateProfile = ({navigation: {goBack}}) => {
   const [changed, setChanged] = useState({
@@ -36,6 +37,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
   const [errMessage, setErrMessage] = useState();
   const [isErr, setIsErr] = useState();
   const [errImg, setErrImg] = useState();
+  const [visible, setVisible] = useState(false);
 
   const {
     profile,
@@ -112,6 +114,13 @@ const UpdateProfile = ({navigation: {goBack}}) => {
     const file = await launchImageLibrary({});
     setChanged({...changed, image: file.assets[0]});
     setIsChanged(true);
+    setVisible(false);
+  };
+  const getCamera = async () => {
+    const file = await launchCamera({});
+    setChanged({...changed, image: file.assets[0]});
+    setIsChanged(true);
+    setVisible(false);
   };
 
   const saveChanged = () => {
@@ -200,7 +209,9 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 />
               )}
             </Center>
-            <TouchableOpacity style={styles.iconEdit} onPress={getFile}>
+            <TouchableOpacity
+              style={styles.iconEdit}
+              onPress={() => setVisible(true)}>
               <MaterialIcon
                 color="white"
                 name="pencil-outline"
@@ -209,6 +220,12 @@ const UpdateProfile = ({navigation: {goBack}}) => {
               />
             </TouchableOpacity>
           </View>
+          <ImagePickerModal
+            isVisible={visible}
+            onClose={() => setVisible(false)}
+            onImageLibrary={getFile}
+            onCamera={getCamera}
+          />
           <View style={styles.radioGrup}>
             <Radio.Group
               // defaultValue={gender}
