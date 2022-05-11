@@ -8,6 +8,7 @@ import {
   Pressable,
   FlatList,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import {Text, Checkbox, Box, Button} from 'native-base';
 import React, {useEffect, useState} from 'react';
@@ -69,138 +70,151 @@ const History = () => {
 
   return (
     <Box p="4" my="10">
-      <Text fontSize={'3xl'} textAlign="center" bold>
-        {histories.results.length > 0 ? 'History Order' : 'History is Empty'}
-      </Text>
-      <View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => {
-            Alert.alert('Modal has been closed.');
-            setModalVisible(!modalVisible);
-          }}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text style={styles.modalText}>
-                Are you sure to delete the selected history?
-              </Text>
-              <Box
-                flexDirection={'row'}
-                justifyContent={'space-between'}
-                alignItems={'center'}
-                style={styles.btnModalWrap}>
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => setModalVisible(!modalVisible)}>
-                  <Text style={styles.textStyle}>Cancel</Text>
-                </Pressable>
-                <Pressable
-                  style={[styles.button, styles.buttonConfirm]}
-                  onPress={handleDelete}>
-                  <Text style={styles.textStyle}>Delete</Text>
-                </Pressable>
-              </Box>
-            </View>
-          </View>
-        </Modal>
-      </View>
-      {histories.results.length > 0 && (
+      {histories.isLoading ? (
+        <Box>
+          <Text fontSize={'3xl'} textAlign="center" bold>
+            Loading...
+          </Text>
+          <ActivityIndicator size="large" color="#085F63" />
+        </Box>
+      ) : (
         <>
-          <Box mt={'5'} justifyContent="flex-end" style={styles.deleteWrap}>
-            <Box
-              alignItems={'flex-end'}
-              style={styles.delete}
-              flexDirection={'row'}>
-              {select && select.length > 0 ? (
-                <TouchableOpacity onPress={() => setModalVisible(true)}>
-                  <Text color={'gray.500'} fontSize="lg" bold>
-                    Delete
+          <Text fontSize={'3xl'} textAlign="center" bold>
+            {histories.results.length > 0
+              ? 'History Order'
+              : 'History is Empty'}
+          </Text>
+          <View>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert('Modal has been closed.');
+                setModalVisible(!modalVisible);
+              }}>
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Are you sure to delete the selected history?
                   </Text>
-                </TouchableOpacity>
-              ) : (
-                <View>
-                  <Text color={'gray.500'} fontSize="lg" bold>
-                    Select
-                  </Text>
+                  <Box
+                    flexDirection={'row'}
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                    style={styles.btnModalWrap}>
+                    <Pressable
+                      style={[styles.button, styles.buttonClose]}
+                      onPress={() => setModalVisible(!modalVisible)}>
+                      <Text style={styles.textStyle}>Cancel</Text>
+                    </Pressable>
+                    <Pressable
+                      style={[styles.button, styles.buttonConfirm]}
+                      onPress={handleDelete}>
+                      <Text style={styles.textStyle}>Delete</Text>
+                    </Pressable>
+                  </Box>
                 </View>
-              )}
-            </Box>
-          </Box>
-          {msgDelete && !histories.isLoading && (
-            <Text fontSize={'xl'} py="3" style={styles.message} bold>
-              History successfully deleted!
-            </Text>
-          )}
-          {deleteState.isError && (
-            <Text fontSize={'xl'} py="3" style={styles.message} bold>
-              {deleteState.errMessage}
-            </Text>
-          )}
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={histories.results}
-            style={styles.flatList}
-            renderItem={({item, index}) => (
-              <Box
-                justifyContent={'space-between'}
-                alignItems="center"
-                flexDirection="row">
-                <View style={styles.listVehicles}>
-                  <View style={styles.left}>
-                    <Image
-                      source={
-                        item?.image
-                          ? errImg
-                            ? require('../assets/img/defaultItem.jpg')
-                            : {uri: item?.image}
-                          : require('../assets/img/no-image.jpg')
-                      }
-                      alt={dataDummy.name}
-                      resizeMode={'cover'}
-                      width={130}
-                      height={100}
-                      borderRadius={30}
-                      onError={setErrImg}
-                      style={styles.image}
-                    />
-                  </View>
-                  <View style={styles.right}>
+              </View>
+            </Modal>
+          </View>
+          {histories.results.length > 0 && (
+            <>
+              <Box mt={'5'} justifyContent="flex-end" style={styles.deleteWrap}>
+                <Box
+                  alignItems={'flex-end'}
+                  style={styles.delete}
+                  flexDirection={'row'}>
+                  {select && select.length > 0 ? (
+                    <TouchableOpacity onPress={() => setModalVisible(true)}>
+                      <Text color={'gray.500'} fontSize="lg" bold>
+                        Delete
+                      </Text>
+                    </TouchableOpacity>
+                  ) : (
                     <View>
-                      <Text fontSize={'lg'} bold>
-                        {item.brand}
-                      </Text>
-                      <Text>
-                        {moment(item.rentStartDate).format('MMM DD')} to{' '}
-                        {moment(item.rentEndDate).format('MMM DD YYYY')}
-                      </Text>
-                      {item.prepayment ? (
-                        <Text bold>
-                          Prepayment: {priceFormat(item.prepayment)}
-                        </Text>
-                      ) : (
-                        <Text bold>No prepayment</Text>
-                      )}
-                      <Text bold color="#49BEB7">
-                        Has been returned
+                      <Text color={'gray.500'} fontSize="lg" bold>
+                        Select
                       </Text>
                     </View>
-                  </View>
-                </View>
-                <Box style={styles.badgeDelete}>
-                  <Checkbox.Group onChange={setSelect}>
-                    <Checkbox
-                      aria-label="checkbox"
-                      size={'md'}
-                      style={styles.checbox}
-                      value={item.idHistory}
-                    />
-                  </Checkbox.Group>
+                  )}
                 </Box>
               </Box>
-            )}
-          />
+              {msgDelete && !histories.isLoading && (
+                <Text fontSize={'xl'} py="3" style={styles.message} bold>
+                  History successfully deleted!
+                </Text>
+              )}
+              {deleteState.isError && (
+                <Text fontSize={'xl'} py="3" style={styles.message} bold>
+                  {deleteState.errMessage}
+                </Text>
+              )}
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                data={histories.results}
+                style={styles.flatList}
+                renderItem={({item, index}) => (
+                  <Box
+                    justifyContent={'space-between'}
+                    alignItems="center"
+                    flexDirection="row">
+                    <View style={styles.listVehicles}>
+                      <View style={styles.left}>
+                        <Image
+                          source={
+                            item?.image
+                              ? errImg
+                                ? require('../assets/img/defaultItem.jpg')
+                                : {uri: item?.image}
+                              : require('../assets/img/no-image.jpg')
+                          }
+                          alt={dataDummy.name}
+                          resizeMode={'cover'}
+                          width={130}
+                          height={100}
+                          borderRadius={30}
+                          onError={setErrImg}
+                          style={styles.image}
+                        />
+                      </View>
+                      <View style={styles.right}>
+                        <View>
+                          <Text fontSize={'lg'} bold>
+                            {item.brand}
+                          </Text>
+                          <Text>
+                            {moment(item.rentStartDate).format('MMM DD')} to{' '}
+                            {moment(item.rentEndDate).format('MMM DD YYYY')}
+                          </Text>
+                          {item.prepayment ? (
+                            <Text bold>
+                              Prepayment: {priceFormat(item.prepayment)}
+                            </Text>
+                          ) : (
+                            <Text bold>No prepayment</Text>
+                          )}
+                          <Text bold color="#49BEB7">
+                            Has been returned
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    <Box style={styles.badgeDelete}>
+                      <Checkbox.Group onChange={setSelect}>
+                        <Checkbox
+                          aria-label="checkbox"
+                          size={'md'}
+                          style={styles.checbox}
+                          value={item.idHistory}
+                        />
+                      </Checkbox.Group>
+                    </Box>
+                  </Box>
+                )}
+              />
+            </>
+          )}
         </>
       )}
     </Box>
