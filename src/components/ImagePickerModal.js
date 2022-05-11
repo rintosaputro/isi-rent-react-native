@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Modal, StyleSheet, Text, Pressable, View} from 'react-native';
 
 const ImagePickerModal = ({isVisible, onClose, onImageLibrary, onCamera}) => {
