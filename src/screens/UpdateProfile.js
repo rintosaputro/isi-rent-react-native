@@ -4,6 +4,7 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {Text, Image, Center, Radio, Stack, Box} from 'native-base';
@@ -11,11 +12,14 @@ import EntypoIcon from 'react-native-vector-icons/Entypo';
 import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Button from '../components/Button';
 import {useDispatch, useSelector} from 'react-redux';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
 import {getProfile, updateProfile} from '../redux/actions/user';
 import {checkEmail, checkPhone} from '../helper/check';
+import ImagePickerModal from '../components/ImagePickerModal';
+import ModalMessage from '../components/ModalMessage';
+import Icon from 'react-native-vector-icons/Fontisto';
 
 const UpdateProfile = ({navigation: {goBack}}) => {
   const [changed, setChanged] = useState({
@@ -24,7 +28,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
     name: '',
     username: '',
     email: '',
-    phoneNumber: '',
+    phone_number: '',
     birthdate: '',
     address: '',
   });
@@ -36,6 +40,8 @@ const UpdateProfile = ({navigation: {goBack}}) => {
   const [errMessage, setErrMessage] = useState();
   const [isErr, setIsErr] = useState();
   const [errImg, setErrImg] = useState();
+  const [visible, setVisible] = useState(false);
+  const [mdlMessage, setMdlMessage] = useState(false);
 
   const {
     profile,
@@ -76,7 +82,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
       label: 'Phone Number',
       value: phoneNumber,
       type: 'phone-pad',
-      keyObj: 'phoneNumber',
+      keyObj: 'phone_number',
     },
   ];
 
@@ -84,21 +90,27 @@ const UpdateProfile = ({navigation: {goBack}}) => {
     if (updateProfileState.isSuccess && updateProfileState.results) {
       dispatch(getProfile(auth.token));
       setIsChanged(false);
-      setMessage(true);
+      setMessage('Update profile successfully!');
+      setMdlMessage(true);
       dispatch({type: 'UPD_PROFILE_CLEAR'});
       setChanged({
-        image,
+        image: null,
         gender: '',
         name: '',
         username: '',
         email: '',
-        phoneNumber: '',
+        phone_number: '',
         birthdate: '',
         address: '',
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateProfileState.results]);
+  useEffect(() => {
+    if (updateProfileState.isError) {
+      setMdlMessage(true);
+    }
+  }, [updateProfileState.isError]);
 
   useEffect(() => {
     if (message) {
@@ -112,11 +124,19 @@ const UpdateProfile = ({navigation: {goBack}}) => {
     const file = await launchImageLibrary({});
     setChanged({...changed, image: file.assets[0]});
     setIsChanged(true);
+    setVisible(false);
+  };
+  const getCamera = async () => {
+    const file = await launchCamera({});
+    setChanged({...changed, image: file.assets[0]});
+    setIsChanged(true);
+    setVisible(false);
   };
 
   const saveChanged = () => {
     setIsErr(false);
     setErrMessage('');
+    setIsStart(false);
     let err;
     if (changed.email) {
       if (!checkEmail(changed.email)) {
@@ -125,8 +145,8 @@ const UpdateProfile = ({navigation: {goBack}}) => {
         err = true;
       }
     }
-    if (changed.phoneNumber) {
-      if (!checkPhone(changed.phoneNumber)) {
+    if (changed.phone_number) {
+      if (!checkPhone(changed.phone_number)) {
         setIsErr(true);
         setErrMessage('Phone number does not match!');
         err = true;
@@ -146,18 +166,26 @@ const UpdateProfile = ({navigation: {goBack}}) => {
       );
       err = true;
     }
+    if (err) {
+      setMdlMessage(true);
+    }
     if (!err) {
       dispatch(updateProfile(auth.token, changed));
     }
   };
 
   const getGender = value => {
-    setChanged({...changed, gender: value});
     setIsChanged(true);
+    setChanged({...changed, gender: value});
   };
 
   return (
     <View>
+      <ModalMessage
+        isVisible={mdlMessage}
+        onClose={() => setMdlMessage(false)}
+        message={errMessage || updateProfileState.errMessage || message}
+      />
       <TouchableOpacity style={styles.back} onPress={() => goBack()}>
         <EntypoIcon
           name="chevron-left"
@@ -188,7 +216,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                   borderRadius={200}
                   source={
                     profile.results?.image
-                      ? !errImg
+                      ? errImg
                         ? require('../assets/img/defaultPict.png')
                         : {
                             uri: profile.results.image,
@@ -200,7 +228,9 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 />
               )}
             </Center>
-            <TouchableOpacity style={styles.iconEdit} onPress={getFile}>
+            <TouchableOpacity
+              style={styles.iconEdit}
+              onPress={() => setVisible(true)}>
               <MaterialIcon
                 color="white"
                 name="pencil-outline"
@@ -209,6 +239,12 @@ const UpdateProfile = ({navigation: {goBack}}) => {
               />
             </TouchableOpacity>
           </View>
+          <ImagePickerModal
+            isVisible={visible}
+            onClose={() => setVisible(false)}
+            onImageLibrary={getFile}
+            onCamera={getCamera}
+          />
           <View style={styles.radioGrup}>
             <Radio.Group
               // defaultValue={gender}
@@ -259,6 +295,9 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 ? moment(birthdate).format('MMM DD YYYY')
                 : ''}
             </Text>
+            <Box display={'flex'} alignItems="flex-end">
+              <Icon name="date" size={20} />
+            </Box>
           </TouchableOpacity>
           <DatePicker
             style={styles.datePicker}
@@ -295,13 +334,13 @@ const UpdateProfile = ({navigation: {goBack}}) => {
           </View>
           {/* </TouchableOpacity> */}
           <View style={styles.button}>
-            {message && (
+            {/* {message && (
               <Box justifyContent={'center'} py="5" mb="5">
                 <Text textAlign={'center'} fontSize={'xl'} bold>
                   Profile successfully updated!
                 </Text>
               </Box>
-            )}
+            )} */}
             {updateProfileState.isError && (
               <Box justifyContent={'center'} py="5" mb="5">
                 <Text textAlign={'center'} fontSize={'xl'} bold>
@@ -309,13 +348,13 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 </Text>
               </Box>
             )}
-            {isErr && (
+            {/* {isErr && (
               <Box justifyContent={'center'} py="5" mb="5">
                 <Text textAlign={'center'} fontSize={'xl'} bold>
                   {errMessage}
                 </Text>
               </Box>
-            )}
+            )} */}
             {!isChanged ? (
               <Box
                 justifyContent={'center'}
@@ -326,6 +365,8 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                   Save change
                 </Text>
               </Box>
+            ) : updateProfileState.isLoading ? (
+              <ActivityIndicator size="large" color="#085F63" />
             ) : (
               <Button color="primary" onPress={saveChanged}>
                 Save change
@@ -394,7 +435,10 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     paddingHorizontal: 15,
     // alignItems: 'center',
-    justifyContent: 'center',
+    display: 'flex',
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   button: {
     marginBottom: 80,

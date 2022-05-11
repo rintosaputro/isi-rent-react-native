@@ -33,7 +33,7 @@ const Profile = ({navigation}) => {
           borderRadius={200}
           source={
             profile.results?.image
-              ? !errImg
+              ? errImg
                 ? require('../assets/img/defaultPict.png')
                 : {
                     uri: profile.results.image,
