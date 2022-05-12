@@ -7,6 +7,7 @@ import {
   Alert,
   Modal,
   Pressable,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -16,10 +17,10 @@ import {Box, Text, Badge} from 'native-base';
 import DatePicker from 'react-native-date-picker';
 import {Picker} from '@react-native-picker/picker';
 import moment from 'moment';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
+import ImagePickerModal from '../components/ImagePickerModal';
 
 import priceFormat from '../helper/priceFormat';
-import checkImage from '../helper/checkImage';
 import Button from '../components/Button';
 import InputBorderBottom from '../components/InputBorderBottom';
 
@@ -71,6 +72,7 @@ const Order = ({navigation}) => {
   const [messageSuccess, setMessageSuccess] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [errImg, setErrImg] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const {
     myOrder,
@@ -202,9 +204,16 @@ const Order = ({navigation}) => {
     const picture = await launchImageLibrary({});
     setFile(picture.assets[0]);
     setIsChange(true);
+    setVisible(false);
+  };
+  const getCamera = async () => {
+    const picture = await launchCamera({});
+    setFile(picture.assets[0]);
+    setIsChange(true);
+    setVisible(false);
   };
 
-  const test = () => {
+  const handleUpdate = () => {
     setErrMessage();
     setIsErr(false);
     let err = false;
@@ -294,7 +303,9 @@ const Order = ({navigation}) => {
               )}
             </View>
             {profile.results.username === 'Admin' && (
-              <TouchableOpacity style={styles.changeImg} onPress={getFile}>
+              <TouchableOpacity
+                style={styles.changeImg}
+                onPress={() => setVisible(true)}>
                 <Icon
                   color="#fff"
                   name="pencil"
@@ -588,7 +599,11 @@ const Order = ({navigation}) => {
             </Box>
           )}
           {profile.results?.username === 'Admin' ? (
-            !isChange ? (
+            updVehicleState.isLoading ? (
+              <Box mt={3}>
+                <ActivityIndicator size="large" color="#085F63" />
+              </Box>
+            ) : !isChange ? (
               <Box
                 justifyContent={'center'}
                 py="4"
@@ -601,7 +616,7 @@ const Order = ({navigation}) => {
               </Box>
             ) : (
               <Box mt={'25'}>
-                <Button color={'primary'} onPress={test}>
+                <Button color={'primary'} onPress={handleUpdate}>
                   Update Item
                 </Button>
               </Box>
@@ -624,6 +639,12 @@ const Order = ({navigation}) => {
           )}
         </View>
       </View>
+      <ImagePickerModal
+        isVisible={visible}
+        onClose={() => setVisible(false)}
+        onImageLibrary={getFile}
+        onCamera={getCamera}
+      />
     </ScrollView>
   );
 };

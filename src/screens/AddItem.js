@@ -11,10 +11,12 @@ import React, {useState, useEffect} from 'react';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import {Picker} from '@react-native-picker/picker';
 import Button from '../components/Button';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {addVehicle} from '../redux/actions/vehicles';
 import {useDispatch, useSelector} from 'react-redux';
 import {myOrder} from '../redux/actions/transaction';
+import ModalMessage from '../components/ModalMessage';
+import ImagePickerModal from '../components/ImagePickerModal';
 
 const AddItem = ({navigation}) => {
   const location = [
@@ -42,6 +44,8 @@ const AddItem = ({navigation}) => {
   const [capacity, setCapcity] = useState(1);
   const [err, setErr] = useState();
   const [errMessage, setErrMessage] = useState();
+  const [mdlMessage, setMdlMessage] = useState(false);
+  const [mdlImage, setMdlImage] = useState(false);
 
   const {auth, addVehicle: addVehicleState} = useSelector(state => state);
 
@@ -65,6 +69,12 @@ const AddItem = ({navigation}) => {
   const addImage = async () => {
     const photo = await launchImageLibrary({});
     setImage(photo.assets[0]);
+    setMdlImage(false);
+  };
+  const getCamera = async () => {
+    const file = await launchCamera({});
+    setImage(file.assets[0]);
+    setMdlImage(false);
   };
 
   const handleSave = () => {
@@ -90,10 +100,10 @@ const AddItem = ({navigation}) => {
       setErr(true);
       setErrMessage('Price is required!');
     }
-    if (brand.length < 20) {
+    if (brand.length < 10) {
       errForm = true;
       setErr(true);
-      setErrMessage('Product name min 20 characters!');
+      setErrMessage('Product name min 10 characters!');
     }
     if (image && image.fileSize >= 2000000) {
       errForm = true;
@@ -106,6 +116,9 @@ const AddItem = ({navigation}) => {
       errForm = true;
       setErr(true);
       setErrMessage('Image not selected!');
+    }
+    if (errForm) {
+      setMdlMessage(true);
     }
     if (!errForm) {
       dispatch(
@@ -180,7 +193,7 @@ const AddItem = ({navigation}) => {
               />
             </Box>
           )}
-          <TouchableOpacity onPress={addImage}>
+          <TouchableOpacity onPress={() => setMdlImage(true)}>
             <Box
               background={'black'}
               py="3"
@@ -192,6 +205,12 @@ const AddItem = ({navigation}) => {
               </Text>
             </Box>
           </TouchableOpacity>
+          <ImagePickerModal
+            isVisible={mdlImage}
+            onClose={() => setMdlImage(false)}
+            onImageLibrary={addImage}
+            onCamera={getCamera}
+          />
         </Box>
         <Box
           flexDirection="column"
@@ -201,7 +220,7 @@ const AddItem = ({navigation}) => {
             <TextInput
               textAlign="center"
               style={styles.input1}
-              placeholder="Product name min 20 characters"
+              placeholder="Product name min 10 characters"
               onChangeText={setBrand}
               // value={brand}
             />
@@ -322,13 +341,18 @@ const AddItem = ({navigation}) => {
             </Box>
           </Box>
         </Box>
-        {(err || addVehicleState.isError) && (
+        {/* {(err || addVehicleState.isError) && (
           <Box my="5">
             <Text textAlign={'center'} color="danger.700" fontSize={'3xl'} bold>
               {errMessage || 'Add item error!'}
             </Text>
           </Box>
-        )}
+        )} */}
+        <ModalMessage
+          isVisible={mdlMessage}
+          onClose={() => setMdlMessage(false)}
+          message={errMessage || addVehicleState.errMessage}
+        />
         <Box my="5">
           {addVehicleState.isLoading ? (
             <ActivityIndicator size={'large'} color="#32DBC6" />
