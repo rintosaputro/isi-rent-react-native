@@ -1,7 +1,6 @@
 import http from '../../helper/http';
 import RNFetchBlob from 'rn-fetch-blob';
-// const BACKEND_URL = 'http://192.168.43.195:5000';
-const BACKEND_URL = 'https://isi-rent.herokuapp.com';
+import BACKEND_URL from '../../helper/BackendUrl';
 
 export const getCategory = (category, page = 1) => {
   return async dispatch => {

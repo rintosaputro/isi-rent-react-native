@@ -19,7 +19,6 @@ import {getDetailCategory} from '../redux/actions/detailCategory';
 import {myOrder} from '../redux/actions/transaction';
 import {getProfile} from '../redux/actions/user';
 import Button from '../components/Button';
-import checkImage from '../helper/checkImage';
 
 const DetailTop = ({category, onPress}) => {
   return (

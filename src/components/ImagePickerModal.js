@@ -1,5 +1,7 @@
 import React from 'react';
 import {Modal, StyleSheet, Text, Pressable, View} from 'react-native';
+import FAIcon from 'react-native-vector-icons/FontAwesome';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 
 const ImagePickerModal = ({isVisible, onClose, onImageLibrary, onCamera}) => {
   return (
@@ -15,11 +17,13 @@ const ImagePickerModal = ({isVisible, onClose, onImageLibrary, onCamera}) => {
               <Pressable
                 style={[styles.button, styles.buttonClose, styles.firstBtn]}
                 onPress={onCamera}>
+                <FAIcon name="camera-retro" size={30} />
                 <Text style={styles.textStyle}>Camera</Text>
               </Pressable>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
                 onPress={onImageLibrary}>
+                <MaterialIcon name="photo-library" size={32} />
                 <Text style={styles.textStyle}>Library</Text>
               </Pressable>
             </View>
@@ -66,7 +70,7 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 10,
     padding: 20,
-    elevation: 2,
+    // elevation: 2,
     width: '40%',
     marginVertical: 40,
   },
@@ -74,10 +78,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#F194FF',
   },
   buttonClose: {
-    backgroundColor: 'teal',
+    // backgroundColor: 'teal',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   cancel: {
-    backgroundColor: '#EBEFD0',
+    backgroundColor: 'black',
     paddingVertical: 15,
     paddingHorizontal: 30,
     fontWeight: 'bold',
@@ -85,9 +93,10 @@ const styles = StyleSheet.create({
   },
   cancelText: {
     fontWeight: 'bold',
+    color: '#32DBC6',
   },
   textStyle: {
-    color: 'white',
+    color: 'black',
     fontWeight: 'bold',
     textAlign: 'center',
   },

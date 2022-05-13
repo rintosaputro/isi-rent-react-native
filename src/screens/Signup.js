@@ -35,13 +35,11 @@ const Signup = ({navigation}) => {
   }, [dispatch]);
   useEffect(() => {
     if (signup.isSuccess) {
-      // navigation.navigate('Verify');
       setUsername();
       setEmail();
       setPhone();
       setPassword();
       navigation.navigate('Login');
-      // dispatch({type: 'SIGNUP_CLEAR'});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signup]);
@@ -159,7 +157,6 @@ const Signup = ({navigation}) => {
           </View>
         </View>
       </ImageBackground>
-      {/* {signup.isSuccess && navigation.navigate('Verify')} */}
     </ScrollView>
   );
 };

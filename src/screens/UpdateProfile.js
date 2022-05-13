@@ -247,7 +247,6 @@ const UpdateProfile = ({navigation: {goBack}}) => {
           />
           <View style={styles.radioGrup}>
             <Radio.Group
-              // defaultValue={gender}
               value={changed.gender || gender}
               name="myRadioGroup"
               onChange={value => getGender(value)}>
@@ -283,7 +282,6 @@ const UpdateProfile = ({navigation: {goBack}}) => {
             );
           })}
           <Text style={styles.label}>Date of Birth:</Text>
-          {/* <TouchableOpacity style={styles.birthdate}> */}
           <TouchableOpacity
             style={styles.birthdate}
             title={String(birthdate)}
@@ -332,15 +330,7 @@ const UpdateProfile = ({navigation: {goBack}}) => {
               }}
             />
           </View>
-          {/* </TouchableOpacity> */}
           <View style={styles.button}>
-            {/* {message && (
-              <Box justifyContent={'center'} py="5" mb="5">
-                <Text textAlign={'center'} fontSize={'xl'} bold>
-                  Profile successfully updated!
-                </Text>
-              </Box>
-            )} */}
             {updateProfileState.isError && (
               <Box justifyContent={'center'} py="5" mb="5">
                 <Text textAlign={'center'} fontSize={'xl'} bold>
@@ -348,13 +338,6 @@ const UpdateProfile = ({navigation: {goBack}}) => {
                 </Text>
               </Box>
             )}
-            {/* {isErr && (
-              <Box justifyContent={'center'} py="5" mb="5">
-                <Text textAlign={'center'} fontSize={'xl'} bold>
-                  {errMessage}
-                </Text>
-              </Box>
-            )} */}
             {!isChanged ? (
               <Box
                 justifyContent={'center'}

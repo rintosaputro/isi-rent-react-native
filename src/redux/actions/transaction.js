@@ -1,6 +1,3 @@
-import http from '../../helper/http';
-import qs from 'qs';
-
 export const myOrder = idVehicle => {
   return dispatch => {
     dispatch({

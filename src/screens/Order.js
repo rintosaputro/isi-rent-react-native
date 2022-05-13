@@ -135,8 +135,6 @@ const Order = ({navigation}) => {
       } else {
         dispatch(getCategory(detailVehicle.results.type.toUpperCase()));
       }
-      // dispatch({type: 'DEL_VEHICLE_CLEAR'});
-      // navigation.goBack();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [delVehicleState.isSuccess]);
