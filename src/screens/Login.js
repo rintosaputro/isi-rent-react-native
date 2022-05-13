@@ -20,19 +20,13 @@ const Login = ({navigation}) => {
   const [isError, setIsError] = useState();
 
   const dispatch = useDispatch();
-  const {auth, verify, signup} = useSelector(state => state);
+  const {auth, signup} = useSelector(state => state);
   useEffect(() => {
     dispatch({
       type: 'AUTH_CLEAR_ERR',
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
-
-  // useEffect(() => {
-  //   if (verify.gotoVerify === 'verify') {
-  //     navigation.navigate('Verify');
-  //   }
-  // }, [navigation, verify.gotoVerify]);
 
   const handleLogin = () => {
     if (username && password) {
@@ -95,23 +89,10 @@ const Login = ({navigation}) => {
             )}
             {signup.isSuccess && (
               <Box my="7" py="5" style={styles.messageSignup}>
-                <Text
-                  // color={'white'}
-                  // style={styles.messageSignup}
-                  // py="2"
-                  // mt="7"
-                  textAlign={'center'}
-                  fontSize="xl"
-                  bold>
+                <Text textAlign={'center'} fontSize="xl" bold>
                   Registration success!
                 </Text>
-                <Text
-                  // style={styles.messageSignup}
-                  // pb="2"
-                  // mb="7"
-                  textAlign={'center'}
-                  fontSize="xl"
-                  bold>
+                <Text textAlign={'center'} fontSize="xl" bold>
                   Login to your account
                 </Text>
               </Box>
@@ -171,16 +152,10 @@ const styles = StyleSheet.create({
   header: {
     marginTop: 60,
   },
-  head: {
-    // color: '#fff',
-    // fontWeight: 'bold',
-    // fontSize: 35,
-  },
   form: {
     bottom: 0,
   },
   message: {
-    // backgroundColor: 'rgba(15, 185, 177,0.8)',
     backgroundColor: '#ED4C67',
     borderRadius: 10,
   },

@@ -1,7 +1,6 @@
 import {
   View,
   StyleSheet,
-  // Dimensions,
   ImageBackground,
   ScrollView,
   TouchableOpacity,
@@ -18,7 +17,7 @@ import {checkEmail} from '../helper/check';
 const Verify = ({navigation}) => {
   const [email, setEmail] = useState();
   const [code, setCode] = useState();
-  const [username, setUsername] = useState();
+  // const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [isEmpty, setIsEmpty] = useState();
   const [errMessage, setErrMessage] = useState();
@@ -30,7 +29,6 @@ const Verify = ({navigation}) => {
 
   useEffect(() => {
     if (verifyState.isSuccess) {
-      // navigation.navigate('Login');
       dispatch({type: 'VERIFY_CLEAR'});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,13 +112,6 @@ const Verify = ({navigation}) => {
                     keyboardType="number-pad"
                   />
                 </Box>
-                {/* <Box my="5">
-                  <Input
-                    placeholder="Enter your username"
-                    onChangeText={setUsername}
-                    value={username}
-                  />
-                </Box> */}
                 <Box my="5">
                   <Input
                     onChangeText={setPassword}
@@ -138,24 +129,12 @@ const Verify = ({navigation}) => {
               </>
             ) : (
               <Box style={styles.sendCodeWrap}>
-                {/* <Box my="5">
-                  <Input
-                    placeholder="Enter your Email"
-                    onChangeText={setEmail}
-                    value={code}
-                    keyboardType="email-address"
-                  />
-                </Box>
-                <Box>
-                  <Button onPress={handleSend}>Send Code</Button>
-                </Box> */}
                 <ActivityIndicator size="large" color="#00ff00" />
               </Box>
             )}
           </View>
         </ScrollView>
       </ImageBackground>
-      {/* {verifyState.isSuccess && navigation.navigate('Login')} */}
     </View>
   );
 };

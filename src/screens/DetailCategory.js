@@ -1,16 +1,8 @@
-import {
-  View,
-  ScrollView,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import {StyleSheet, Image, TouchableOpacity, FlatList} from 'react-native';
 // import {Image} from 'native-base';
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import VehicleList from '../components/VehicleList';
 import {useSelector, useDispatch} from 'react-redux';
-import Button from '../components/Button';
 import {myOrder} from '../redux/actions/transaction';
 import {getCategory} from '../redux/actions/vehicles';
 
@@ -21,7 +13,7 @@ const DetailCategory = ({navigation}) => {
 
   const type = detailCategory.nameCategory;
 
-  const typeState = useSelector(state => state[`${type}`]);
+  // const typeState = useSelector(state => state[`${type}`]);
 
   const dispatch = useDispatch();
 

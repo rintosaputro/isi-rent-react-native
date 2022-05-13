@@ -341,13 +341,6 @@ const AddItem = ({navigation}) => {
             </Box>
           </Box>
         </Box>
-        {/* {(err || addVehicleState.isError) && (
-          <Box my="5">
-            <Text textAlign={'center'} color="danger.700" fontSize={'3xl'} bold>
-              {errMessage || 'Add item error!'}
-            </Text>
-          </Box>
-        )} */}
         <ModalMessage
           isVisible={mdlMessage}
           onClose={() => setMdlMessage(false)}

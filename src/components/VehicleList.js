@@ -9,16 +9,6 @@ const VehicleList = ({Image, name, seet, stock, price, ...set}) => {
   return (
     <View style={styles.listVehicles}>
       <View style={styles.left}>
-        {/* <Image
-          source={image}
-          alt={name}
-          resizeMode={'cover'}
-          width={150}
-          height={120}
-          borderRadius={30}
-          onError={onError}
-          style={styles.image}
-        /> */}
         <Image />
         <LinearGradient
           start={{x: 0, y: 0}}

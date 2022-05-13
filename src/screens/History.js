@@ -10,7 +10,7 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import {Text, Checkbox, Box, Button} from 'native-base';
+import {Text, Checkbox, Box} from 'native-base';
 import React, {useEffect, useState} from 'react';
 import priceFormat from '../helper/priceFormat';
 import moment from 'moment';
