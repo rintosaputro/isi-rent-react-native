@@ -2,8 +2,6 @@ import http from '../../helper/http';
 import RNFetchBlob from 'rn-fetch-blob';
 import BACKEND_URL from '../../helper/BackendUrl';
 
-const BACKEND_URL2 = 'https://isi-rent.herokuapp.com';
-
 export const getProfile = token => {
   return async dispatch => {
     dispatch({
@@ -47,7 +45,7 @@ export const updateProfile = (token, dataInput) => {
 
       const {data} = await RNFetchBlob.fetch(
         'PATCH',
-        `${BACKEND_URL2}/profile`,
+        `${BACKEND_URL}/profile`,
         {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
