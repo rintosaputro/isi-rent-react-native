@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "54945495559",
+    "project_id": "vehiclerent-348e8",
+    "storage_bucket": "vehiclerent-348e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:54945495559:android:be3440b044083807b088a2",
+        "android_client_info": {
+          "package_name": "com.rinto.isirent"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "54945495559-vto096goerp0inb8i1mva12t774f4hh0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rinto.isirent",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "54945495559-ou9k8jkpn46d2ehqcf6kki4k2vr9ij5c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbUIJDZ2XcaEuLd29xHJZQgvunVdwYU8M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "54945495559-ou9k8jkpn46d2ehqcf6kki4k2vr9ij5c.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
