@@ -5,10 +5,11 @@ import {
   Image,
   FlatList,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {Text} from 'native-base';
+import {Box, Text} from 'native-base';
 import Icon from 'react-native-vector-icons/AntDesign';
 import FaIcon from 'react-native-vector-icons/FontAwesome';
 import VehicleList from '../components/VehicleList';
@@ -16,17 +17,12 @@ import {getFilter} from '../redux/actions/vehicles';
 import {myOrder} from '../redux/actions/transaction';
 
 const SearchList = ({navigation}) => {
-  const [filter, setFilter] = useState(true);
   const [errImg, setErrImg] = useState();
   const [key, setKey] = useState();
 
   const dispatch = useDispatch();
 
   const {filterVehicle} = useSelector(state => state);
-
-  const showFilter = () => {
-    setFilter(!filter);
-  };
 
   const handleSearch = () => {
     const dataFilter = {search: key};
@@ -70,40 +66,61 @@ const SearchList = ({navigation}) => {
           <Icon name="filter" size={20} />
           <Text>Filter Search</Text>
         </TouchableOpacity>
-        <FlatList
-          showsVerticalScrollIndicator={false}
-          data={filterVehicle.results}
-          onEndReachedThreshold={0.2}
-          onEndReached={nextPage}
-          renderItem={({item, index}) => (
-            <>
-              <TouchableOpacity
-                onPress={() => handleOrder(item.idVehicle)}
-                key={index}>
-                <VehicleList
-                  name={item.brand}
-                  seet={item.capacity}
-                  stock={item.qty}
-                  price={item.price}
-                  Image={() => (
-                    <Image
-                      alt={item.brand}
-                      source={
-                        item.image
-                          ? !errImg
-                            ? {uri: item.image}
-                            : require('../assets/img/defaultItem.jpg')
-                          : require('../assets/img/no-image.jpg')
-                      }
-                      onError={setErrImg}
-                      style={styles.img}
-                    />
-                  )}
-                />
-              </TouchableOpacity>
-            </>
-          )}
-        />
+        {filterVehicle.isLoading && filterVehicle.results?.length < 4 && (
+          <Box
+            height={'100%'}
+            display="flex"
+            flexDirection={'row'}
+            alignItems="center"
+            justifyContent="center">
+            <Text textAlign={'center'} fontSize={25}>
+              Loading
+            </Text>
+            <ActivityIndicator size="large" color="#085F63" />
+          </Box>
+        )}
+        {!filterVehicle.isLoading && filterVehicle.results?.length === 0 ? (
+          <Box mt={20}>
+            <Text fontSize={25} textAlign="center">
+              Oops, product not found!
+            </Text>
+          </Box>
+        ) : (
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            data={filterVehicle.results}
+            onEndReachedThreshold={0.2}
+            onEndReached={nextPage}
+            renderItem={({item, index}) => (
+              <>
+                <TouchableOpacity
+                  onPress={() => handleOrder(item.idVehicle)}
+                  key={index}>
+                  <VehicleList
+                    name={item.brand}
+                    seet={item.capacity}
+                    stock={item.qty}
+                    price={item.price}
+                    Image={() => (
+                      <Image
+                        alt={item.brand}
+                        source={
+                          item.image
+                            ? !errImg
+                              ? {uri: item.image}
+                              : require('../assets/img/defaultItem.jpg')
+                            : require('../assets/img/no-image.jpg')
+                        }
+                        onError={setErrImg}
+                        style={styles.img}
+                      />
+                    )}
+                  />
+                </TouchableOpacity>
+              </>
+            )}
+          />
+        )}
       </View>
     </View>
   );
