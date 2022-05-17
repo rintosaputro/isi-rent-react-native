@@ -1,6 +1,9 @@
 import http from '../../helper/http';
 import RNFetchBlob from 'rn-fetch-blob';
-import BACKEND_URL from '../../helper/BackendUrl';
+import Config from 'react-native-config';
+
+const {BACKEND_URL} = Config;
+// import BACKEND_URL from '../../helper/BackendUrl';
 
 export const getProfile = token => {
   return async dispatch => {

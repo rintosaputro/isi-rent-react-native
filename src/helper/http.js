@@ -1,5 +1,8 @@
 import axios from 'axios';
-import BACKEND_URL from './BackendUrl';
+import Config from 'react-native-config';
+
+const {BACKEND_URL} = Config;
+// import BACKEND_URL from './BackendUrl';
 
 const http = token => {
   const headers = {};
